@@ -1,7 +1,9 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import AuthModal from './AuthModal';
+import { useAuth } from '@/lib/auth-context';
 
 const COURSES = [
   'Featured','Music','Drawing & Painting','Animation','Creative Writing',
@@ -16,6 +18,8 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
   const [activeTab, setActiveTab] = useState('signup');
   const searchRef = useRef(null);
   const dropdownRef = useRef(null);
+  const router = useRouter();
+  const { user, profile, signOut } = useAuth();
 
   const filteredCourses = COURSES.filter(c =>
     c.toLowerCase().includes(searchValue.toLowerCase())
@@ -47,6 +51,11 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
   function openModal(tab) {
     setActiveTab(tab);
     setModalOpen(true);
+  }
+
+  async function handleSignOut() {
+    await signOut();
+    router.push('/');
   }
 
   return (
@@ -82,9 +91,41 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
             <select><option>Pricing</option></select>
           </div>
         </div>
+
         <div className="nav-links">
-          <button className="signin-btn" onClick={() => openModal('signin')}>Sign in</button>
-          <button className="signup-btn" onClick={() => openModal('signup')}>Sign up</button>
+          {user ? (
+            /* Logged-in state */
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                background: 'rgba(255,255,255,0.15)', borderRadius: '20px',
+                padding: '6px 14px', fontSize: '14px', fontWeight: '600'
+              }}>
+                <div style={{
+                  width: '28px', height: '28px', borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #041643, #4F6EF7)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#fff', fontSize: '12px', fontWeight: 'bold'
+                }}>
+                  {(profile?.username || user.email)?.[0]?.toUpperCase()}
+                </div>
+                <span>{profile?.username || user.email}</span>
+              </div>
+              <button
+                className="signin-btn"
+                onClick={handleSignOut}
+                style={{ cursor: 'pointer' }}
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            /* Logged-out state */
+            <>
+              <button className="signin-btn" onClick={() => openModal('signin')}>Sign in</button>
+              <button className="signup-btn" onClick={() => openModal('signup')}>Sign up</button>
+            </>
+          )}
         </div>
       </div>
       <AuthModal

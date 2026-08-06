@@ -1,17 +1,16 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip } from 'chart.js';
 import Sidebar from '@/components/Sidebar';
 import DashboardHeader from '@/components/DashboardHeader';
 import Image from 'next/image';
+import { useAuth } from '@/lib/auth-context';
+import { supabase } from '@/lib/supabaseClient';
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip);
 
-const COURSES = [
-  { color: '#9AC4FF', category: 'Web Designing', title: 'UI/UX Designing for beginners', progress: 70, lessons: '21/30 lessons' },
-  { color: '#DEC4FF', category: 'Web Development', title: 'HTML & CSS for beginners', progress: 70, lessons: '14/20 lessons' },
-  { color: '#FFEDCB', category: 'Marketing', title: 'Content writing for beginners', progress: 30, lessons: '6/20 lessons' },
-];
+// Course card background colors cycle
+const CARD_COLORS = ['#9AC4FF', '#DEC4FF', '#FFEDCB', '#C4F0C4', '#FFD6D6'];
 
 const BOOKMARKED = {
   'UI/UX Designing for beginners': [
@@ -23,13 +22,32 @@ const BOOKMARKED = {
     { title: 'HTML Tags One shot', author: 'By Mitty' },
     { title: 'HTML One shot', author: 'By Mitty' },
   ],
-  'Content writing for beginners': null,
 };
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   const chartRef = useRef(null);
   const chartInstanceRef = useRef(null);
+  const [courses, setCourses] = useState([]);
+  const [dbLoading, setDbLoading] = useState(true);
 
+  // Load enrollments from Supabase
+  useEffect(() => {
+    if (!user) { setDbLoading(false); return; }
+    async function loadCourses() {
+      setDbLoading(true);
+      const { data } = await supabase
+        .from('enrollments')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
+      setCourses(data || []);
+      setDbLoading(false);
+    }
+    loadCourses();
+  }, [user]);
+
+  // Chart
   useEffect(() => {
     if (chartRef.current) {
       if (chartInstanceRef.current) chartInstanceRef.current.destroy();
@@ -45,10 +63,7 @@ export default function DashboardPage() {
         },
         options: {
           responsive: true, maintainAspectRatio: false,
-          scales: {
-            x: { grid: { display: false } },
-            y: { beginAtZero: true, grid: { display: false } },
-          },
+          scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { display: false } } },
           plugins: { legend: { display: false } },
         },
       });
@@ -62,23 +77,46 @@ export default function DashboardPage() {
       <div className="page-content" style={{ backgroundColor: '#f5f5f5' }}>
         <DashboardHeader />
         <div style={{ marginBottom: '20px' }}><h1>My Courses</h1></div>
-        <div className="dash-courses-row" style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
-          {COURSES.map(c => (
-            <div key={c.title} style={{
-              flex: 1, padding: '15px', border: '1px solid #000',
-              borderRadius: '12px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-              backgroundColor: c.color
-            }}>
-              <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.25)', border: '1px solid #000', borderRadius: '5px', padding: '5px 10px', fontSize: '12px', fontWeight: 'bold', marginBottom: '10px', textTransform: 'uppercase' }}>{c.category}</div>
-              <h3 style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '10px' }}>{c.title}</h3>
-              <div style={{ height: '6px', backgroundColor: '#e0e0e0', borderRadius: '3px', marginBottom: '10px' }}>
-                <div style={{ height: '100%', width: `${c.progress}%`, backgroundColor: '#000', borderRadius: '3px' }}></div>
+
+        {/* Course Cards from Supabase */}
+        {dbLoading ? (
+          <div style={{ padding: '20px', color: '#888', fontSize: '14px' }}>Loading your courses...</div>
+        ) : !user ? (
+          <div style={{ padding: '20px', color: '#888', fontSize: '14px' }}>Please sign in to see your courses.</div>
+        ) : courses.length === 0 ? (
+          <div style={{ padding: '20px', color: '#888', fontSize: '14px', background: '#fff', borderRadius: '12px', border: '1px dashed #ccc', textAlign: 'center' }}>
+            No courses enrolled yet. Enroll in a course to get started!
+          </div>
+        ) : (
+          <div className="dash-courses-row" style={{ display: 'flex', gap: '15px', marginBottom: '20px', flexWrap: 'wrap' }}>
+            {courses.map((c, i) => (
+              <div key={c.id} style={{
+                flex: '1 1 200px', padding: '15px', border: '1px solid #000',
+                borderRadius: '12px', boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
+                backgroundColor: CARD_COLORS[i % CARD_COLORS.length]
+              }}>
+                {c.category && (
+                  <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.25)', border: '1px solid #000', borderRadius: '5px', padding: '5px 10px', fontSize: '12px', fontWeight: 'bold', marginBottom: '10px', textTransform: 'uppercase' }}>
+                    {c.category}
+                  </div>
+                )}
+                <h3 style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '10px' }}>{c.course_title}</h3>
+                <div style={{ height: '6px', backgroundColor: '#e0e0e0', borderRadius: '3px', marginBottom: '10px' }}>
+                  <div style={{ height: '100%', width: `${c.progress}%`, backgroundColor: '#000', borderRadius: '3px' }}></div>
+                </div>
+                <p style={{ fontSize: '12px', color: '#311919', marginBottom: '10px' }}>{c.progress}% complete</p>
+                <span style={{
+                  display: 'inline-block', padding: '4px 10px', borderRadius: '12px',
+                  fontSize: '11px', fontWeight: '600',
+                  background: c.status === 'Completed' ? '#d1fae5' : c.status === 'Upcoming' ? '#fef3c7' : '#dbeafe',
+                  color: c.status === 'Completed' ? '#065f46' : c.status === 'Upcoming' ? '#92400e' : '#1e40af',
+                }}>
+                  {c.status}
+                </span>
               </div>
-              <p style={{ fontSize: '12px', color: '#311919', marginBottom: '10px' }}>{c.lessons}</p>
-              <button style={{ backgroundColor: '#041643', color: '#fff', border: 'none', padding: '5px 15px', borderRadius: '5px', cursor: 'pointer', fontSize: '12px', fontFamily: '"Poppins", sans-serif' }}>Resume</button>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <div className="dash-bottom-row" style={{ display: 'flex', gap: '20px' }}>
           <div style={{ flex: 1 }}>
@@ -106,21 +144,17 @@ export default function DashboardPage() {
             {Object.entries(BOOKMARKED).map(([course, lessons]) => (
               <div key={course} style={{ marginBottom: '15px' }}>
                 <h3 style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>{course}</h3>
-                {lessons ? (
-                  <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {lessons.map(l => (
-                      <li key={l.title} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '5px 0', fontSize: '12px' }}>
-                        <Image src="/image/Frame 1618873211.jpg" alt="lesson" width={40} height={40} unoptimized style={{ borderRadius: '5px' }} />
-                        <div>
-                          <div style={{ fontWeight: 'bold' }}>{l.title}</div>
-                          <div style={{ color: '#666' }}>{l.author}</div>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div style={{ fontSize: '12px', color: '#666', fontStyle: 'italic' }}>NONE</div>
-                )}
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                  {lessons.map(l => (
+                    <li key={l.title} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '5px 0', fontSize: '12px' }}>
+                      <Image src="/image/Frame 1618873211.jpg" alt="lesson" width={40} height={40} unoptimized style={{ borderRadius: '5px' }} />
+                      <div>
+                        <div style={{ fontWeight: 'bold' }}>{l.title}</div>
+                        <div style={{ color: '#666' }}>{l.author}</div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
