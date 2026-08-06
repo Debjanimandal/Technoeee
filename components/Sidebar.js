@@ -5,6 +5,7 @@ import Image from 'next/image';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', href: '/dashboard', icon: '/image/duo-icons_dashboard.jpg', activeIcon: '/image/duo-icons_dashboard.jpg' },
+  { label: 'Profile', href: '/profile', icon: '/image/Vector.jpg', activeIcon: '/image/Vector.jpg' },
   { label: 'Communities', href: '/community', icon: '/image/Vector.jpg', activeIcon: '/image/comunity.jpg' },
   { label: 'Analysis', href: '/analysis', icon: '/image/analysis.jpg', activeIcon: '/image/analysis2.jpg' },
   { label: 'Reports', href: '#', icon: '/image/Bar Chart.jpg', activeIcon: '/image/Bar Chart.jpg' },
