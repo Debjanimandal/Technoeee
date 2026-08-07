@@ -1,0 +1,104 @@
+[
+    {
+        "course_name": "OOP using C++",
+        "subject_code": "TIU-UCS-T214",
+        "modules": [],
+        "video_link": "https://drive.google.com/drive/u/0/folders/17emFjr9QmUSx-WbMg3ex8ZmtgxSSAyC1"
+    },
+    {
+        "course_name": "Computer Architechture",
+        "subject_code": "TIU_UCS_T220",
+        "modules": [],
+        "video_link": "ComputerArchitecture"
+    },
+    {
+        "course_name": "Artificial Intelligence",
+        "subject_code": "TIU_UCS_T350",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/1wvt6vDXGm6HHGI7_nUDmkWZzigSodhJD/view?usp=drive_link"
+    },
+    {
+        "course_name": "Image Processing & Pattern Recognition",
+        "subject_code": "TIU_UCS_T327",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/1fSTtstQifkKeZzkx_ovQi_Ba5vf1e3CZ/view?usp=drivesdk"
+    },
+    {
+        "course_name": "Graph Theory & Combinatorics",
+        "subject_code": "TIU-UCS-T224",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/1UOTY9mqgKn11VfHOWnx0fCHqYs9Uze1q/view?usp=drive_link"
+    },
+    {
+        "course_name": "Machine Learning",
+        "subject_code": "TIU-UCS-E415B",
+        "modules": [],
+        "video_link": "https://drive.google.com/drive/folders/1B4MojmOiLA3y_zQZThIgRnlQrAPMZcx0"
+    },
+    {
+        "course_name": "Knowledge Discovery & Data Mining (KDD)",
+        "subject_code": "TIU-UCS-E461",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/1BH2jb201zmFJFVtpYWVvTBZws-IMDPpN/view?usp=drive_link"
+    },
+    {
+        "course_name": "Database Management Systems",
+        "subject_code": "TIU-UCS-T301",
+        "modules": [],
+        "video_link": "https://drive.google.com/drive/folders/13PC-coqWE8z_4VCatneFn9f2dmvygDmx"
+    },
+    {
+        "course_name": "Automata Theory",
+        "subject_code": "TIU_UCS_T323",
+        "modules": [],
+        "video_link": "https://drive.google.com/drive/folders/1xIP2isIb20XeXA7yrLZ-ugPjsHo-BMpF"
+    },
+    {
+        "course_name": "Fundamentals of Python Programming",
+        "subject_code": "",
+        "modules": [],
+        "video_link": "https://drive.google.com/drive/folders/13BNKMC_FQr38BDiy-QwQICFCIPcwUDhZ?usp=sharing"
+    },
+    {
+        "course_name": "Design and Analysis of Algorithms",
+        "subject_code": "TIU-UCS-T321",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/11dgPWYrd0K-U8QAL0owl8kn5EO_8l7ly/view?usp=sharing"
+    },
+    {
+        "course_name": "Data Structures and Algorithms",
+        "subject_code": "TIU-UCS-T201",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/1u9mHm1evTghyTqFUPskT-GgrbMDcHJC_/view?usp=sharing"
+    },
+    {
+        "course_name": "Compiler Design",
+        "subject_code": "TIU-UCS-T320",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/1wRGEXBYm07kDiUAkzZekyuoqn0j2vMlp/view?usp=drive_link"
+    },
+    {
+        "course_name": "Computer Networks",
+        "subject_code": "TIU-UCS-T304",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/1OKl772_dYbGCRlNk-TVeEKPs3vQvZ_QR/view?usp=sharing"
+    },
+    {
+        "course_name": "Computer Network",
+        "subject_code": "TIU-UCS-T304",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/1wo1D0yj7EXIBl1RJG1UMHi35DysZ4B3V/view?usp=drive_link"
+    },
+    {
+        "course_name": "Artificial Intelligence-II",
+        "subject_code": "TIU_UCS_T350",
+        "modules": [],
+        "video_link": "https://drive.google.com/drive/folders/1pwUZdwMiBEYTCANyURZ3SmDZPiJpcxFo?usp=drive_link"
+    },
+    {
+        "course_name": "Computer Organization",
+        "subject_code": "TIU-UCS-T207",
+        "modules": [],
+        "video_link": "https://drive.google.com/file/d/1xbSXj1IqYXYVsBRjfvgMghliBl_C0t6W/view?usp=drive_link"
+    }
+]
