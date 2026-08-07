@@ -1,0 +1,930 @@
+[
+    {
+        "course_name": "Object Oriented Programming using C++",
+        "subject_code": "TIU-UCS-T214",
+        "outcomes": [
+            "Define an object-oriented approach to programming and identify potential benefits of object-oriented programming over other approaches",
+            "Demonstrate the use of various OOPs concepts using C++",
+            "Solve a computational problem by implementing the solution as a real-world entity",
+            "Understand and apply some advanced constructs of C++ like virtual functions, operator overloading, exception handling, standard template library",
+            "Analyze and optimize C++ programs for efficiency, maintainability, and scalability using OOP best practices."
+        ],
+        "modules": [
+            {
+                "title": "MODULE 1: - INTRODUCTION",
+                "topics": [
+                    "Introduction to Object Oriented Paradigm",
+                    "Need of object-oriented design",
+                    "Drawbacks of Procedure Oriented Programming",
+                    "Features of object-oriented languages",
+                    "POP Vs OOP",
+                    "Benefits & Applications of OOP",
+                    "Difference between C and C++"
+                ],
+                "videos": [],
+                "time": "10 Hours"
+            },
+            {
+                "title": "MODULE 2: - BASIC CONCEPTS OF OBJECT ORIENTATION",
+                "topics": [
+                    "Class",
+                    "Object",
+                    "Data abstraction",
+                    "Encapsulation",
+                    "Inheritance",
+                    "Polymorphism",
+                    "Message Passing",
+                    "Dynamic binding"
+                ],
+                "videos": [],
+                "time": "12 Hours"
+            },
+            {
+                "title": "MODULE 3: - FUNDAMENTALS OF OOPs",
+                "topics": [
+                    "Fundamentals of OOPs: Class & Objects",
+                    "Constructors & Destructor",
+                    "Different perspectives on inheritance",
+                    "Types of inheritance",
+                    "Polymorphism: Compile Time & Run time Polymorphism",
+                    "Virtual functions",
+                    "Virtual table construction",
+                    "Overloading",
+                    "Overriding",
+                    "Abstract Class",
+                    "Virtual Class"
+                ],
+                "videos": [],
+                "time": "12 Hours"
+            },
+            {
+                "title": "MODULE 4: - ADVANCE OOP CONCEPTS",
+                "topics": [
+                    "Class and Function Templates",
+                    "Standard Template Libraries in C++: lists",
+                    "vectors",
+                    "sets",
+                    "maps",
+                    "Exceptions Handling"
+                ],
+                "videos": [],
+                "time": "11 Hours"
+            }
+        ],
+        "video_link": "https://drive.google.com/drive/u/0/folders/17emFjr9QmUSx-WbMg3ex8ZmtgxSSAyC1",
+        "estimated_time": "45 Hours",
+        "difficulty": "Beginner",
+        "relevance": "Programming Fundamentals"
+    },
+    {
+        "course_name": "Computer Organization and Architecture",
+        "subject_code": "TIU-PC-UCS-T22101",
+        "outcomes": [
+            "Explain computer architectures, Von Neumann/Harvard models, Flynn\u2019s taxonomy, and RISC\u2013CISC processors.",
+            "Apply data representation methods and perform arithmetic operations using adders, multipliers, and dividers.",
+            "Analyze instruction sets, addressing modes, instruction cycles, and control unit organization.",
+            "Evaluate memory hierarchy, cache/virtual memory techniques, and I/O systems including DMA.",
+            "Demonstrate pipelining concepts, identify hazards, and apply techniques for instruction-level parallelism.",
+            "Assess multiprocessor and advanced architectures for parallel and high-performance computing."
+        ],
+        "modules": [
+            {
+                "title": "MODULE 1: - Introduction to Computer Systems",
+                "topics": [
+                    "Evolution of Computer Architectures",
+                    "Von Neumann and Harvard Models",
+                    "Flynn\u2019s Taxonomy: SISD",
+                    "SIMD",
+                    "MISD",
+                    "MIMD; CISC and RISC Processors",
+                    "Performance metrics: measuring and reporting performance"
+                ],
+                "videos": [],
+                "time": "6 Hours"
+            },
+            {
+                "title": "MODULE 2: - Data Representation and Arithmetic",
+                "topics": [
+                    "Number systems and data representation; Signed numbers",
+                    "fixed- and floating-point formats; Integer arithmetic: addition",
+                    "subtraction (ripple carry",
+                    "carry look-ahead adders); Multiplication: Booth\u2019s algorithm; Division: restoring and non-restoring techniques"
+                ],
+                "videos": [],
+                "time": "6 Hours"
+            },
+            {
+                "title": "MODULE 3: - Instruction Set Architecture and CPU Organization",
+                "topics": [
+                    "Instruction set architecture (ISA): instruction formats and types; Addressing modes: immediate",
+                    "direct",
+                    "indirect",
+                    "register",
+                    "etc",
+                    "; Zero/One/Two/Three-address instructions; Instruction cycle and micro-operations; RISC vs CISC instruction sets (case study of a common CPU); Control Unit: hardwired vs microprogrammed; ALU and datapath organization"
+                ],
+                "videos": [],
+                "time": "7 Hours"
+            },
+            {
+                "title": "MODULE 4: - Memory and I/O Organization",
+                "topics": [
+                    "Hierarchical memory organization: registers",
+                    "cache",
+                    "main",
+                    "secondary; Cache memory: mapping",
+                    "replacement",
+                    "and optimization techniques; Virtual memory: organization",
+                    "mapping",
+                    "and replacement policies; Memory interleaving and coherence; Semiconductor memory technologies; I/O Systems: I/O subsystems",
+                    "characteristics of peripheral devices; I/O techniques: program-controlled",
+                    "interrupt-driven",
+                    "and Direct Memory Access (DMA)"
+                ],
+                "videos": [],
+                "time": "8 Hours"
+            },
+            {
+                "title": "MODULE 5: - Pipelining and Instruction-Level Parallelism",
+                "topics": [
+                    "Basic concepts of pipelining: throughput and speedup; Pipeline hazards: structural",
+                    "data",
+                    "control; Techniques to handle hazards; Instruction-level parallelism (ILP); Vector and array processors"
+                ],
+                "videos": [],
+                "time": "9 Hours"
+            },
+            {
+                "title": "MODULE 6: - Multiprocessors and Advanced Architectures",
+                "topics": [
+                    "Parallel processor and pipeline architectures; Multiprocessor systems: Centralized shared-memory models; Distributed shared-memory models; Synchronization",
+                    "consistency",
+                    "and interconnection networks; Cluster computers; Non\u2013Von Neumann architectures: dataflow",
+                    "reduction",
+                    "systolic architectures"
+                ],
+                "videos": [],
+                "time": "9 Hours"
+            }
+        ],
+        "video_link": "",
+        "estimated_time": "45 Hours",
+        "difficulty": "Intermediate",
+        "relevance": "Core Hardware Concept"
+    },
+    {
+        "course_name": "Artificial Intelligence",
+        "subject_code": "TIU-UCS-T350",
+        "outcomes": [
+            "Understand the fundamental concepts Artificial Intelligence such as knowledge representation, problem solving and expert systems",
+            "Understand the use of AI to solve communication problems using Natural Language Processing",
+            "Develop knowledge of decision making and learning methods.",
+            "develop new facts from existing knowledge base using resolution and unification.",
+            "Demonstrate the way of writing Facts and Rules in order to solve some problems based on rules and to develop systems for question-answer.",
+            "Apply AI techniques like heuristic search, genetic algorithms, and neural networks to solve real-world problems."
+        ],
+        "modules": [
+            {
+                "title": "MODULE 1: - BASICS OF AI",
+                "topics": [
+                    "Introduction: Overview of Artificial intelligence- Problems of AI",
+                    "AI technique",
+                    "Tic - Tac - Toe problem",
+                    "Intelligent Agents: Agents & environment",
+                    "nature of environment",
+                    "structure of agents",
+                    "goal-based agents",
+                    "utility-based agents",
+                    "learning agents",
+                    "Learning: Forms of learning",
+                    "inductive learning",
+                    "learning decision trees",
+                    "explanation-based learning",
+                    "learning using relevant information",
+                    "neural net learning & genetic learning"
+                ],
+                "videos": [],
+                "time": "8 Hours"
+            },
+            {
+                "title": "MODULE 2: - DIFFERENT TYPES OF SEARCHING ALGORITHMS, PROBLEM SOLVING",
+                "topics": [
+                    "Problems",
+                    "Problem Space & search: Defining the problem as state space search",
+                    "production system",
+                    "constraint satisfaction problems",
+                    "issues in the design of search programs",
+                    "Search techniques: Solving problems by searching: Problem solving agents",
+                    "searching for solutions; uniform search strategies: breadth first search",
+                    "depth first search",
+                    "depth limited search",
+                    "bidirectional search",
+                    "comparing uniform search strategies",
+                    "Heuristic search strategies: Greedy best-first search",
+                    "A* search",
+                    "memory bounded heuristic search: local search algorithms & optimization problems: Hill climbing search",
+                    "simulated annealing search",
+                    "local beam search",
+                    "genetic algorithms; constraint satisfaction problems",
+                    "local search for constraint satisfaction problems",
+                    "Adversarial search: Games",
+                    "optimal decisions & strategies in games",
+                    "the minimax search procedure",
+                    "alpha-beta pruning",
+                    "additional refinements",
+                    "iterative deepening"
+                ],
+                "videos": [],
+                "time": "13 Hours"
+            },
+            {
+                "title": "MODULE 3: - KNOWLEDGE & REASONING, KNOWLEDGE & REASONING",
+                "topics": [
+                    "Knowledge representation issues",
+                    "representation & mapping",
+                    "approaches to knowledge representation",
+                    "issues in knowledge representation",
+                    "Using predicate logic: Representing simple fact in logic",
+                    "representing instant & ISA relationship",
+                    "computable functions & predicates",
+                    "resolution",
+                    "natural deduction",
+                    "Representing knowledge using rules: Procedural vs declarative knowledge",
+                    "logic programming",
+                    "forward vs  backward reasoning",
+                    "matching",
+                    "control knowledge",
+                    "Probabilistic reasoning: Representing knowledge in an uncertain domain",
+                    "the semantics of Bayesian networks",
+                    "Fuzzy sets",
+                    "and fuzzy logics",
+                    "belief propagation",
+                    "Markov processes",
+                    "and Hidden Markov models"
+                ],
+                "videos": [],
+                "time": "12 Hours"
+            },
+            {
+                "title": "MODULE 4: - DIFFERENT FIELDS OF AI, NATURAL LANGUAGE PROCESSING",
+                "topics": [
+                    "Introduction",
+                    "Syntactic processing",
+                    "semantic analysis",
+                    "discourse",
+                    "and pragmatic processing",
+                    "Expert Systems: Representing and using domain knowledge",
+                    "expert system shells",
+                    "and knowledge acquisition",
+                    "Basic knowledge of programming languages like Prolog"
+                ],
+                "videos": [],
+                "time": "12 Hours"
+            }
+        ],
+        "video_link": "https://drive.google.com/drive/folders/1pwUZdwMiBEYTCANyURZ3SmDZPiJpcxFo?usp=drive_link",
+        "estimated_time": "45 Hours",
+        "difficulty": "Advanced",
+        "relevance": "High Demand Industry Skill"
+    },
+    {
+        "course_name": "Design and Analysis of Algorithm",
+        "subject_code": "TIU-UCS-T321",
+        "outcomes": [],
+        "modules": [
+            {
+                "title": "MODULE 1: - Foundation of Algorithm & Analysis",
+                "topics": [
+                    "Introduction to algorithm design and importance of its analysis",
+                    "Asymptotic notations and their significance",
+                    "Complexity analysis of algorithms \u2013 best case",
+                    "worst case and average case with example of Insertion sort",
+                    "Quick sort and Heap sort",
+                    "Time & space trade-offs",
+                    "Analysis of recursive algorithms \u2013 Substitution method",
+                    "Recursion tree method and Masters\u2019 theorem",
+                    "Lower bound for comparison-based sort"
+                ],
+                "videos": [],
+                "time": "10 Hours"
+            },
+            {
+                "title": "MODULE 2: - Algorithmic Paradigms",
+                "topics": [
+                    "Classification of algorithm design techniques for problem solving: Brute-force",
+                    "Divide-and-Conquer",
+                    "Greedy",
+                    "Dynamic Programming",
+                    "Backtracking and Branch-and-Bound",
+                    "Methodology and application domains",
+                    "Illustration of the techniques with suitable examples: Activity selection",
+                    "Huffman code",
+                    "Knapsack problem",
+                    "Matrix Chain Multiplication",
+                    "8-Queen problem",
+                    "15-puzzle problem",
+                    "[extra problem in tutorial]"
+                ],
+                "videos": [],
+                "time": "10 Hours"
+            },
+            {
+                "title": "MODULE 3: - Graph Algorithms",
+                "topics": [
+                    "Traversal algorithms: DFS",
+                    "BFS - concept",
+                    "complexity analysis and applications",
+                    "Minimum Spanning Tree finding algorithm: Prim\u2019s",
+                    "Kruskal - concept",
+                    "complexity analysis",
+                    "Disjoint set operations",
+                    "shortest path finding algorithm: single source and all pairs \u2013Bellman-Ford",
+                    "Dijkstra and Floyd-Warshall",
+                    "Topological sort",
+                    "Network flow algorithm: Ford-Fulkerson",
+                    "Max-flow Min-cut theorem"
+                ],
+                "videos": [],
+                "time": "12 Hours"
+            },
+            {
+                "title": "MODULE 4: - Problem Reducibility and NP-completeness",
+                "topics": [
+                    "Problem classification on Computability: P",
+                    "NP",
+                    "NP-complete and NP-hard",
+                    "Reducibility of NP-complete problems with example \u2013 Satisfiability",
+                    "Vertex cover",
+                    "Traveling Salesman problem",
+                    "Cook\u2019s theorem"
+                ],
+                "videos": [],
+                "time": "8 Hours"
+            },
+            {
+                "title": "MODULE 5: - Advanced Topics",
+                "topics": [
+                    "Approximation algorithm",
+                    "Randomized algorithm technique Amortized analysis"
+                ],
+                "videos": [],
+                "time": "5 Hours"
+            }
+        ],
+        "video_link": "https://drive.google.com/file/d/11dgPWYrd0K-U8QAL0owl8kn5EO_8l7ly/view?usp=sharing",
+        "estimated_time": "45 Hours",
+        "difficulty": "Intermediate",
+        "relevance": "Core CS Foundation"
+    },
+    {
+        "course_name": "Database Management System",
+        "subject_code": "TIU-UCS-T301",
+        "outcomes": [
+            "Understand the core concepts and features of Database Management System",
+            "Design and development of DBMS solutions based on relevant project work",
+            "Analyze and troubleshoot database related problems and finding the solution using the DBMS knowledge as acquired",
+            "Study the latest trends in DBMS and get the connectivity with the cutting-edge technologies",
+            "Implement database security, backup, and recovery techniques to ensure data integrity.",
+            "optimize SQL queries and database operations for improved performance."
+        ],
+        "modules": [
+            {
+                "title": "MODULE 1: - INTRODUCTION",
+                "topics": [
+                    "General introduction to database systems",
+                    "Concept of file System and Disadvantages",
+                    "Database-DBMS distinction",
+                    "Role of DBA",
+                    "Approaches to building a database",
+                    "Data models",
+                    "Database management system",
+                    "Three-schema architecture of a database",
+                    "Data Independency",
+                    "Integrity constraints"
+                ],
+                "videos": [],
+                "time": "2 Hours"
+            },
+            {
+                "title": "MODULE 2: - RELATIONAL DATA MODEL",
+                "topics": [
+                    "Concept of relations",
+                    "Schema-instance distinction",
+                    "Keys",
+                    "Referential integrity and foreign keys",
+                    "Relational Algebra Operators: Selection",
+                    "Projection",
+                    "Union",
+                    "Intersection",
+                    "Set difference",
+                    "Cross product",
+                    "Rename",
+                    "Assignment",
+                    "Various types of joins",
+                    "Division",
+                    "Example queries",
+                    "Tuple Relational Calculus",
+                    "Domain Relational Calculus"
+                ],
+                "videos": [],
+                "time": "2 Hours"
+            },
+            {
+                "title": "MODULE 3: - SQL (STRUCTURED QUERY LANGUAGE)",
+                "topics": [
+                    "Introduction",
+                    "Data definition in SQL",
+                    "Table",
+                    "key and foreign key definitions",
+                    "Update behaviors",
+                    "querying in SQL",
+                    "Basic select- from- where block and its semantics",
+                    "Nested queries-correlated and uncorrelated",
+                    "Notion of aggregation",
+                    "Aggregation functions group by and having clauses",
+                    "Embedded SQL"
+                ],
+                "videos": [],
+                "time": "7 Hours"
+            },
+            {
+                "title": "MODULE 4: - DATABASE DESIGN CONCEPTS (PART-1)-DEPENDENCIES AND NORMAL FORMS",
+                "topics": [
+                    "Importance of a good schema design",
+                    "Problems encountered with bad schema designs",
+                    "Motivation for normal forms",
+                    "dependency theory \u2013 functional dependencies",
+                    "Armstrong's axioms for FD's",
+                    "Closure of a set of FDs",
+                    "Minimal covers",
+                    "Definitions of 1NF",
+                    "2NF",
+                    "3NF and BCNF",
+                    "Decompositions and desirable properties of them",
+                    "Algorithms for 3NF and BCNF normalization",
+                    "multi-valued dependencies and 4NF",
+                    "Join dependencies and definition of 5NF",
+                    "DKNF"
+                ],
+                "videos": [],
+                "time": "9 Hours"
+            },
+            {
+                "title": "MODULE 5: - DATABASE DESIGN CONCEPTS (PART-2) -ER MODEL",
+                "topics": [
+                    "Conceptual data modeling-motivation",
+                    "Entities",
+                    "Entity types",
+                    "Various types of attributes",
+                    "Relationships",
+                    "Relationship types",
+                    "E/R diagram notation",
+                    "High-level conceptual modeling",
+                    "ER Modeling concepts",
+                    "ER Diagrams",
+                    "Cardinality constraints Enhanced ER Model: Higher-order relationships",
+                    "Enhanced ER Model (EER)",
+                    "Weak-entity types",
+                    "Subclasses and inheritance",
+                    "Specialization and Generalization",
+                    "Modeling of UNION types using categories"
+                ],
+                "videos": [],
+                "time": "6 Hours"
+            },
+            {
+                "title": "MODULE 6: - DATA STORAGE AND INDEXES",
+                "topics": [
+                    "File organizations",
+                    "Primary",
+                    "Secondary index structures",
+                    "Various index structures - hash-based",
+                    "Dynamic hashing techniques",
+                    "Multi-level indexes",
+                    "B+ trees"
+                ],
+                "videos": [],
+                "time": "7 Hours"
+            },
+            {
+                "title": "MODULE 7: - TRANSACTION PROCESSING AND CONCURRENCY CONTROL",
+                "topics": [
+                    "Transaction Fundamentals: OLTP environments",
+                    "Concurrency issues",
+                    "need for transactions",
+                    "Necessary properties of transactions (ACID properties)",
+                    "Transaction states",
+                    "serializability",
+                    "Serial schedules",
+                    "Conflict serializability",
+                    "View serializability",
+                    "Recoverable and non-recoverable schedules",
+                    "Cascading rollbacks",
+                    "Cascadeless schedules",
+                    "Concurrency control: Serialized and non-serialized schedules",
+                    "Testing for serializability",
+                    "Locking",
+                    "Lock compatibility matrix",
+                    "Locking and serializability",
+                    "Deadlocks and starvation",
+                    "Two-phase locking (2PL) protocol",
+                    "Conservative",
+                    "strict and rigorous 2PL",
+                    "2PL with lock conversions",
+                    "Timestamp-ordering based protocol",
+                    "Multi versioning protocol",
+                    "Multi-granularity locking",
+                    "Deadlock prevention protocols",
+                    "Wait-die and wound-wait schemes",
+                    "Time-out based schemes",
+                    "Deadlock recovery",
+                    "Nested transactions"
+                ],
+                "videos": [],
+                "time": "9 Hours"
+            },
+            {
+                "title": "MODULE 8: - DATABASE RECOVERY TECHNIQUES",
+                "topics": [
+                    "Recovery concepts",
+                    "Deferred updates technique",
+                    "Immediate update technique",
+                    "Shadow paging"
+                ],
+                "videos": [],
+                "time": "3 Hours"
+            }
+        ],
+        "video_link": "https://drive.google.com/drive/folders/13PC-coqWE8z_4VCatneFn9f2dmvygDmx",
+        "estimated_time": "45 Hours",
+        "difficulty": "Intermediate",
+        "relevance": "Essential Industry Concept"
+    },
+    {
+        "course_name": "Artificial Intelligence",
+        "subject_code": "TIU-UCS-T350",
+        "outcomes": [
+            "Understand the fundamental concepts Artificial Intelligence such as knowledge representation, problem solving and expert systems",
+            "Understand the use of AI to solve communication problems using Natural Language Processing",
+            "Develop knowledge of decision making and learning methods.",
+            "develop new facts from existing knowledge base using resolution and unification.",
+            "Demonstrate the way of writing Facts and Rules in order to solve some problems based on rules and to develop systems for question-answer.",
+            "Apply AI techniques like heuristic search, genetic algorithms, and neural networks to solve real-world problems."
+        ],
+        "modules": [
+            {
+                "title": "MODULE 1: - BASICS OF AI",
+                "topics": [
+                    "Introduction: Overview of Artificial intelligence- Problems of AI",
+                    "AI technique",
+                    "Tic - Tac - Toe problem",
+                    "Intelligent Agents: Agents & environment",
+                    "nature of environment",
+                    "structure of agents",
+                    "goal-based agents",
+                    "utility-based agents",
+                    "learning agents",
+                    "Learning: Forms of learning",
+                    "inductive learning",
+                    "learning decision trees",
+                    "explanation-based learning",
+                    "learning using relevant information",
+                    "neural net learning & genetic learning"
+                ],
+                "videos": [],
+                "time": "5 Hours"
+            },
+            {
+                "title": "MODULE 2: - DIFFERENT TYPES OF SEARCHING ALGORITHMS, PROBLEM SOLVING",
+                "topics": [
+                    "Problems",
+                    "Problem Space & search: Defining the problem as state space search",
+                    "production system",
+                    "constraint satisfaction problems",
+                    "issues in the design of search programs",
+                    "Search techniques: Solving problems by searching: Problem solving agents",
+                    "searching for solutions; uniform search strategies: breadth first search",
+                    "depth first search",
+                    "depth limited search",
+                    "bidirectional search",
+                    "comparing uniform search strategies",
+                    "Heuristic search strategies: Greedy best-first search",
+                    "A* search",
+                    "memory bounded heuristic search: local search algorithms & optimization problems: Hill climbing search",
+                    "simulated annealing search",
+                    "local beam search",
+                    "genetic algorithms; constraint satisfaction problems",
+                    "local search for constraint satisfaction problems",
+                    "Adversarial search: Games",
+                    "optimal decisions & strategies in games",
+                    "the minimax search procedure",
+                    "alpha-beta pruning",
+                    "additional refinements",
+                    "iterative deepening"
+                ],
+                "videos": [],
+                "time": "5 Hours"
+            },
+            {
+                "title": "MODULE 3: - KNOWLEDGE & REASONING, KNOWLEDGE & REASONING",
+                "topics": [
+                    "Knowledge representation issues",
+                    "representation & mapping",
+                    "approaches to knowledge representation",
+                    "issues in knowledge representation",
+                    "Using predicate logic: Representing simple fact in logic",
+                    "representing instant & ISA relationship",
+                    "computable functions & predicates",
+                    "resolution",
+                    "natural deduction",
+                    "Representing knowledge using rules: Procedural vs declarative knowledge",
+                    "logic programming",
+                    "forward vs  backward reasoning",
+                    "matching",
+                    "control knowledge",
+                    "Probabilistic reasoning: Representing knowledge in an uncertain domain",
+                    "the semantics of Bayesian networks",
+                    "Fuzzy sets",
+                    "and fuzzy logics",
+                    "belief propagation",
+                    "Markov processes",
+                    "and Hidden Markov models"
+                ],
+                "videos": [],
+                "time": "5 Hours"
+            },
+            {
+                "title": "MODULE 4: - DIFFERENT FIELDS OF AI, NATURAL LANGUAGE PROCESSING",
+                "topics": [
+                    "Introduction",
+                    "Syntactic processing",
+                    "semantic analysis",
+                    "discourse",
+                    "and pragmatic processing",
+                    "Expert Systems: Representing and using domain knowledge",
+                    "expert system shells",
+                    "and knowledge acquisition",
+                    "Basic knowledge of programming languages like Prolog"
+                ],
+                "videos": [],
+                "time": "5 Hours"
+            }
+        ],
+        "video_link": "https://drive.google.com/drive/folders/1pwUZdwMiBEYTCANyURZ3SmDZPiJpcxFo?usp=drive_link",
+        "estimated_time": "20 Hours",
+        "difficulty": "Advanced",
+        "relevance": "High Demand Industry Skill"
+    },
+    {
+        "course_name": "Machine Learning",
+        "subject_code": "TIU-UCS-T451",
+        "outcomes": [
+            "Explore the underlying principles, mathematical foundations, practical uses, and constraints of current machine learning methods.",
+            "Recognize the criteria for assessing the effectiveness of the developed model.",
+            "Investigate and devise contemporary machine learning applications, emphasizing recent advancements and innovative perspectives.",
+            "Construct the learning model tailored to a specific task.",
+            "Utilize cutting-edge development frameworks and software libraries to implement",
+            "Optimize machine learning models by fine-tuning hyperparameters and improving generalization."
+        ],
+        "modules": [
+            {
+                "title": "MODULE 1: - INTRODUCTION",
+                "topics": [
+                    "Definition - Types of Machine Learning - Examples of Machine Learning Problems - Training versus Testing - Characteristics of Machine learning tasks - Predictive and descriptive tasks - Machine learning Models: Geometric Models",
+                    "Logical Models",
+                    "Probabilistic Models",
+                    "Features: Feature types - Feature Construction and Transformation - Feature Selection"
+                ],
+                "videos": [],
+                "time": "7 Hours"
+            },
+            {
+                "title": "MODULE 2: - CLASSIFICATION AND CONCEPT LEARNING",
+                "topics": [
+                    "Classification: Binary Classification- Assessing Classification performance - Class probability Estimation - Multiclass Classification - Regression: Assessing performance of Regression - Error measures - Overfitting- Theory of Generalization: Effective number of hypothesis - Bounding the Growth function"
+                ],
+                "videos": [],
+                "time": "7 Hours"
+            },
+            {
+                "title": "MODULE 3: - LINEAR AND PROBABILISTIC MODELS",
+                "topics": [
+                    "Least Squares method - Multivariate Linear Regression - Perceptron",
+                    "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data \u2013 Na\u00efve Bayes Classifier"
+                ],
+                "videos": [],
+                "time": "7 Hours"
+            },
+            {
+                "title": "MODULE 4: - DISTANCE BASED MODELS",
+                "topics": [
+                    "Distance Based Models: Neighbors and Examples - Nearest Neighbors Classification - Distance based clustering \u2013 K-Means Algorithm - K-Medoids Algorithm - Hierarchical clustering - Vector Quantization",
+                    "Self-Organizing Feature Map - Principal Component Analysis"
+                ],
+                "videos": [],
+                "time": "8 Hours"
+            },
+            {
+                "title": "MODULE 5: - RULE BASED AND TREE BASED MODELS",
+                "topics": [
+                    "Rule Based Models: Rule learning for subgroup discovery - Association rule mining - Tree Based Models: Decision Trees - Ranking and Probability estimation Trees - Regression trees - Classification and Regression Trees (CART)"
+                ],
+                "videos": [],
+                "time": "8 Hours"
+            },
+            {
+                "title": "MODULE 6: - TRENDS IN MACHINE LEARNING",
+                "topics": [
+                    "Ensemble Learning",
+                    "- Bagging and Boosting - Random Forest - Meta learning - Deep Learning - Reinforcement Learning \u2013 Applications"
+                ],
+                "videos": [],
+                "time": "8 Hours"
+            }
+        ],
+        "video_link": "",
+        "estimated_time": "45 Hours",
+        "difficulty": "Advanced",
+        "relevance": "High Demand Industry Skill"
+    },
+    {
+        "course_name": "Computer Network",
+        "subject_code": "TIU-UCS-T304",
+        "outcomes": [
+            "Describe the general principles of data communication, the concept of the layered approach",
+            "Describe how computer networks are organized with the concept of layered approach",
+            "Design logical sub-address blocks with a given address block and network topology",
+            "Understanding of simple LAN with hubs, bridges, and switches",
+            "Describe how routing protocols work",
+            "Understand network security threats and basic security mechanisms to protect data and communication."
+        ],
+        "modules": [
+            {
+                "title": "MODULE 1: - 10 Hours",
+                "topics": [
+                    "Network hardware",
+                    "Network software",
+                    "OSI",
+                    "TCP/IP Reference models",
+                    "Example Networks: ARPANET",
+                    "Internet",
+                    "Physical Layer: Guided Transmission media: twisted pairs",
+                    "coaxial cable",
+                    "fiber optics",
+                    "Wireless transmission"
+                ],
+                "videos": [],
+                "time": "10 Hours"
+            },
+            {
+                "title": "MODULE 2: - 12 Hours",
+                "topics": [
+                    "Data link layer: Design issues",
+                    "framing",
+                    "Error detection and correction",
+                    "Elementary data link protocols: simplex protocol",
+                    "A simplex stop and wait protocol for an error-free channel",
+                    "A simplex stop and wait protocol for noisy channels",
+                    "Sliding Window protocols: A one-bit sliding window protocol",
+                    "A protocol using Go-Back-N",
+                    "A protocol using Selective Repeat",
+                    "Example data link protocols",
+                    "Medium Access sublayer: The channel allocation problem",
+                    "Multiple access protocols: ALOHA",
+                    "Carrier sense multiple access protocols",
+                    "collision free protocols",
+                    "Wireless LANs",
+                    "Data link layer switching"
+                ],
+                "videos": [],
+                "time": "12 Hours"
+            },
+            {
+                "title": "MODULE 3: - 10 Hours",
+                "topics": [
+                    "Network Layer: Design issues",
+                    "Routing algorithms: shortest path routing",
+                    "Flooding",
+                    "Hierarchical routing",
+                    "Broadcast",
+                    "Multicast",
+                    "distance vector routing",
+                    "Congestion Control Algorithms",
+                    "Quality of Service",
+                    "Internetworking",
+                    "The Network layer in the internet"
+                ],
+                "videos": [],
+                "time": "10 Hours"
+            },
+            {
+                "title": "MODULE 4: - 8 Hours",
+                "topics": [
+                    "Transport Layer: Transport Services",
+                    "Elements of Transport protocols",
+                    "Connection management",
+                    "TCP and UDP protocols"
+                ],
+                "videos": [],
+                "time": "8 Hours"
+            },
+            {
+                "title": "MODULE 5: - 5 Hours",
+                "topics": [
+                    "Application Layer \u2013Domain name system",
+                    "SNMP",
+                    "Electronic Mail; the World WEB",
+                    "HTTP",
+                    "Streaming audio and video"
+                ],
+                "videos": [],
+                "time": "5 Hours"
+            }
+        ],
+        "video_link": "https://drive.google.com/file/d/1wo1D0yj7EXIBl1RJG1UMHi35DysZ4B3V/view?usp=drive_link",
+        "estimated_time": "45 Hours",
+        "difficulty": "Intermediate",
+        "relevance": "Core Infrastructure"
+    },
+    {
+        "course_name": "Automata Theory & Compiler Design",
+        "subject_code": "TIU-UCS-T351",
+        "outcomes": [
+            "Describe the concepts of formal theory of language, the meaning of computing and algorithms",
+            "Describe and analyze different models of computing such as FA, CFG/PDA, TM",
+            "Design above models for problem solving",
+            "Analyze and identify the strengths and shortcomings of the above computing models",
+            "Describe basic concepts of complexity theory: solvable and unsolvable problems, complexity classes, etc.",
+            "Apply formal language and automata theory concepts to real-world computing problems."
+        ],
+        "modules": [
+            {
+                "title": "MODULE 1: - REGULAR LANGUAGES AND FINITE AUTOMATA",
+                "topics": [
+                    "Introduction",
+                    "Alphabet",
+                    "Language",
+                    "and Grammar",
+                    "Regular Expressions and Languages",
+                    "Deterministic Finite Automata (DFA) and Equivalence with Regular Expressions",
+                    "Nondeterministic Finite Automata (NFA) and Equivalence with DFA",
+                    "Regular Grammars and Equivalence with Finite Automata",
+                    "Properties of Regular Languages",
+                    "Pumping Lemma for Regular Languages",
+                    "Minimization of Finite Automata"
+                ],
+                "videos": [],
+                "time": "15 Hours"
+            },
+            {
+                "title": "MODULE 2: - CONTEXT-FREE GRAMMAR/LANGUAGES",
+                "topics": [
+                    "Context-Free Grammars (CFG) and Context-Free Languages (CFL)",
+                    "Production",
+                    "Parse Tree",
+                    "and Derivation; Chomsky and Greibach Normal Forms",
+                    "Non-deterministic Pushdown Automata (PDA) and Equivalence with CFG",
+                    "Parse Trees",
+                    "Ambiguity in CFG",
+                    "Pumping Lemma for Context-Free Languages",
+                    "Deterministic Pushdown Automata",
+                    "Closure Properties of CFLs",
+                    "Chomsky Hierarchy of Languages",
+                    "Context-Sensitive Grammars: Context-Sensitive Grammars (CSG) and Context sensitive Languages (CSL)",
+                    "Linear Bounded Automata (LBA) and its Equivalence with CSG"
+                ],
+                "videos": [],
+                "time": "16 Hours"
+            },
+            {
+                "title": "MODULE 3: - TURING MACHINES",
+                "topics": [
+                    "The Basic Model of Turing Machines (TM)",
+                    "Turing-Recognizable (Recursively Enumerable) and Turing-Decidable (Recursive) Languages and Their Closure Properties",
+                    "Variants of Turing Machines",
+                    "Non-deterministic TMs and its Equivalence with Deterministic TMs",
+                    "Unrestricted Grammars and Equivalence with Turing Machines",
+                    "TMs as Enumerators"
+                ],
+                "videos": [],
+                "time": "9 Hours"
+            },
+            {
+                "title": "MODULE 4: - UNDECIDABILITY",
+                "topics": [
+                    "Church-Turing Thesis",
+                    "Universal Turing Machine",
+                    "The Universal and Diagonalization Languages",
+                    "Reduction between Languages and Rice\u2019s Theorem",
+                    "Undecidable Problems about Languages"
+                ],
+                "videos": [],
+                "time": "5 Hours"
+            }
+        ],
+        "video_link": "",
+        "estimated_time": "45 Hours",
+        "difficulty": "Advanced",
+        "relevance": "Theoretical Computer Science"
+    }
+]

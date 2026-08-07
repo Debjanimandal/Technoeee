@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { label: 'My Courses', href: '/my-courses', icon: '/image/Vector.jpg', activeIcon: '/image/Vector.jpg' },
   { label: 'Profile', href: '/profile', icon: '/image/Vector.jpg', activeIcon: '/image/Vector.jpg' },
   { label: 'Communities', href: '/community', icon: '/image/Vector.jpg', activeIcon: '/image/comunity.jpg' },
-  { label: 'Analysis', href: '/analysis', icon: '/image/analysis.jpg', activeIcon: '/image/analysis2.jpg' },
+  { label: 'Study Planner', href: '/planner', icon: '/image/analysis.jpg', activeIcon: '/image/analysis2.jpg' },
   { label: 'Reports', href: '#', icon: '/image/Bar Chart.jpg', activeIcon: '/image/Bar Chart.jpg' },
   { label: 'Chatbot', href: '/chatbot', icon: '/image/chatbot.png', activeIcon: '/image/chatbot.png' },
 ];

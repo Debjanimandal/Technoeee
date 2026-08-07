@@ -2,14 +2,14 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardHeader from '@/components/DashboardHeader';
-import coursesData from '../../public/courses_data.json';
+import coursesData from '../../public/real_courses_data.json';
 import Head from 'next/head';
 
 export default function MyCoursesPage() {
   const [enrolledCourses, setEnrolledCourses] = useState([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem('mockEnrolledCourses');
+    const saved = localStorage.getItem('mockEnrolledCoursesV2');
     if (saved) {
       const subjectCodes = JSON.parse(saved);
       // Filter the full coursesData to only those the user is enrolled in
