@@ -106,11 +106,11 @@ export default function CoursesPage() {
           .eq('user_id', user.id);
         const codes = (data || []).map(e => e.course_title);
         // Also check localStorage for any locally enrolled courses not yet in DB
-        const local = JSON.parse(localStorage.getItem('mockEnrolledCoursesV2') || '[]');
+        const local = JSON.parse(localStorage.getItem('mockEnrolledCoursesV3') || '[]');
         const merged = [...new Set([...codes, ...local])];
         setEnrolledCourses(merged);
       } else {
-        const saved = localStorage.getItem('mockEnrolledCoursesV2');
+        const saved = localStorage.getItem('mockEnrolledCoursesV3');
         if (saved) setEnrolledCourses(JSON.parse(saved));
       }
     }
@@ -144,7 +144,7 @@ export default function CoursesPage() {
         status:   'Ongoing',
       });
       if (!error) {
-        setEnrolledCourses(prev => [...prev, course.subject_code]);
+        setEnrolledCourses(prev => [...prev, course.course_name]);
         alert('✅ Successfully enrolled in ' + course.course_name + '!');
       }
     })();
@@ -449,11 +449,11 @@ export default function CoursesPage() {
             </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-                {enrolledCourses.includes(selectedCourse.subject_code) ? (
-                  <button disabled style={{
-                    background: '#e0e0e0', color: '#888', border: 'none',
+                {enrolledCourses.includes(selectedCourse.course_name) ? (
+                  <button onClick={() => window.location.href = `/learn/${selectedCourse.subject_code}`} style={{
+                    background: '#e0e0e0', color: '#1a1a1a', border: 'none', cursor: 'pointer',
                     padding: '14px 35px', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold'
-                  }}>Already Enrolled ✓</button>
+                  }}>Go to Course ➔</button>
                 ) : (
                   <button
                     onClick={handleEnrollClick}

@@ -35,7 +35,7 @@ export default function MyCoursesPage() {
       });
 
       // 3. Check localStorage for subject codes not yet in Supabase
-      const localCodes = JSON.parse(localStorage.getItem('mockEnrolledCoursesV2') || '[]');
+      const localCodes = JSON.parse(localStorage.getItem('mockEnrolledCoursesV3') || '[]');
       const dbCategories = deduped.map(e => e.category).filter(Boolean);
       const dbTitles = deduped.map(e => e.course_title?.toLowerCase().trim()).filter(Boolean);
 
@@ -190,7 +190,7 @@ export default function MyCoursesPage() {
                     <span style={{ fontSize: '12px', color: '#888' }}>
                       Enrolled {new Date(course.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </span>
-                    <button style={{
+                    <button onClick={() => window.location.href = `/learn/${course.category}`} style={{
                       background: '#1a1a1a', color: '#fff', border: 'none',
                       padding: '10px 25px', borderRadius: '8px',
                       cursor: 'pointer', fontSize: '14px', fontWeight: 'bold',
