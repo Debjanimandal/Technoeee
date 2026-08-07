@@ -302,8 +302,11 @@ export default function CoursesPage() {
             
             {/* Modal Header (Hero) */}
             <div style={{
-              background: 'linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)',
-              padding: '40px 30px', color: '#fff', position: 'relative'
+              background: selectedCourse.icon ? `linear-gradient(135deg, rgba(26, 41, 128, 0.4) 0%, rgba(38, 208, 206, 0.4) 100%), url(${selectedCourse.icon})` : 'linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              padding: '40px 30px', color: '#fff', position: 'relative',
+              display: 'flex', alignItems: 'center', gap: '25px'
             }}>
               <button 
                 onClick={closeModal}
@@ -317,10 +320,31 @@ export default function CoursesPage() {
                 onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
               >✕</button>
               
-              <span style={{ display: 'inline-block', background: 'rgba(255,255,255,0.2)', padding: '5px 12px', borderRadius: '20px', fontWeight: 'bold', fontSize: '12px', marginBottom: '15px' }}>
-                {selectedCourse.subject_code || 'General'}
-              </span>
-              <h2 style={{ fontSize: '32px', fontWeight: '800', margin: '0', lineHeight: '1.2' }}>{selectedCourse.course_name}</h2>
+              <div>
+                <span style={{ 
+                  display: 'inline-block', 
+                  background: 'rgba(255, 255, 255, 0.95)', 
+                  color: '#1e3a8a', 
+                  padding: '6px 14px', 
+                  borderRadius: '20px', 
+                  fontWeight: '800', 
+                  fontSize: '13px', 
+                  marginBottom: '15px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+                }}>
+                  {selectedCourse.subject_code || 'General'}
+                </span>
+                <h2 style={{ 
+                  fontSize: '32px', 
+                  fontWeight: '900', 
+                  margin: '0', 
+                  lineHeight: '1.2',
+                  color: '#ffffff',
+                  textShadow: '0px 2px 10px rgba(0,0,0,0.8), 0px 4px 25px rgba(0,0,0,0.6)'
+                }}>
+                  {selectedCourse.course_name}
+                </h2>
+              </div>
             </div>
 
             {/* Modal Body */}

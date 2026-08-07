@@ -1,6 +1,7 @@
 [
     {
         "course_name": "Object Oriented Programming using C++",
+        "icon": "/image/oop-icon.svg",
         "subject_code": "TIU-UCS-T214",
         "outcomes": [
             "Define an object-oriented approach to programming and identify potential benefits of object-oriented programming over other approaches",
@@ -78,6 +79,7 @@
     },
     {
         "course_name": "Computer Organization and Architecture",
+        "icon": "/image/ca-banner.png",
         "subject_code": "TIU-PC-UCS-T22101",
         "outcomes": [
             "Explain computer architectures, Von Neumann/Harvard models, Flynn\u2019s taxonomy, and RISC\u2013CISC processors.",
@@ -174,6 +176,7 @@
     },
     {
         "course_name": "Artificial Intelligence",
+        "icon": "/image/ai-banner.png",
         "subject_code": "TIU-UCS-T350",
         "outcomes": [
             "Understand the fundamental concepts Artificial Intelligence such as knowledge representation, problem solving and expert systems",
@@ -289,6 +292,7 @@
     },
     {
         "course_name": "Design and Analysis of Algorithm",
+        "icon": "/image/daa-banner.png",
         "subject_code": "TIU-UCS-T321",
         "outcomes": [],
         "modules": [
@@ -378,6 +382,7 @@
     },
     {
         "course_name": "Database Management System",
+        "icon": "/image/dbms-banner.png",
         "subject_code": "TIU-UCS-T301",
         "outcomes": [
             "Understand the core concepts and features of Database Management System",
@@ -560,123 +565,10 @@
         "difficulty": "Intermediate",
         "relevance": "Essential Industry Concept"
     },
-    {
-        "course_name": "Artificial Intelligence",
-        "subject_code": "TIU-UCS-T350",
-        "outcomes": [
-            "Understand the fundamental concepts Artificial Intelligence such as knowledge representation, problem solving and expert systems",
-            "Understand the use of AI to solve communication problems using Natural Language Processing",
-            "Develop knowledge of decision making and learning methods.",
-            "develop new facts from existing knowledge base using resolution and unification.",
-            "Demonstrate the way of writing Facts and Rules in order to solve some problems based on rules and to develop systems for question-answer.",
-            "Apply AI techniques like heuristic search, genetic algorithms, and neural networks to solve real-world problems."
-        ],
-        "modules": [
-            {
-                "title": "MODULE 1: - BASICS OF AI",
-                "topics": [
-                    "Introduction: Overview of Artificial intelligence- Problems of AI",
-                    "AI technique",
-                    "Tic - Tac - Toe problem",
-                    "Intelligent Agents: Agents & environment",
-                    "nature of environment",
-                    "structure of agents",
-                    "goal-based agents",
-                    "utility-based agents",
-                    "learning agents",
-                    "Learning: Forms of learning",
-                    "inductive learning",
-                    "learning decision trees",
-                    "explanation-based learning",
-                    "learning using relevant information",
-                    "neural net learning & genetic learning"
-                ],
-                "videos": [],
-                "time": "5 Hours"
-            },
-            {
-                "title": "MODULE 2: - DIFFERENT TYPES OF SEARCHING ALGORITHMS, PROBLEM SOLVING",
-                "topics": [
-                    "Problems",
-                    "Problem Space & search: Defining the problem as state space search",
-                    "production system",
-                    "constraint satisfaction problems",
-                    "issues in the design of search programs",
-                    "Search techniques: Solving problems by searching: Problem solving agents",
-                    "searching for solutions; uniform search strategies: breadth first search",
-                    "depth first search",
-                    "depth limited search",
-                    "bidirectional search",
-                    "comparing uniform search strategies",
-                    "Heuristic search strategies: Greedy best-first search",
-                    "A* search",
-                    "memory bounded heuristic search: local search algorithms & optimization problems: Hill climbing search",
-                    "simulated annealing search",
-                    "local beam search",
-                    "genetic algorithms; constraint satisfaction problems",
-                    "local search for constraint satisfaction problems",
-                    "Adversarial search: Games",
-                    "optimal decisions & strategies in games",
-                    "the minimax search procedure",
-                    "alpha-beta pruning",
-                    "additional refinements",
-                    "iterative deepening"
-                ],
-                "videos": [],
-                "time": "5 Hours"
-            },
-            {
-                "title": "MODULE 3: - KNOWLEDGE & REASONING, KNOWLEDGE & REASONING",
-                "topics": [
-                    "Knowledge representation issues",
-                    "representation & mapping",
-                    "approaches to knowledge representation",
-                    "issues in knowledge representation",
-                    "Using predicate logic: Representing simple fact in logic",
-                    "representing instant & ISA relationship",
-                    "computable functions & predicates",
-                    "resolution",
-                    "natural deduction",
-                    "Representing knowledge using rules: Procedural vs declarative knowledge",
-                    "logic programming",
-                    "forward vs  backward reasoning",
-                    "matching",
-                    "control knowledge",
-                    "Probabilistic reasoning: Representing knowledge in an uncertain domain",
-                    "the semantics of Bayesian networks",
-                    "Fuzzy sets",
-                    "and fuzzy logics",
-                    "belief propagation",
-                    "Markov processes",
-                    "and Hidden Markov models"
-                ],
-                "videos": [],
-                "time": "5 Hours"
-            },
-            {
-                "title": "MODULE 4: - DIFFERENT FIELDS OF AI, NATURAL LANGUAGE PROCESSING",
-                "topics": [
-                    "Introduction",
-                    "Syntactic processing",
-                    "semantic analysis",
-                    "discourse",
-                    "and pragmatic processing",
-                    "Expert Systems: Representing and using domain knowledge",
-                    "expert system shells",
-                    "and knowledge acquisition",
-                    "Basic knowledge of programming languages like Prolog"
-                ],
-                "videos": [],
-                "time": "5 Hours"
-            }
-        ],
-        "video_link": "https://drive.google.com/drive/folders/1pwUZdwMiBEYTCANyURZ3SmDZPiJpcxFo?usp=drive_link",
-        "estimated_time": "20 Hours",
-        "difficulty": "Advanced",
-        "relevance": "High Demand Industry Skill"
-    },
+
     {
         "course_name": "Machine Learning",
+        "icon": "/image/ml-banner.png",
         "subject_code": "TIU-UCS-T451",
         "outcomes": [
             "Explore the underlying principles, mathematical foundations, practical uses, and constraints of current machine learning methods.",
@@ -749,6 +641,7 @@
     },
     {
         "course_name": "Computer Network",
+        "icon": "/image/cn-banner.png",
         "subject_code": "TIU-UCS-T304",
         "outcomes": [
             "Describe the general principles of data communication, the concept of the layered approach",
@@ -848,6 +741,7 @@
     },
     {
         "course_name": "Automata Theory & Compiler Design",
+        "icon": "/image/automata-banner.png",
         "subject_code": "TIU-UCS-T351",
         "outcomes": [
             "Describe the concepts of formal theory of language, the meaning of computing and algorithms",
