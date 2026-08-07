@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { label: 'Profile', href: '/profile', Icon: User, color: '#f97316' },
   { label: 'Communities', href: '/community', Icon: Users, color: '#14b8a6' },
   { label: 'Study Planner', href: '/planner', Icon: CalendarClock, color: '#ec4899' },
-  { label: 'Reports', href: '#', Icon: BarChart3, color: '#ef4444' },
+  { label: 'Reports', href: '/reports', Icon: BarChart3, color: '#ef4444' },
   { label: 'Chatbot', href: '/chatbot', Icon: BotMessageSquare, color: '#6366f1' },
 ];
 

@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardHeader from '@/components/DashboardHeader';
 import coursesData from '../../public/real_courses_data.json';
-import Head from 'next/head';
+import { useAuth } from '@/lib/auth-context';
+import { supabase } from '@/lib/supabaseClient';
 
 const ModuleItem = ({ mod }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -78,57 +79,100 @@ const getRelevanceColor = (rel) => {
 };
 
 export default function CoursesPage() {
+  const { user } = useAuth();
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [enrolledCourses, setEnrolledCourses] = useState([]);
   const [otpModalOpen, setOtpModalOpen] = useState(false);
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [enrolling, setEnrolling] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [pendingCourse, setPendingCourse] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterDifficulty, setFilterDifficulty] = useState('All');
 
   const filteredCourses = coursesData.filter(course => {
-    const matchesSearch = course.course_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = course.course_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           (course.subject_code && course.subject_code.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesDifficulty = filterDifficulty === 'All' || course.difficulty === filterDifficulty;
     return matchesSearch && matchesDifficulty;
   });
 
-  // Load enrolled courses from local storage
+  // Load enrolled courses — from Supabase if logged in, fallback to localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('mockEnrolledCoursesV2');
-    if (saved) {
-      setEnrolledCourses(JSON.parse(saved));
+    async function loadEnrolled() {
+      if (user) {
+        const { data } = await supabase
+          .from('enrollments')
+          .select('course_title')
+          .eq('user_id', user.id);
+        const codes = (data || []).map(e => e.course_title);
+        // Also check localStorage for any locally enrolled courses not yet in DB
+        const local = JSON.parse(localStorage.getItem('mockEnrolledCoursesV2') || '[]');
+        const merged = [...new Set([...codes, ...local])];
+        setEnrolledCourses(merged);
+      } else {
+        const saved = localStorage.getItem('mockEnrolledCoursesV2');
+        if (saved) setEnrolledCourses(JSON.parse(saved));
+      }
     }
-  }, []);
+    loadEnrolled();
+  }, [user]);
 
-  const handleEnrollClick = () => {
-    setOtpModalOpen(true);
-    setOtp(['', '', '', '']);
-  };
+  // ── Handle magic-link return: auto-enroll the pending course ──────────────
+  useEffect(() => {
+    if (!user) return;
+    const pending = sessionStorage.getItem('pendingEnrollment');
+    if (!pending) return;
+    sessionStorage.removeItem('pendingEnrollment');
 
-  const handleOtpChange = (index, value) => {
-    if (value.length > 1) return; // only one char per box
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
+    const course = JSON.parse(pending);
+    (async () => {
+      // Check not already enrolled
+      const { data: existing } = await supabase
+        .from('enrollments')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('course_title', course.course_name)
+        .maybeSingle();
 
-    // auto focus next
-    if (value && index < 3) {
-      document.getElementById(`otp-input-${index + 1}`).focus();
-    }
-  };
+      if (existing) return; // already enrolled
 
-  const handleVerifyOtp = () => {
-    if (otp.join('').length === 4) {
-      // Mock successful enrollment
-      const newEnrolled = [...enrolledCourses, selectedCourse.subject_code];
-      setEnrolledCourses(newEnrolled);
-      localStorage.setItem('mockEnrolledCoursesV2', JSON.stringify(newEnrolled));
-      
-      setOtpModalOpen(false);
-      // Wait for React to update state, then show alert or just let the button update
-      alert("Successfully enrolled!");
-    } else {
-      alert("Please enter a 4 digit OTP");
+      const { error } = await supabase.from('enrollments').insert({
+        user_id: user.id,
+        course_title: course.course_name,
+        category:     course.subject_code || null,
+        progress: 0,
+        status:   'Ongoing',
+      });
+      if (!error) {
+        setEnrolledCourses(prev => [...prev, course.subject_code]);
+        alert('✅ Successfully enrolled in ' + course.course_name + '!');
+      }
+    })();
+  }, [user]);
+
+  const handleEnrollClick = async () => {
+    if (!user) { alert('Please sign in to enroll.'); return; }
+    setSendingOtp(true);
+    try {
+      // Store pending enrollment before redirect
+      sessionStorage.setItem('pendingEnrollment', JSON.stringify(selectedCourse));
+
+      const appUrl = window.location.origin;
+      const { error } = await supabase.auth.signInWithOtp({
+        email: user.email,
+        options: {
+          shouldCreateUser: false,
+          emailRedirectTo: `${appUrl}/courses`,
+        },
+      });
+      if (error) {
+        sessionStorage.removeItem('pendingEnrollment');
+        alert('Failed to send verification email: ' + error.message);
+        return;
+      }
+      setOtpModalOpen(true);
+    } finally {
+      setSendingOtp(false);
     }
   };
 
@@ -411,14 +455,19 @@ export default function CoursesPage() {
                     padding: '14px 35px', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold'
                   }}>Already Enrolled ✓</button>
                 ) : (
-                  <button onClick={handleEnrollClick} style={{
-                    background: 'linear-gradient(90deg, #1a2980 0%, #26d0ce 100%)', color: '#fff', border: 'none', cursor: 'pointer',
-                    padding: '14px 35px', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold',
-                    boxShadow: '0 10px 20px rgba(38, 208, 206, 0.3)', transition: 'transform 0.2s, box-shadow 0.2s'
-                  }}
-                  onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(38, 208, 206, 0.4)'; }}
-                  onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(38, 208, 206, 0.3)'; }}
-                  >Enroll Now</button>
+                  <button
+                    onClick={handleEnrollClick}
+                    disabled={sendingOtp}
+                    style={{
+                      background: sendingOtp ? '#888' : 'linear-gradient(90deg, #1a2980 0%, #26d0ce 100%)',
+                      color: '#fff', border: 'none',
+                      cursor: sendingOtp ? 'wait' : 'pointer',
+                      padding: '14px 35px', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold',
+                      boxShadow: '0 10px 20px rgba(38, 208, 206, 0.3)', transition: 'transform 0.2s, box-shadow 0.2s',
+                    }}
+                    onMouseOver={(e) => { if (!sendingOtp) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(38, 208, 206, 0.4)'; } }}
+                    onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(38, 208, 206, 0.3)'; }}
+                  >{sendingOtp ? 'Sending OTP...' : 'Enroll Now'}</button>
                 )}
               </div>
             </div>
@@ -426,7 +475,7 @@ export default function CoursesPage() {
         </div>
       )}
 
-      {/* OTP MODAL */}
+      {/* EMAIL VERIFICATION MODAL */}
       {otpModalOpen && (
         <div style={{
           position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
@@ -434,46 +483,53 @@ export default function CoursesPage() {
           display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1100
         }}>
           <div style={{
-            background: '#fff', width: '400px', borderRadius: '20px', padding: '40px 30px',
+            background: '#fff', width: '420px', borderRadius: '20px', padding: '40px 30px',
             textAlign: 'center', boxShadow: '0 25px 50px rgba(0,0,0,0.2)'
           }}>
-            <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '10px' }}>Verify Enrollment</h3>
-            <p style={{ color: '#666', fontSize: '14px', marginBottom: '30px' }}>
-              We've sent a 4-digit code to your registered email. Enter it below to confirm enrollment.
-            </p>
-            
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '30px' }}>
-              {otp.map((digit, idx) => (
-                <input 
-                  key={idx}
-                  id={`otp-input-${idx}`}
-                  type="text"
-                  value={digit}
-                  onChange={(e) => handleOtpChange(idx, e.target.value)}
-                  style={{
-                    width: '50px', height: '60px', fontSize: '24px', textAlign: 'center',
-                    border: '2px solid #e0e0e0', borderRadius: '12px', background: '#f8f9fa',
-                    fontWeight: 'bold', outline: 'none'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#3a8aff'}
-                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-                />
-              ))}
-            </div>
+            {/* Animated email icon */}
+            <div style={{
+              width: '72px', height: '72px', background: 'linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)',
+              borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '32px', margin: '0 auto 20px', boxShadow: '0 10px 25px rgba(26,41,128,0.3)'
+            }}>📧</div>
 
-            <div style={{ display: 'flex', gap: '15px' }}>
-              <button onClick={() => setOtpModalOpen(false)} style={{
-                flex: 1, background: '#f0f0f0', color: '#1a1a1a', border: 'none',
-                padding: '12px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer'
-              }}>Cancel</button>
-              <button onClick={handleVerifyOtp} style={{
-                flex: 1, background: '#1a1a1a', color: '#fff', border: 'none',
-                padding: '12px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer'
-              }}>Verify & Enroll</button>
+            <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '10px', color: '#1a1a1a' }}>
+              Check Your Email
+            </h3>
+            <p style={{ color: '#666', fontSize: '14px', lineHeight: '1.6', marginBottom: '8px' }}>
+              We sent a verification link to:
+            </p>
+            {user?.email && (
+              <p style={{ fontSize: '15px', fontWeight: '700', color: '#1a2980', marginBottom: '20px' }}>
+                {user.email}
+              </p>
+            )}
+            <div style={{
+              background: '#f0f7ff', border: '1px solid #bde0ff', borderRadius: '12px',
+              padding: '16px', marginBottom: '24px', textAlign: 'left'
+            }}>
+              <p style={{ fontSize: '13px', color: '#333', margin: 0, lineHeight: '1.7' }}>
+                <strong>Steps:</strong><br />
+                1. Open the email from <strong>Supabase Auth</strong><br />
+                2. Click the <strong>"Sign in"</strong> link<br />
+                3. You'll be redirected back and <strong>automatically enrolled</strong> ✅
+              </p>
             </div>
+            <p style={{ fontSize: '12px', color: '#aaa', marginBottom: '24px' }}>
+              Link expires in 1 hour · Check spam folder if not received
+            </p>
+            <button
+              onClick={() => setOtpModalOpen(false)}
+              style={{
+                width: '100%', background: '#f0f0f0', color: '#1a1a1a', border: 'none',
+                padding: '14px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer',
+                fontSize: '15px'
+              }}
+            >Close</button>
           </div>
         </div>
       )}
+
     </div>
   );
 }
