@@ -119,11 +119,10 @@ a {
 }
 .navbar.active { opacity: 1; }
 .logo {
-  width: 90px;
-  height: 40px;
-  background-color: #ffffff;
-  border-radius: 10%;
   display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 10px;
 }
 .navbar-center {
   display: flex;
