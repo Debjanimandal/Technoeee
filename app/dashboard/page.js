@@ -369,9 +369,11 @@ export default function DashboardPage() {
                               {c.category || 'General'}
                             </span>
                           </div>
-                          <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '20px', lineHeight: '1.4', minHeight: '44px' }}>
-                            {c.course_title}
-                          </h3>
+                          <Link href="/my-courses" style={{ textDecoration: 'none' }}>
+                            <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '20px', lineHeight: '1.4', minHeight: '44px', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#4f46e5'} onMouseLeave={e => e.target.style.color = '#1e293b'}>
+                              {c.course_title}
+                            </h3>
+                          </Link>
                           <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', fontWeight: '600', color: '#64748b', marginBottom: '8px' }}>
                               <span>Progress</span>
