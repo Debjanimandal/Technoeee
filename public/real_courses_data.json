@@ -3,6 +3,8 @@
         "course_name": "Object Oriented Programming using C++",
         "icon": "/image/oop-icon.svg",
         "subject_code": "TIU-UCS-T214",
+        "difficulty": "Beginner",
+        "relevance": "Programming Fundamentals",
         "outcomes": [
             "Define an object-oriented approach to programming and identify potential benefits of object-oriented programming over other approaches",
             "Demonstrate the use of various OOPs concepts using C++",
@@ -13,6 +15,7 @@
         "modules": [
             {
                 "title": "MODULE 1: - INTRODUCTION",
+                "intro": "Welcome to MODULE 1: - INTRODUCTION! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey.",
                 "topics": [
                     "Introduction to Object Oriented Paradigm",
                     "Need of object-oriented design",
@@ -38,7 +41,8 @@
                     "Dynamic binding"
                 ],
                 "videos": [],
-                "time": "12 Hours"
+                "time": "12 Hours",
+                "intro": "Welcome to MODULE 2: - BASIC CONCEPTS OF OBJECT ORIENTATION! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 3: - FUNDAMENTALS OF OOPs",
@@ -56,7 +60,8 @@
                     "Virtual Class"
                 ],
                 "videos": [],
-                "time": "12 Hours"
+                "time": "12 Hours",
+                "intro": "Welcome to MODULE 3: - FUNDAMENTALS OF OOPs! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 4: - ADVANCE OOP CONCEPTS",
@@ -69,13 +74,27 @@
                     "Exceptions Handling"
                 ],
                 "videos": [],
-                "time": "11 Hours"
+                "time": "11 Hours",
+                "intro": "Welcome to MODULE 4: - ADVANCE OOP CONCEPTS! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             }
         ],
         "video_link": "https://drive.google.com/drive/u/0/folders/17emFjr9QmUSx-WbMg3ex8ZmtgxSSAyC1",
         "estimated_time": "45 Hours",
-        "difficulty": "Beginner",
-        "relevance": "Programming Fundamentals"
+        "topicDetails": {
+            "Introduction to Object Oriented Paradigm": {
+                "summary": "This lecture introduces C++ programming, contrasting its object-oriented (OOP) approach with procedural languages like C. You will learn the core pillars of OOP, including Classes, Objects, Abstraction, Encapsulation, Polymorphism, and Inheritance, and how these concepts reduce code redundancy and improve security. The lecture also includes a hands-on demonstration in an Ubuntu environment, covering dynamic variable declaration, standard I/O (cin/cout), and reference variables.",
+                "videoUrl": "https://drive.google.com/file/d/1hfXJyybcDlsj9GjRXt7Y_yy_pgWW-EWx/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/cpp_intro.png",
+                "summary2": "This second part dives deeper into C++ programming, covering crucial concepts such as Recursion, Parameter Passing (Call by Value vs. Call by Reference), Inline Functions, and Default Arguments. You will understand how functions can call themselves, how memory addresses are handled in parameter passing, and how the compiler uses inline functions to optimize execution time.",
+                "videoUrl2": "https://drive.google.com/file/d/1HdxBTYfMYBk-NxNGgBZ0m2qKodzocL69/view?usp=sharing",
+                "thumbnail2": "/image/thumbnails/cpp_intro_2.png"
+            },
+            "Class": {
+                "summary": "This video provides a comprehensive overview of pointers in C++. We explore pointer fundamentals, including the address-of (&) and value-at-address (*) operators, and demonstrate their usage in modifying variables. The lecture delves into the differences between pass-by-value and pass-by-reference functions, and illustrates how array names act as constant pointers for traversing arrays. Finally, we cover advanced concepts such as pointer-to-pointer, void pointers, and null pointers.",
+                "videoUrl": "https://drive.google.com/file/d/1NJYz5VZlEuZbgljO2iJ0OSatANiOSsRn/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/cpp_pointers.png"
+            }
+        }
     },
     {
         "course_name": "Computer Organization and Architecture",
@@ -102,7 +121,8 @@
                     "Performance metrics: measuring and reporting performance"
                 ],
                 "videos": [],
-                "time": "6 Hours"
+                "time": "6 Hours",
+                "intro": "Welcome to MODULE 1: - Introduction to Computer Systems! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 2: - Data Representation and Arithmetic",
@@ -113,7 +133,8 @@
                     "carry look-ahead adders); Multiplication: Booth\u2019s algorithm; Division: restoring and non-restoring techniques"
                 ],
                 "videos": [],
-                "time": "6 Hours"
+                "time": "6 Hours",
+                "intro": "Welcome to MODULE 2: - Data Representation and Arithmetic! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 3: - Instruction Set Architecture and CPU Organization",
@@ -126,7 +147,8 @@
                     "; Zero/One/Two/Three-address instructions; Instruction cycle and micro-operations; RISC vs CISC instruction sets (case study of a common CPU); Control Unit: hardwired vs microprogrammed; ALU and datapath organization"
                 ],
                 "videos": [],
-                "time": "7 Hours"
+                "time": "7 Hours",
+                "intro": "Welcome to MODULE 3: - Instruction Set Architecture and CPU Organization! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 4: - Memory and I/O Organization",
@@ -144,7 +166,8 @@
                     "and Direct Memory Access (DMA)"
                 ],
                 "videos": [],
-                "time": "8 Hours"
+                "time": "8 Hours",
+                "intro": "Welcome to MODULE 4: - Memory and I/O Organization! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 5: - Pipelining and Instruction-Level Parallelism",
@@ -154,7 +177,8 @@
                     "control; Techniques to handle hazards; Instruction-level parallelism (ILP); Vector and array processors"
                 ],
                 "videos": [],
-                "time": "9 Hours"
+                "time": "9 Hours",
+                "intro": "Welcome to MODULE 5: - Pipelining and Instruction-Level Parallelism! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 6: - Multiprocessors and Advanced Architectures",
@@ -166,13 +190,71 @@
                     "systolic architectures"
                 ],
                 "videos": [],
-                "time": "9 Hours"
+                "time": "9 Hours",
+                "intro": "Welcome to MODULE 6: - Multiprocessors and Advanced Architectures! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             }
         ],
         "video_link": "",
         "estimated_time": "45 Hours",
         "difficulty": "Intermediate",
-        "relevance": "Core Hardware Concept"
+        "relevance": "Core Hardware Concept",
+        "topicDetails": {
+            "Hierarchical memory organization: registers": {
+                "summary": "This video outlines the organization of computer memory, covering its hierarchy, types, and the concept of virtual memory. You will learn the difference between Primary Memory (volatile RAM and non-volatile ROM) and Secondary Memory (permanent storage like hard disks). The lecture details the memory hierarchy pyramid based on access speed and capacity: CPU Registers at the top, followed by Cache Memory, Main Memory (RAM), and Virtual Memory techniques.",
+                "videoUrl": "https://drive.google.com/file/d/1xbSXj1IqYXYVsBRjfvgMghliBl_C0t6W/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/memory_hierarchy.png"
+            },
+            "Flynn\u2019s Taxonomy: SISD": {
+                "summary": "This video introduces Flynn's Taxonomy of parallel computers, focusing on Single Instruction, Single Data (SISD) architecture. Learn about the Von Neumann architecture, its limitations, and how sequential processing compares to modern parallel techniques. Core components like the CPU and Memory Units are also covered.",
+                "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/computer_architecture.png"
+            },
+            "SIMD": {
+                "summary": "This video explains Single Instruction, Multiple Data (SIMD) architecture within Flynn's Taxonomy. Discover how a single instruction is applied across multiple data sets simultaneously, enabling efficient parallel processing in systems like the ILLIAC IV.",
+                "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/computer_architecture.png"
+            },
+            "MISD": {
+                "summary": "Explore the Multiple Instruction, Single Data (MISD) architecture in this video. Understand why this theoretical model, where multiple instructions are applied to a single data set, is rarely implemented in practical, real-life systems.",
+                "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/computer_architecture.png"
+            },
+            "MIMD; CISC and RISC Processors": {
+                "summary": "This video covers Multiple Instruction, Multiple Data (MIMD) architectures, the foundation of modern multi-core systems. Learn about Shared Memory Multiprocessors, Message Passing Multi-computers, and the essential concept of Pipelining to improve processing efficiency.",
+                "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/computer_architecture.png"
+            },
+            "Performance metrics: measuring and reporting performance": {
+                "summary": "This video discusses core system components and processing techniques that impact computer performance. Understand the roles of the Processor, Memory Unit, Sequential vs. Parallel Processing, and how pipelining decomposes tasks to significantly reduce total processing time.",
+                "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/computer_architecture.png"
+            },
+            "secondary; Cache memory: mapping": {
+                "summary": "This video explains Cache Memory, a high-speed storage layer near the CPU. Learn about multi-level caches (L1, L2, L3) and how mapping works, whether via physical or virtual addresses, to improve data retrieval speeds.",
+                "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/memory_management.png"
+            },
+            "replacement": {
+                "summary": "Understand cache and virtual memory Replacement Algorithms in this video. Discover how policies like FIFO (first-in-first-out), LRU (least recently used), and LFU (least frequently used) decide which memory blocks to discard when space is full.",
+                "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/memory_management.png"
+            },
+            "and optimization techniques; Virtual memory: organization": {
+                "summary": "Dive into Virtual Memory Organization and Optimization. This video covers how a computer maps virtual addresses to physical memory using page tables, creating the illusion of having a much larger storage capacity.",
+                "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/memory_management.png"
+            },
+            "mapping": {
+                "summary": "This lecture details the mechanics of Virtual Memory Mapping. Learn how data is transferred in fixed-size blocks called 'pages', how the CPU handles page faults, and the performance penalties of cache misses.",
+                "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/memory_management.png"
+            },
+            "and replacement policies; Memory interleaving and coherence; Semiconductor memory technologies; I/O Systems: I/O subsystems": {
+                "summary": "This comprehensive video explores Memory Coherence strategies like write-through and write-back. It also covers the concept of Locality of Reference (temporal, spatial, sequential) and how to calculate critical metrics like Effective Access Time (EAT) and Hit Ratios.",
+                "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/memory_management.png"
+            }
+        }
     },
     {
         "course_name": "Artificial Intelligence",
@@ -207,7 +289,8 @@
                     "neural net learning & genetic learning"
                 ],
                 "videos": [],
-                "time": "8 Hours"
+                "time": "8 Hours",
+                "intro": "Welcome to MODULE 1: - BASICS OF AI! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 2: - DIFFERENT TYPES OF SEARCHING ALGORITHMS, PROBLEM SOLVING",
@@ -238,7 +321,8 @@
                     "iterative deepening"
                 ],
                 "videos": [],
-                "time": "13 Hours"
+                "time": "13 Hours",
+                "intro": "Welcome to MODULE 2: - DIFFERENT TYPES OF SEARCHING ALGORITHMS, PROBLEM SOLVING! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 3: - KNOWLEDGE & REASONING, KNOWLEDGE & REASONING",
@@ -266,7 +350,8 @@
                     "and Hidden Markov models"
                 ],
                 "videos": [],
-                "time": "12 Hours"
+                "time": "12 Hours",
+                "intro": "Welcome to MODULE 3: - KNOWLEDGE & REASONING, KNOWLEDGE & REASONING! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 4: - DIFFERENT FIELDS OF AI, NATURAL LANGUAGE PROCESSING",
@@ -282,13 +367,51 @@
                     "Basic knowledge of programming languages like Prolog"
                 ],
                 "videos": [],
-                "time": "12 Hours"
+                "time": "12 Hours",
+                "intro": "Welcome to MODULE 4: - DIFFERENT FIELDS OF AI, NATURAL LANGUAGE PROCESSING! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             }
         ],
         "video_link": "https://drive.google.com/drive/folders/1pwUZdwMiBEYTCANyURZ3SmDZPiJpcxFo?usp=drive_link",
         "estimated_time": "45 Hours",
         "difficulty": "Advanced",
-        "relevance": "High Demand Industry Skill"
+        "relevance": "High Demand Industry Skill",
+        "topicDetails": {
+            "searching for solutions; uniform search strategies: breadth first search": {
+                "summary": "This video introduces searching for solutions using uniform strategies, focusing on Breadth-First Search (BFS). Learn how algorithms traverse state spaces layer by layer to find the optimal path in Artificial Intelligence problems.",
+                "videoUrl": "https://drive.google.com/file/d/1wvt6vDXGm6HHGI7_nUDmkWZzigSodhJD/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/ai_search.png"
+            },
+            "depth first search": {
+                "summary": "Explore Depth-First Search (DFS) in this video. Understand how this uniform search strategy explores as far as possible along each branch before backtracking, and learn about its memory efficiency compared to BFS.",
+                "videoUrl": "https://drive.google.com/file/d/1wvt6vDXGm6HHGI7_nUDmkWZzigSodhJD/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/ai_search.png"
+            },
+            "depth limited search": {
+                "summary": "This lecture covers Depth-Limited Search (DLS). Discover how applying a depth bound to DFS prevents infinite loops in unbounded state spaces, balancing completeness with resource constraints.",
+                "videoUrl": "https://drive.google.com/file/d/1wvt6vDXGm6HHGI7_nUDmkWZzigSodhJD/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/ai_search.png"
+            },
+            "bidirectional search": {
+                "summary": "Learn about Bidirectional Search, an advanced strategy that runs two simultaneous searches: one forward from the initial state and one backward from the goal, significantly reducing the time complexity of the problem.",
+                "videoUrl": "https://drive.google.com/file/d/1wvt6vDXGm6HHGI7_nUDmkWZzigSodhJD/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/ai_search.png"
+            },
+            "comparing uniform search strategies": {
+                "summary": "This video concludes the discussion on uniform (uninformed) search strategies by comparing BFS, DFS, DLS, and Bidirectional Search based on completeness, time complexity, space complexity, and optimality.",
+                "videoUrl": "https://drive.google.com/file/d/1wvt6vDXGm6HHGI7_nUDmkWZzigSodhJD/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/ai_search.png"
+            },
+            "Heuristic search strategies: Greedy best-first search": {
+                "summary": "Dive into Heuristic (informed) search strategies, starting with Greedy Best-First Search. Learn how this algorithm uses an evaluation function to select the path that appears closest to the goal, prioritizing speed over optimal solutions.",
+                "videoUrl": "https://drive.google.com/file/d/1wvt6vDXGm6HHGI7_nUDmkWZzigSodhJD/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/ai_search.png"
+            },
+            "A* search": {
+                "summary": "This lecture covers A* Search, one of the most popular heuristic algorithms in AI. Discover how A* combines the strengths of uniform-cost search and greedy search to guarantee an optimal and complete solution.",
+                "videoUrl": "https://drive.google.com/file/d/1wvt6vDXGm6HHGI7_nUDmkWZzigSodhJD/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/ai_search.png"
+            }
+        }
     },
     {
         "course_name": "Design and Analysis of Algorithm",
@@ -310,7 +433,8 @@
                     "Lower bound for comparison-based sort"
                 ],
                 "videos": [],
-                "time": "10 Hours"
+                "time": "10 Hours",
+                "intro": "Welcome to MODULE 1: - Foundation of Algorithm & Analysis! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 2: - Algorithmic Paradigms",
@@ -330,7 +454,8 @@
                     "[extra problem in tutorial]"
                 ],
                 "videos": [],
-                "time": "10 Hours"
+                "time": "10 Hours",
+                "intro": "Welcome to MODULE 2: - Algorithmic Paradigms! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 3: - Graph Algorithms",
@@ -349,7 +474,8 @@
                     "Max-flow Min-cut theorem"
                 ],
                 "videos": [],
-                "time": "12 Hours"
+                "time": "12 Hours",
+                "intro": "Welcome to MODULE 3: - Graph Algorithms! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 4: - Problem Reducibility and NP-completeness",
@@ -363,7 +489,8 @@
                     "Cook\u2019s theorem"
                 ],
                 "videos": [],
-                "time": "8 Hours"
+                "time": "8 Hours",
+                "intro": "Welcome to MODULE 4: - Problem Reducibility and NP-completeness! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 5: - Advanced Topics",
@@ -372,7 +499,8 @@
                     "Randomized algorithm technique Amortized analysis"
                 ],
                 "videos": [],
-                "time": "5 Hours"
+                "time": "5 Hours",
+                "intro": "Welcome to MODULE 5: - Advanced Topics! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             }
         ],
         "video_link": "https://drive.google.com/file/d/11dgPWYrd0K-U8QAL0owl8kn5EO_8l7ly/view?usp=sharing",
@@ -408,7 +536,8 @@
                     "Integrity constraints"
                 ],
                 "videos": [],
-                "time": "2 Hours"
+                "time": "2 Hours",
+                "intro": "Welcome to MODULE 1: - INTRODUCTION! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 2: - RELATIONAL DATA MODEL",
@@ -432,7 +561,8 @@
                     "Domain Relational Calculus"
                 ],
                 "videos": [],
-                "time": "2 Hours"
+                "time": "2 Hours",
+                "intro": "Welcome to MODULE 2: - RELATIONAL DATA MODEL! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 3: - SQL (STRUCTURED QUERY LANGUAGE)",
@@ -450,7 +580,8 @@
                     "Embedded SQL"
                 ],
                 "videos": [],
-                "time": "7 Hours"
+                "time": "7 Hours",
+                "intro": "Welcome to MODULE 3: - SQL (STRUCTURED QUERY LANGUAGE)! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 4: - DATABASE DESIGN CONCEPTS (PART-1)-DEPENDENCIES AND NORMAL FORMS",
@@ -472,7 +603,8 @@
                     "DKNF"
                 ],
                 "videos": [],
-                "time": "9 Hours"
+                "time": "9 Hours",
+                "intro": "Welcome to MODULE 4: - DATABASE DESIGN CONCEPTS (PART-1)-DEPENDENCIES AND NORMAL FORMS! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 5: - DATABASE DESIGN CONCEPTS (PART-2) -ER MODEL",
@@ -495,7 +627,8 @@
                     "Modeling of UNION types using categories"
                 ],
                 "videos": [],
-                "time": "6 Hours"
+                "time": "6 Hours",
+                "intro": "Welcome to MODULE 5: - DATABASE DESIGN CONCEPTS (PART-2) -ER MODEL! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 6: - DATA STORAGE AND INDEXES",
@@ -509,7 +642,8 @@
                     "B+ trees"
                 ],
                 "videos": [],
-                "time": "7 Hours"
+                "time": "7 Hours",
+                "intro": "Welcome to MODULE 6: - DATA STORAGE AND INDEXES! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 7: - TRANSACTION PROCESSING AND CONCURRENCY CONTROL",
@@ -546,7 +680,8 @@
                     "Nested transactions"
                 ],
                 "videos": [],
-                "time": "9 Hours"
+                "time": "9 Hours",
+                "intro": "Welcome to MODULE 7: - TRANSACTION PROCESSING AND CONCURRENCY CONTROL! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 8: - DATABASE RECOVERY TECHNIQUES",
@@ -557,7 +692,8 @@
                     "Shadow paging"
                 ],
                 "videos": [],
-                "time": "3 Hours"
+                "time": "3 Hours",
+                "intro": "Welcome to MODULE 8: - DATABASE RECOVERY TECHNIQUES! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             }
         ],
         "video_link": "https://drive.google.com/drive/folders/13PC-coqWE8z_4VCatneFn9f2dmvygDmx",
@@ -565,7 +701,6 @@
         "difficulty": "Intermediate",
         "relevance": "Essential Industry Concept"
     },
-
     {
         "course_name": "Machine Learning",
         "icon": "/image/ml-banner.png",
@@ -588,7 +723,8 @@
                     "Features: Feature types - Feature Construction and Transformation - Feature Selection"
                 ],
                 "videos": [],
-                "time": "7 Hours"
+                "time": "7 Hours",
+                "intro": "Welcome to MODULE 1: - INTRODUCTION! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 2: - CLASSIFICATION AND CONCEPT LEARNING",
@@ -596,7 +732,8 @@
                     "Classification: Binary Classification- Assessing Classification performance - Class probability Estimation - Multiclass Classification - Regression: Assessing performance of Regression - Error measures - Overfitting- Theory of Generalization: Effective number of hypothesis - Bounding the Growth function"
                 ],
                 "videos": [],
-                "time": "7 Hours"
+                "time": "7 Hours",
+                "intro": "Welcome to MODULE 2: - CLASSIFICATION AND CONCEPT LEARNING! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 3: - LINEAR AND PROBABILISTIC MODELS",
@@ -605,7 +742,8 @@
                     "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data \u2013 Na\u00efve Bayes Classifier"
                 ],
                 "videos": [],
-                "time": "7 Hours"
+                "time": "7 Hours",
+                "intro": "Welcome to MODULE 3: - LINEAR AND PROBABILISTIC MODELS! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 4: - DISTANCE BASED MODELS",
@@ -614,7 +752,8 @@
                     "Self-Organizing Feature Map - Principal Component Analysis"
                 ],
                 "videos": [],
-                "time": "8 Hours"
+                "time": "8 Hours",
+                "intro": "Welcome to MODULE 4: - DISTANCE BASED MODELS! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 5: - RULE BASED AND TREE BASED MODELS",
@@ -622,7 +761,8 @@
                     "Rule Based Models: Rule learning for subgroup discovery - Association rule mining - Tree Based Models: Decision Trees - Ranking and Probability estimation Trees - Regression trees - Classification and Regression Trees (CART)"
                 ],
                 "videos": [],
-                "time": "8 Hours"
+                "time": "8 Hours",
+                "intro": "Welcome to MODULE 5: - RULE BASED AND TREE BASED MODELS! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 6: - TRENDS IN MACHINE LEARNING",
@@ -631,7 +771,8 @@
                     "- Bagging and Boosting - Random Forest - Meta learning - Deep Learning - Reinforcement Learning \u2013 Applications"
                 ],
                 "videos": [],
-                "time": "8 Hours"
+                "time": "8 Hours",
+                "intro": "Welcome to MODULE 6: - TRENDS IN MACHINE LEARNING! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             }
         ],
         "video_link": "",
@@ -667,7 +808,8 @@
                     "Wireless transmission"
                 ],
                 "videos": [],
-                "time": "10 Hours"
+                "time": "10 Hours",
+                "intro": "Welcome to MODULE 1: - 10 Hours! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 2: - 12 Hours",
@@ -690,7 +832,8 @@
                     "Data link layer switching"
                 ],
                 "videos": [],
-                "time": "12 Hours"
+                "time": "12 Hours",
+                "intro": "Welcome to MODULE 2: - 12 Hours! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 3: - 10 Hours",
@@ -708,7 +851,8 @@
                     "The Network layer in the internet"
                 ],
                 "videos": [],
-                "time": "10 Hours"
+                "time": "10 Hours",
+                "intro": "Welcome to MODULE 3: - 10 Hours! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 4: - 8 Hours",
@@ -719,7 +863,8 @@
                     "TCP and UDP protocols"
                 ],
                 "videos": [],
-                "time": "8 Hours"
+                "time": "8 Hours",
+                "intro": "Welcome to MODULE 4: - 8 Hours! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 5: - 5 Hours",
@@ -731,13 +876,29 @@
                     "Streaming audio and video"
                 ],
                 "videos": [],
-                "time": "5 Hours"
+                "time": "5 Hours",
+                "intro": "Welcome to MODULE 5: - 5 Hours! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             }
         ],
         "video_link": "https://drive.google.com/file/d/1wo1D0yj7EXIBl1RJG1UMHi35DysZ4B3V/view?usp=drive_link",
         "estimated_time": "45 Hours",
         "difficulty": "Intermediate",
-        "relevance": "Core Infrastructure"
+        "relevance": "Core Infrastructure",
+        "topicDetails": {
+            "Network Layer: Design issues": {
+                "summary": "This topic covers the essential functions of the Network Layer, including routing, error control, and the fragmentation of IP packets. You will explore the differences between the OSI and TCP/IP models, understand connectionless network protocols, and dive deep into IPv4 packet structure, including header fields like TTL, Flags, and Checksum. We will also touch on protocols like IGMP, ICMP, and ARP, and review data framing with MTU.",
+                "videoUrl": "https://drive.google.com/file/d/1OKl772_dYbGCRlNk-TVeEKPs3vQvZ_QR/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/network_layer_design_issues.png"
+            },
+            "Data link layer: Design issues": {
+                "summary": "This video provides an overview of Internet Protocol version 4 (IPv4) and the various addressing mechanisms used in computer networking. You will learn about Physical (MAC), Logical (IP), and Port addresses, and how they operate across the OSI model layers. We will also explore IP Address Classifications (Classes A-E), addressing modes (Broadcast, Multicast, Unicast), and foundational concepts like Subnetting and Supernetting.",
+                "videoUrl": "https://drive.google.com/file/d/1wo1D0yj7EXIBl1RJG1UMHi35DysZ4B3V/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/ipv4.png",
+                "summary2": "This second part provides a comprehensive overview of subnetting and supernetting. Subnetting involves dividing a large network block into smaller, manageable sub-blocks to improve security and reduce address wastage by borrowing host bits. In contrast, supernetting combines multiple smaller contiguous networks into one larger network to simplify routing decisions and save space in routing tables.",
+                "videoUrl2": "https://drive.google.com/file/d/15VJHKG1roY-tvkb7bk84JEmmuV24v0fP/view?usp=sharing",
+                "thumbnail2": "/image/thumbnails/subnetting.png"
+            }
+        }
     },
     {
         "course_name": "Automata Theory & Compiler Design",
@@ -768,7 +929,8 @@
                     "Minimization of Finite Automata"
                 ],
                 "videos": [],
-                "time": "15 Hours"
+                "time": "15 Hours",
+                "intro": "Welcome to MODULE 1: - REGULAR LANGUAGES AND FINITE AUTOMATA! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 2: - CONTEXT-FREE GRAMMAR/LANGUAGES",
@@ -788,7 +950,8 @@
                     "Linear Bounded Automata (LBA) and its Equivalence with CSG"
                 ],
                 "videos": [],
-                "time": "16 Hours"
+                "time": "16 Hours",
+                "intro": "Welcome to MODULE 2: - CONTEXT-FREE GRAMMAR/LANGUAGES! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 3: - TURING MACHINES",
@@ -801,7 +964,8 @@
                     "TMs as Enumerators"
                 ],
                 "videos": [],
-                "time": "9 Hours"
+                "time": "9 Hours",
+                "intro": "Welcome to MODULE 3: - TURING MACHINES! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             },
             {
                 "title": "MODULE 4: - UNDECIDABILITY",
@@ -813,12 +977,25 @@
                     "Undecidable Problems about Languages"
                 ],
                 "videos": [],
-                "time": "5 Hours"
+                "time": "5 Hours",
+                "intro": "Welcome to MODULE 4: - UNDECIDABILITY! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
             }
         ],
         "video_link": "",
         "estimated_time": "45 Hours",
         "difficulty": "Advanced",
-        "relevance": "Theoretical Computer Science"
+        "relevance": "Theoretical Computer Science",
+        "topicDetails": {
+            "Introduction": {
+                "summary": "This topic introduces the foundations of automata theory and regular languages. We define finite automata (FA) as abstract computing devices, covering Deterministic Finite Automata (DFA), Nondeterministic Finite Automata (NFA), and epsilon transitions. You will also learn about formal grammars, regular expressions, and the Pumping Lemma used to determine if a language is non-regular.",
+                "videoUrl": "https://drive.google.com/file/d/1LMw0WxYmf9QB_r0J7ibFs9Q02BHz0MKW/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/intro_fa_dfa.png"
+            },
+            "Context-Free Grammars (CFG) and Context-Free Languages (CFL)": {
+                "summary": "This video provides an overview of the compiler's role, translating high-level languages into machine code. We will focus specifically on the initial phases of compilation: Lexical Analysis, where source code is broken down into meaningful tokens (handling whitespace, comments, and lexemes), and Syntax Analysis, where the token sequence is analyzed against grammatical rules to form a syntax tree. These fundamental phases establish the foundation for semantic analysis and code generation.",
+                "videoUrl": "https://drive.google.com/file/d/1wRGEXBYm07kDiUAkzZekyuoqn0j2vMlp/view?usp=sharing",
+                "thumbnail": "/image/thumbnails/compiler_design_cfg.png"
+            }
+        }
     }
 ]

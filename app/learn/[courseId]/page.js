@@ -6,6 +6,7 @@ import DashboardHeader from '@/components/DashboardHeader';
 import coursesData from '../../../public/real_courses_data.json';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
+import VideoPlayer from '@/components/VideoPlayer';
 
 export default function CourseLearningPage() {
   const { courseId } = useParams();
@@ -16,6 +17,7 @@ export default function CourseLearningPage() {
   const [expandedModule, setExpandedModule] = useState(null); 
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [selectedContentIdx, setSelectedContentIdx] = useState(0);
+  const [completedItems, setCompletedItems] = useState([]);
 
   useEffect(() => {
     if (courseId) {
@@ -53,11 +55,23 @@ export default function CourseLearningPage() {
             <Link href="/my-courses" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '14px', marginBottom: '15px', display: 'inline-block' }}>
               ← Back to My Courses
             </Link>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <span style={{ background: 'rgba(255,255,255,0.2)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', backdropFilter: 'blur(5px)', display: 'inline-block', marginBottom: '15px' }}>
-                  {course.subject_code}
-                </span>
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', flexWrap: 'wrap' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.2)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', backdropFilter: 'blur(5px)' }}>
+                    {course.subject_code}
+                  </span>
+                  {course.difficulty && (
+                    <span style={{ background: 'rgba(255,152,0,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>
+                      🔥 {course.difficulty}
+                    </span>
+                  )}
+                  {course.relevance && (
+                    <span style={{ background: 'rgba(76,175,80,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>
+                      💼 {course.relevance}
+                    </span>
+                  )}
+                </div>
                 <h1 style={{ fontSize: '32px', fontWeight: '800', margin: '0 0 10px 0', lineHeight: '1.2', maxWidth: '800px' }}>
                   {course.course_name}
                 </h1>
@@ -70,12 +84,26 @@ export default function CourseLearningPage() {
                   <span>Course Progress</span>
                   <span>{progressPercent}%</span>
                 </div>
-                <div style={{ height: '8px', background: 'rgba(255,255,255,0.2)', borderRadius: '10px', overflow: 'hidden' }}>
-                  <div style={{ width: `${progressPercent}%`, height: '100%', background: '#fff', borderRadius: '10px' }} />
-                </div>
               </div>
             </div>
           </div>
+
+          {/* Course Outcomes Section - Moved outside the header for better visuals */}
+          {course.outcomes && course.outcomes.length > 0 && (
+            <div style={{ 
+              background: '#fff', borderRadius: '20px', padding: '25px 30px', marginBottom: '20px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0'
+            }}>
+              <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '22px' }}>🎯</span> Course Outcomes
+              </h3>
+              <ul style={{ margin: 0, paddingLeft: '24px', fontSize: '14.5px', color: '#444', lineHeight: '1.6' }}>
+                {course.outcomes.map((outcome, idx) => (
+                  <li key={idx} style={{ marginBottom: '8px' }}>{outcome}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Split Screen Workspace */}
           <div style={{ display: 'flex', gap: '20px', flex: 1, minHeight: '600px' }}>
@@ -100,7 +128,10 @@ export default function CourseLearningPage() {
                     <div key={modIdx} style={{ marginBottom: '20px', position: 'relative' }}>
                       {/* Module Node */}
                       <div 
-                        onClick={() => setExpandedModule(isExpanded ? null : modIdx)}
+                        onClick={() => {
+                          setExpandedModule(isExpanded ? null : modIdx);
+                          if (!isExpanded) setSelectedTopic(null); // Reset topic so module intro shows
+                        }}
                         style={{ 
                           display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer',
                           padding: '10px 10px 10px 13px', borderRadius: '12px', background: isExpanded ? '#f8f9fa' : 'transparent',
@@ -133,6 +164,7 @@ export default function CourseLearningPage() {
                         }}>
                           {mod.topics?.map((topic, topicIdx) => {
                             const isSelected = selectedTopic === topic;
+                            const isCompleted = completedItems.includes(topic);
                             return (
                               <div
                                 key={topicIdx}
@@ -155,13 +187,13 @@ export default function CourseLearningPage() {
                                   top: '50%',
                                   transform: 'translateY(-50%)',
                                   width: '10px', height: '10px', borderRadius: '50%',
-                                  background: isSelected ? '#ab47bc' : '#fff',
-                                  border: isSelected ? '2px solid #ab47bc' : '2px solid #ce93d8',
-                                  boxShadow: isSelected ? '0 0 10px rgba(171,71,188,0.8)' : 'none',
+                                  background: isCompleted ? '#4caf50' : (isSelected ? '#ab47bc' : '#fff'),
+                                  border: isCompleted ? '2px solid #4caf50' : (isSelected ? '2px solid #ab47bc' : '2px solid #ce93d8'),
+                                  boxShadow: isCompleted ? '0 0 10px rgba(76,175,80,0.6)' : (isSelected ? '0 0 10px rgba(171,71,188,0.8)' : 'none'),
                                   zIndex: 2,
                                 }} />
-                                <span style={{ fontSize: '13px', color: isSelected ? '#ab47bc' : '#444', fontWeight: isSelected ? '600' : '500', lineHeight: '1.4' }}>
-                                  {topic}
+                                <span style={{ fontSize: '13px', color: isCompleted ? '#2e7d32' : (isSelected ? '#ab47bc' : '#444'), fontWeight: isSelected || isCompleted ? '600' : '500', lineHeight: '1.4' }}>
+                                  {topic} {isCompleted && '✓'}
                                 </span>
                               </div>
                             );
@@ -232,10 +264,25 @@ export default function CourseLearningPage() {
             }}>
               
               {!selectedTopic ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#aaa', opacity: 0.8 }}>
-                  <div style={{ fontSize: '60px', marginBottom: '20px' }}>🎯</div>
-                  <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333' }}>Ready to Learn?</h2>
-                  <p style={{ fontSize: '15px' }}>Select a topic from the roadmap on the left to begin studying.</p>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#666' }}>
+                  {expandedModule !== null && course.modules[expandedModule]?.intro ? (
+                    <div style={{ maxWidth: '600px', textAlign: 'center' }}>
+                      <div style={{ fontSize: '50px', marginBottom: '20px' }}>📚</div>
+                      <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333', marginBottom: '16px' }}>
+                        {course.modules[expandedModule].title}
+                      </h2>
+                      <p style={{ fontSize: '16px', lineHeight: '1.6' }}>
+                        {course.modules[expandedModule].intro}
+                      </p>
+                      <p style={{ fontSize: '14px', marginTop: '24px', color: '#aaa' }}>Select a topic from the left to start learning.</p>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
+                      <div style={{ fontSize: '60px', marginBottom: '20px' }}>🎯</div>
+                      <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333' }}>Ready to Learn?</h2>
+                      <p style={{ fontSize: '15px' }}>Select a module and topic from the roadmap on the left to begin studying.</p>
+                    </div>
+                  )}
                 </div>
               ) : selectedTopic === 'GRAND_QUIZ' || selectedTopic.startsWith('MANDATORY_QUIZ_') ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
@@ -267,14 +314,14 @@ export default function CourseLearningPage() {
                     {selectedTopic}
                   </h2>
                   
-                  {/* Content Sub-Timeline (Video -> Video -> Notes -> Quiz) */}
+                  {/* Content Sub-Timeline (Video -> Notes -> Quiz) */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0', marginBottom: '60px', overflowX: 'visible', padding: '10px 10px' }}>
                     {[
-                      { type: 'Video 1', icon: '▶️', color: '#f44336', bg: '#ffebee' },
-                      { type: 'Video 2', icon: '▶️', color: '#3a8aff', bg: '#e3f2fd' },
+                      { type: course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? 'Video 1' : 'Video', icon: '▶️', color: '#f44336', bg: '#ffebee' },
+                      ...(course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? [{ type: 'Video 2', icon: '▶️', color: '#3a8aff', bg: '#e3f2fd' }] : []),
                       { type: 'Notes',   icon: '📄', color: '#4caf50', bg: '#e8f5e9' },
                       { type: 'Quiz',    icon: '❓', color: '#ff9800', bg: '#fff3e0' },
-                    ].map((item, idx) => {
+                    ].map((item, idx, arr) => {
                       const isSelected = selectedContentIdx === idx;
                       return (
                         <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
@@ -308,7 +355,7 @@ export default function CourseLearningPage() {
                           </div>
                           
                           {/* Connector Line */}
-                          {idx < 3 && (
+                          {idx < arr.length - 1 && (
                             <div style={{ 
                               width: '40px', height: '3px', 
                               background: isSelected ? item.color : '#e0e0e0', 
@@ -322,14 +369,46 @@ export default function CourseLearningPage() {
                   </div>
 
                   {/* Main Video/Content Player Area */}
-                  <div style={{ flex: 1, background: '#f9fafb', borderRadius: '16px', border: '1px dashed #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                    <div style={{ width: '80px', height: '80px', background: '#e3f2fd', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: '#1565c0' }}>
-                      <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#455a64', marginBottom: '10px' }}>Contents are coming soon</h3>
-                    <p style={{ color: '#78909c', fontSize: '14px', maxWidth: '400px', textAlign: 'center' }}>
-                      The videos, study materials, and topic quizzes for this section will be unlocked shortly.
-                    </p>
+                  <div style={{ flex: 1, background: '#f9fafb', borderRadius: '16px', border: '1px dashed #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    
+                    {/* Render VideoPlayer if Video is selected AND we have a topicDetails object for this topic */}
+                    {selectedContentIdx === 0 && course.topicDetails && course.topicDetails[selectedTopic] ? (
+                      <VideoPlayer 
+                        videoUrl={course.topicDetails[selectedTopic].videoUrl}
+                        title={selectedTopic}
+                        summary={course.topicDetails[selectedTopic].summary}
+                        thumbnailUrl={course.topicDetails[selectedTopic].thumbnail}
+                        isCompleted={completedItems.includes(selectedTopic)}
+                        onComplete={() => {
+                          if (!completedItems.includes(selectedTopic)) {
+                            setCompletedItems(prev => [...prev, selectedTopic]);
+                          }
+                        }}
+                      />
+                    ) : selectedContentIdx === 1 && course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? (
+                      <VideoPlayer 
+                        videoUrl={course.topicDetails[selectedTopic].videoUrl2}
+                        title={selectedTopic + " (Part 2)"}
+                        summary={course.topicDetails[selectedTopic].summary2}
+                        thumbnailUrl={course.topicDetails[selectedTopic].thumbnail2}
+                        isCompleted={completedItems.includes(selectedTopic + "_2")}
+                        onComplete={() => {
+                          if (!completedItems.includes(selectedTopic + "_2")) {
+                            setCompletedItems(prev => [...prev, selectedTopic + "_2"]);
+                          }
+                        }}
+                      />
+                    ) : (
+                      <>
+                        <div style={{ width: '80px', height: '80px', background: '#e3f2fd', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: '#1565c0' }}>
+                          <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#455a64', marginBottom: '10px' }}>Contents are coming soon</h3>
+                        <p style={{ color: '#78909c', fontSize: '14px', maxWidth: '400px', textAlign: 'center' }}>
+                          The videos, study materials, and topic quizzes for this section will be unlocked shortly.
+                        </p>
+                      </>
+                    )}
                   </div>
                 </>
               )}
