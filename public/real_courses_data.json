@@ -805,6 +805,11 @@
         "videoUrl": "https://drive.google.com/file/d/1CLxPhCapdd0pE5VmU30sfd-65BJnULrv/view?usp=sharing",
         "summary": "An overview of regression analysis, focusing on simple and multiple linear regression. Covers core concepts like independent and dependent variables, the best fit line equation, and performance metrics including R-squared, Standard Error, and RMSE.",
         "thumbnailUrl": "/image/thumbnails/regression.png"
+      },
+      "Definition - Types of Machine Learning - Examples of Machine Learning Problems - Training versus Testing - Characteristics of Machine learning tasks - Predictive and descriptive tasks - Machine learning Models: Geometric Models": {
+        "videoUrl": "https://drive.google.com/file/d/1L_4bpIJCpEomPrSuTFW8uFmjWAN54PIT/view?usp=sharing",
+        "summary": "An introduction to machine learning, covering core categories like supervised and unsupervised learning. Explains the K-Nearest Neighbors (KNN) algorithm, including distance metrics (Euclidean, Manhattan), choosing the right 'K' value, and the strengths and weaknesses of instance-based classification.",
+        "thumbnailUrl": "/image/thumbnails/knn.png"
       }
     }
   },
