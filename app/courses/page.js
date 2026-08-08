@@ -238,7 +238,7 @@ export default function CoursesPage() {
             {filteredCourses.length === 0 ? (
               <p style={{ color: '#888', gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>No courses match your criteria.</p>
             ) : filteredCourses.map((course, index) => {
-              const isEnrolled = enrolledCourses.includes(course.subject_code);
+              const isEnrolled = enrolledCourses.includes(course.course_name) || enrolledCourses.includes(course.subject_code);
               
               return (
                 <div 
@@ -280,7 +280,9 @@ export default function CoursesPage() {
                     borderTopLeftRadius: '16px', borderTopRightRadius: '16px'
                   }} />
 
-                  {/* Overlapping Badge */}
+
+
+                  {/* Overlapping Badge (Right - Relevance) */}
                   <div style={{
                     position: 'absolute', top: '-12px', right: '20px',
                     background: getRelevanceColor(course.relevance).bg,
@@ -313,7 +315,19 @@ export default function CoursesPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
                     <span style={{ fontSize: '12px', color: '#888' }}>⏱ {course.estimated_time || '45 Hours'}</span>
                     {isEnrolled ? (
-                       <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#2ecc71' }}>Enrolled ✓</span>
+                       <div style={{
+                         background: 'linear-gradient(135deg, #00b09b, #96c93d)',
+                         color: '#fff',
+                         border: '1px solid rgba(255,255,255,0.4)',
+                         padding: '4px 12px', borderRadius: '20px',
+                         fontSize: '11px', fontWeight: '900', 
+                         boxShadow: '0 4px 12px rgba(0, 176, 155, 0.3), inset 0 1px 0 rgba(255,255,255,0.3)',
+                         letterSpacing: '0.5px', textTransform: 'uppercase',
+                         display: 'flex', alignItems: 'center', gap: '4px'
+                       }}>
+                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                         Enrolled
+                       </div>
                     ) : (
                        <span style={{ fontSize: '13px', fontWeight: '600', color: '#3a8aff' }}>View Details ➔</span>
                     )}
