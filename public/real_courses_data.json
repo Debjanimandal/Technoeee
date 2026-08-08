@@ -726,7 +726,59 @@
     "video_link": "https://drive.google.com/drive/folders/13PC-coqWE8z_4VCatneFn9f2dmvygDmx",
     "estimated_time": "45 Hours",
     "difficulty": "Intermediate",
-    "relevance": "Essential Industry Concept"
+    "relevance": "Essential Industry Concept",
+    "topicDetails": {
+      "General introduction to database systems": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Focusing on a general introduction to databases: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Concept of file System and Disadvantages": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Highlighting the concept of file systems and their disadvantages: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Database-DBMS distinction": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Distinguishing between Database and DBMS: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Role of DBA": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Detailing the role of the DBA: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Approaches to building a database": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Covering approaches to building a database: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Data models": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Exploring data models: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Database management system": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Explaining Database Management Systems in depth: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Three-schema architecture of a database": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Unpacking the three-schema architecture: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Data Independency": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Discussing data independency: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Integrity constraints": {
+        "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
+        "summary": "Touching upon integrity constraints: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
+        "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      }
+    }
   },
   {
     "course_name": "Machine Learning",
