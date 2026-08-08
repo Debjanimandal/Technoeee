@@ -800,6 +800,11 @@
         "videoUrl": "https://drive.google.com/file/d/1H4rAWTX6rLrjXf5LxIZAl9ynQkD-9oSR/view?usp=sharing",
         "summary": "Provides an overview of decision trees as a supervised machine learning technique. Covers core components like root and leaf nodes, the 'divide and conquer' paradigm, and the ID3 algorithm using entropy and information gain. Includes a practical demonstration using a 'Play Tennis' dataset to build a predictive tree.",
         "thumbnailUrl": "/image/thumbnails/decision_tree.png"
+      },
+      "Classification: Binary Classification- Assessing Classification performance - Class probability Estimation - Multiclass Classification - Regression: Assessing performance of Regression - Error measures - Overfitting- Theory of Generalization: Effective number of hypothesis - Bounding the Growth function": {
+        "videoUrl": "https://drive.google.com/file/d/1CLxPhCapdd0pE5VmU30sfd-65BJnULrv/view?usp=sharing",
+        "summary": "An overview of regression analysis, focusing on simple and multiple linear regression. Covers core concepts like independent and dependent variables, the best fit line equation, and performance metrics including R-squared, Standard Error, and RMSE.",
+        "thumbnailUrl": "/image/thumbnails/regression.png"
       }
     }
   },
