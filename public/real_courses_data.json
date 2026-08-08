@@ -792,6 +792,11 @@
         "videoUrl2": "https://drive.google.com/file/d/1W5v5CqyaTOf6iyjdzUvgw-Njgd1y43Be/view?usp=sharing",
         "summary2": "Explains the application of Support Vector Machines to non-linearly separable datasets by transforming data into higher-dimensional spaces using Kernel functions, ensuring linear classification.",
         "thumbnailUrl2": "/image/thumbnails/non_linear_svm.png"
+      },
+      "Rule Based Models: Rule learning for subgroup discovery - Association rule mining - Tree Based Models: Decision Trees - Ranking and Probability estimation Trees - Regression trees - Classification and Regression Trees (CART)": {
+        "videoUrl": "https://drive.google.com/file/d/1H4rAWTX6rLrjXf5LxIZAl9ynQkD-9oSR/view?usp=sharing",
+        "summary": "Provides an overview of decision trees as a supervised machine learning technique. Covers core components like root and leaf nodes, the 'divide and conquer' paradigm, and the ID3 algorithm using entropy and information gain. Includes a practical demonstration using a 'Play Tennis' dataset to build a predictive tree.",
+        "thumbnailUrl": "/image/thumbnails/decision_tree.png"
       }
     }
   },
