@@ -788,7 +788,10 @@
       "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data – Naïve Bayes Classifier": {
         "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
         "summary": "This lecture covers Support Vector Machines (SVM) for maximizing hyperplane margins, alongside Multiple Layer Perceptrons, kernel methods for non-linearity, and probabilistic categorical models such as the Naïve Bayes Classifier.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.png"
+        "thumbnailUrl": "/image/thumbnails/ml_svm.png",
+        "videoUrl2": "https://drive.google.com/file/d/1W5v5CqyaTOf6iyjdzUvgw-Njgd1y43Be/view?usp=sharing",
+        "summary2": "Explains the application of Support Vector Machines to non-linearly separable datasets by transforming data into higher-dimensional spaces using Kernel functions, ensuring linear classification.",
+        "thumbnailUrl2": "/image/thumbnails/non_linear_svm.png"
       }
     }
   },
