@@ -20,7 +20,7 @@ export default function Footer() {
           <a href="#">Teacher Rules &amp; Requirements</a>
         </div>
       </div>
-      <p className="copyright">© Copyright 2025. Devmode Team.</p>
+      <p className="copyright">© Copyright 2025. Techno EEE Team.</p>
     </footer>
   );
 }

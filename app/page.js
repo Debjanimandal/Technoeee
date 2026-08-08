@@ -26,7 +26,7 @@ const CHANNELS = [
 
 const FAQ_ITEMS = [
   { q: 'How do I become a teacher?', a: 'To become a teacher, you need to sign up on our platform, submit an application with your credentials, and complete our teacher training program.' },
-  { q: 'What is Dev mode?', a: 'In our Dev mode you will learn how to observe your learning process and how to get improve in such things.' },
+  { q: 'What is Techno EEE?', a: 'In our Techno EEE you will learn how to observe your learning process and how to get improve in such things.' },
   { q: 'How to become a coder?', a: "To become a coder, you'll typically need to learn programming languages, practice regularly, build projects, and potentially pursue formal education or certifications." },
 ];
 
@@ -97,12 +97,12 @@ export default function Home() {
       {/* Hero section */}
       <div className={`main-content${devMode ? ' dev-mode-on' : ''}`} id="mainContent">
         <div className={`text-content${devMode ? ' dev-mode-on' : ''}`} id="textContent">
-          <h1 id="mainHeading">{devMode ? 'BE YOUR BEST IN' : 'DIVE INTO DEV MODE'}</h1>
+          <h1 id="mainHeading">{devMode ? 'BE YOUR BEST IN' : 'DIVE INTO TECHNO EEE'}</h1>
           <div className="paragraph-wrapper">
             <p id="potentialText">
               {devMode ? 'Learn something new today!' : 'Unlock Your Potential and Make an Impact with Your Skills!'}
             </p>
-            {!devMode && <p id="kickstartText">Kickstart Your Journey by Enabling Dev Mode!</p>}
+            {!devMode && <p id="kickstartText">Kickstart Your Journey by Enabling Techno EEE!</p>}
             {devMode && <p id="startJourneyText">Start your journey</p>}
           </div>
           <div className={`toggle-switch${devMode ? ' dev-mode-on' : ''}`} id="toggleSwitch">
@@ -113,7 +113,7 @@ export default function Home() {
               onChange={e => setDevMode(e.target.checked)}
             />
             <label htmlFor="dev-mode"></label>
-            <span>Dev Mode</span>
+            <span>Techno EEE</span>
           </div>
         </div>
 

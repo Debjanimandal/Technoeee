@@ -10,7 +10,7 @@ const poppins = Poppins({
 });
 
 export const metadata = {
-  title: 'DevMode – Learn & Grow',
+  title: 'Techno EEE – Learn & Grow',
   description: 'Unlock Your Potential and Make an Impact with Your Skills!',
 };
 
