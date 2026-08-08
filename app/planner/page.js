@@ -45,6 +45,120 @@ function getCourseColor(subjectCode) {
   return colors[Math.abs(hash) % colors.length];
 }
 
+// ─── AI Assistant Component (Animated & Behavioral) ──────────────────────────
+function ContextualAIAssistant({ dateStr, todayStr, tasks, completedTasks, overdueCount }) {
+  const [state, setState] = useState('idle'); // idle, thinking, typing, done
+  const [displayedText, setDisplayedText] = useState('');
+  const [fullText, setFullText] = useState('');
+
+  useEffect(() => {
+    if (!dateStr || dateStr !== todayStr) {
+      setState('idle');
+      return;
+    }
+    
+    // Analyze behavior
+    let msg = '';
+    const pending = (tasks || []).filter(t => !completedTasks.includes(t.id));
+    const allDone = tasks && tasks.length > 0 && pending.length === 0;
+    
+    const currentHour = new Date().getHours();
+    const isLateNight = currentHour >= 22 || currentHour < 4;
+    const isMorning = currentHour >= 5 && currentHour < 12;
+
+    if (allDone) {
+      msg = `Excellent work finishing your sessions! Do you have any lingering doubts? Ask the AI Chatbot while the concepts are still fresh.`;
+      if (completedTasks.length > 10) {
+        msg = `Incredible streak! You've crushed over 10 tasks recently. ` + msg;
+      }
+    } else if (!tasks || tasks.length === 0) {
+      msg = overdueCount > 0 
+        ? `You have a free day, but I noticed ${overdueCount} overdue task(s). Let's use this time to catch up and protect your streak!` 
+        : `You have a clear schedule today! Enjoy your break or review past material to reinforce your memory.`;
+    } else {
+      if (isLateNight) {
+        msg = `It's getting late! You have ${pending.length} task(s) left. Remember that sleep is crucial for memory retention, so don't push too hard.`;
+      } else if (isMorning) {
+        msg = `Good morning! You have ${pending.length} task(s) scheduled today. A great time to tackle the hardest one first while your energy is high.`;
+      } else {
+        msg = `You have ${pending.length} task(s) remaining for today. Turn on the Pomodoro timer and let's tackle them one by one!`;
+      }
+    }
+    
+    setFullText(msg);
+    setState('thinking');
+    setDisplayedText('');
+    
+    // Simulate thinking delay
+    const thinkTimer = setTimeout(() => {
+      setState('typing');
+    }, 1500);
+    
+    return () => clearTimeout(thinkTimer);
+  }, [dateStr, todayStr, tasks, completedTasks, overdueCount]);
+
+  // Typewriter effect
+  useEffect(() => {
+    if (state === 'typing') {
+      let i = 0;
+      setDisplayedText('');
+      const typeTimer = setInterval(() => {
+        setDisplayedText(prev => prev + fullText.charAt(i));
+        i++;
+        if (i >= fullText.length) {
+          clearInterval(typeTimer);
+          setState('done');
+        }
+      }, 30); // 30ms per char
+      return () => clearInterval(typeTimer);
+    }
+  }, [state, fullText]);
+
+  if (dateStr !== todayStr) return null; // Only show for today
+
+  return (
+    <div style={{
+      background: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)',
+      padding: '16px 20px', borderRadius: '16px', marginBottom: '24px',
+      borderLeft: '4px solid #2b5876', display: 'flex', alignItems: 'flex-start', gap: '12px',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.02)'
+    }}>
+      <div style={{ fontSize: '24px', marginTop: '2px' }}>🤖</div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#2b5876', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          AI Assistant
+        </div>
+        <div style={{ fontSize: '14px', color: '#444', minHeight: '40px', lineHeight: '1.5' }}>
+          {state === 'thinking' ? (
+            <div style={{ display: 'flex', gap: '4px', alignItems: 'center', height: '21px' }}>
+              <span className="dot-anim" style={{ animationDelay: '0s' }}>.</span>
+              <span className="dot-anim" style={{ animationDelay: '0.2s' }}>.</span>
+              <span className="dot-anim" style={{ animationDelay: '0.4s' }}>.</span>
+              <span style={{ marginLeft: '4px', fontStyle: 'italic', color: '#888' }}>thinking</span>
+              <style jsx>{`
+                .dot-anim {
+                  display: inline-block;
+                  width: 6px; height: 6px; border-radius: 50%; background: #2b5876;
+                  animation: bounce 1.4s infinite ease-in-out both;
+                }
+                @keyframes bounce {
+                  0%, 80%, 100% { transform: scale(0); }
+                  40% { transform: scale(1); }
+                }
+              `}</style>
+            </div>
+          ) : (
+            <span>{displayedText}{state === 'typing' && <span style={{ borderRight: '2px solid #2b5876', animation: 'blink 1s step-end infinite' }}>&nbsp;</span>}</span>
+          )}
+          <style jsx>{`
+            @keyframes blink { 50% { border-color: transparent; } }
+          `}</style>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Dynamic Scheduling Engine (v2) ──────────────────────────────────────────
 function generateDynamicSchedule(enrollments, pace, startDateStr, completedTasksList) {
   const scheduleMap = {};
@@ -451,50 +565,14 @@ export default function PlannerPage() {
                 </div>
               </div>
 
-              {/* AI Suggestion Banner */}
-              {selectedDateStr && (
-                <div style={{
-                  background: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)',
-                  padding: '16px 20px', borderRadius: '16px', marginBottom: '24px',
-                  borderLeft: '4px solid #2b5876', display: 'flex', alignItems: 'center', gap: '12px'
-                }}>
-                  <div style={{ fontSize: '24px' }}>
-                    {(() => {
-                      if (!selectedTasks || selectedTasks.length === 0) return '💡';
-                      const isPast = selectedDateStr < todayStr;
-                      const allDone = selectedTasks.every(t => completedTasks.includes(t.id));
-                      if (isPast && !allDone) return '⏳';
-                      if (allDone) return '🎉';
-                      return '🤖';
-                    })()}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#2b5876', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                      AI Assistant Suggestion
-                    </div>
-                    <div style={{ fontSize: '14px', color: '#444' }}>
-                      {(() => {
-                        if (!selectedTasks || selectedTasks.length === 0) {
-                          return overdueTasksCount > 0 
-                            ? `You have ${overdueTasksCount} overdue tasks from previous days. Consider using this free day to catch up!` 
-                            : 'You have a clear schedule today! Enjoy your break or review past material to reinforce your memory.';
-                        }
-                        const isPast = selectedDateStr < todayStr;
-                        const pending = selectedTasks.filter(t => !completedTasks.includes(t.id));
-                        const allDone = pending.length === 0;
-
-                        if (isPast && !allDone) {
-                          return `You missed ${pending.length} class(es) on this day. Please learn them ASAP or click "Rebalance Schedule" at the top to shift them forward.`;
-                        } else if (allDone) {
-                          return 'Excellent work finishing your sessions! Do you have any lingering doubts? Ask the AI Chatbot while the concepts are still fresh.';
-                        } else {
-                          return `You have ${pending.length} task(s) remaining for this day. Turn on the Pomodoro timer and tackle them one by one!`;
-                        }
-                      })()}
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* Animated AI Suggestion Banner (Only for Today) */}
+              <ContextualAIAssistant 
+                dateStr={selectedDateStr} 
+                todayStr={todayStr} 
+                tasks={selectedTasks} 
+                completedTasks={completedTasks} 
+                overdueCount={overdueTasksCount} 
+              />
 
               <div style={{ flex: 1 }}>
                 {loading ? (
