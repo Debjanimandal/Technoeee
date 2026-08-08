@@ -319,6 +319,7 @@ export default function CourseLearningPage() {
                     {[
                       { type: course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? 'Video 1' : 'Video', icon: '▶️', color: '#f44336', bg: '#ffebee' },
                       ...(course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? [{ type: 'Video 2', icon: '▶️', color: '#3a8aff', bg: '#e3f2fd' }] : []),
+                      ...(course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl3 ? [{ type: 'Video 3', icon: '▶️', color: '#9c27b0', bg: '#f3e5f5' }] : []),
                       { type: 'Notes',   icon: '📄', color: '#4caf50', bg: '#e8f5e9' },
                       { type: 'Quiz',    icon: '❓', color: '#ff9800', bg: '#fff3e0' },
                     ].map((item, idx, arr) => {
@@ -395,6 +396,19 @@ export default function CourseLearningPage() {
                         onComplete={() => {
                           if (!completedItems.includes(selectedTopic + "_2")) {
                             setCompletedItems(prev => [...prev, selectedTopic + "_2"]);
+                          }
+                        }}
+                      />
+                    ) : selectedContentIdx === 2 && course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl3 ? (
+                      <VideoPlayer 
+                        videoUrl={course.topicDetails[selectedTopic].videoUrl3}
+                        title={selectedTopic + " (Part 3)"}
+                        summary={course.topicDetails[selectedTopic].summary3}
+                        thumbnailUrl={course.topicDetails[selectedTopic].thumbnail3}
+                        isCompleted={completedItems.includes(selectedTopic + "_3")}
+                        onComplete={() => {
+                          if (!completedItems.includes(selectedTopic + "_3")) {
+                            setCompletedItems(prev => [...prev, selectedTopic + "_3"]);
                           }
                         }}
                       />

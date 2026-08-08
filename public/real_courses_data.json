@@ -791,7 +791,10 @@
         "thumbnailUrl": "/image/thumbnails/ml_svm.png",
         "videoUrl2": "https://drive.google.com/file/d/1W5v5CqyaTOf6iyjdzUvgw-Njgd1y43Be/view?usp=sharing",
         "summary2": "Explains the application of Support Vector Machines to non-linearly separable datasets by transforming data into higher-dimensional spaces using Kernel functions, ensuring linear classification.",
-        "thumbnailUrl2": "/image/thumbnails/non_linear_svm.png"
+        "thumbnailUrl2": "/image/thumbnails/non_linear_svm.png",
+        "videoUrl3": "https://drive.google.com/file/d/1ObZDzhjtSEVfbyMZoDBkgM_e-PxEyJmM/view?usp=sharing",
+        "summary3": "Provides an introduction to the Naive Bayes classifier, a supervised machine learning algorithm based on Bayes theorem. Covers core concepts (posterior, prior, likelihood), types (Gaussian, Multinomial, Bernoulli), and includes a practical implementation in Python using pandas and scikit-learn for evaluating accuracy.",
+        "thumbnailUrl3": "/image/thumbnails/naive_bayes.png"
       },
       "Rule Based Models: Rule learning for subgroup discovery - Association rule mining - Tree Based Models: Decision Trees - Ranking and Probability estimation Trees - Regression trees - Classification and Regression Trees (CART)": {
         "videoUrl": "https://drive.google.com/file/d/1H4rAWTX6rLrjXf5LxIZAl9ynQkD-9oSR/view?usp=sharing",
