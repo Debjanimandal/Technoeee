@@ -491,9 +491,10 @@ export default function PlannerPage() {
                           {/* Time Label */}
                           <div style={{ 
                             position: 'absolute', left: '-110px', top: '20px', width: '80px', textAlign: 'right',
-                            fontSize: '13px', fontWeight: 'bold', color: isDone ? '#ccc' : '#444'
+                            color: isDone ? '#ccc' : '#444'
                           }}>
-                            {task.time_slot.split(' - ')[0]}
+                            <div style={{ fontSize: '13px', fontWeight: 'bold' }}>{task.time_slot.split(' - ')[0]}</div>
+                            <div style={{ fontSize: '11px', opacity: 0.8, marginTop: '4px' }}>to {task.time_slot.split(' - ')[1]}</div>
                           </div>
                           
                           {/* Timeline Dot */}
@@ -547,7 +548,7 @@ export default function PlannerPage() {
 
                             {/* Complete Checkbox */}
                             <div 
-                              onClick={() => handleComplete(dateStr, task.id)}
+                              onClick={() => handleComplete(selectedDateStr, task.id)}
                               style={{
                                 position: 'absolute', right: '24px', top: '24px',
                                 width: '32px', height: '32px', borderRadius: '10px',
