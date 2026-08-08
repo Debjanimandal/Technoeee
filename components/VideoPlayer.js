@@ -107,7 +107,7 @@ export default function VideoPlayer({
       </div>
 
       {/* Completion Actions (Specifically for GDrive where auto-detect fails) */}
-      {isGoogleDrive && !isCompleted && isPlaying && (
+      {isGoogleDrive && !isCompleted && (isPlaying || !thumbnailUrl) && (
         <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
           <button 
             onClick={() => onComplete && onComplete()}
