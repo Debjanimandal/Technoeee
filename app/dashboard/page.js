@@ -306,10 +306,10 @@ export default function DashboardPage() {
             </div>
 
             {/* ─── Main Grid Layout ─────────────────────────────────────────────── */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '32px', alignItems: 'start' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '32px', alignItems: 'stretch' }}>
               
               {/* Left Column */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', height: '100%' }}>
                 
                 {/* Active Courses */}
                 <div>
@@ -353,7 +353,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Performance Chart */}
-                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
                     <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Study Performance</h2>
                     <div style={{ display: 'flex', background: '#f1f5f9', padding: '4px', borderRadius: '12px' }}>
@@ -373,7 +373,7 @@ export default function DashboardPage() {
                       ))}
                     </div>
                   </div>
-                  <div style={{ height: '300px', width: '100%', position: 'relative' }}>
+                  <div style={{ flex: 1, width: '100%', minHeight: '300px', position: 'relative' }}>
                     {chartLoading ? (
                       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'flex-end', gap: '20px', paddingBottom: '20px' }}>
                         {[80, 140, 100, 180, 120, 200, 160].map((h, i) => <Skeleton key={i} h={h} w="10%" radius={8} />)}
@@ -396,7 +396,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Right Column / Sidebar */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', height: '100%' }}>
                 
                 {/* Continue Learning Widget */}
                 {continueCourse && (
@@ -453,6 +453,18 @@ export default function DashboardPage() {
                       ))}
                     </div>
                   )}
+                </div>
+
+                {/* AI Learning Insights Widget */}
+                <div style={{ flex: 1, background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ color: '#4f46e5' }}><Icons.Flame /></span> AI Insights
+                    </h2>
+                    <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.5', margin: 0 }}>
+                      Based on your recent activity, you learn best during <strong>evening sessions</strong>. Try scheduling your next heavy topic after 6 PM for maximum retention!
+                    </p>
+                  </div>
                 </div>
 
                 {/* Weekly Goal Widget */}
