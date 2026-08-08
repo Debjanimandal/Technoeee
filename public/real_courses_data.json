@@ -780,50 +780,15 @@
     "difficulty": "Advanced",
     "relevance": "High Demand Industry Skill",
     "topicDetails": {
-      "Least Squares method": {
-        "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "In the context of the Least Squares method: Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.jpg"
-      },
-      "Multivariate Linear Regression": {
-        "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "Relating to Multivariate Linear Regression: Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.jpg"
-      },
-      "Perceptron": {
-        "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "Building on Perceptron concepts: Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.jpg"
-      },
-      "Multiple Layer Perceptron": {
-        "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "Contrasting with Multiple Layer Perceptrons: Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.jpg"
-      },
-      "Support Vector Machines": {
+      "Least Squares method - Multivariate Linear Regression - Perceptron": {
         "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
         "summary": "Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.jpg"
+        "thumbnailUrl": "/image/thumbnails/ml_svm.png"
       },
-      "Obtaining probabilities from Linear classifiers": {
+      "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data � Na�ve Bayes Classifier": {
         "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "While obtaining probabilities from linear classifiers: Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.jpg"
-      },
-      "Kernel methods for non-Linearity": {
-        "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "As a precursor to Kernel methods: Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.jpg"
-      },
-      "Probabilistic models for categorical data": {
-        "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "In contrast to probabilistic models for categorical data: Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.jpg"
-      },
-      "Naïve Bayes Classifier": {
-        "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "Comparing with the Naïve Bayes Classifier: Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
-        "thumbnailUrl": "/image/thumbnails/ml_svm.jpg"
+        "summary": "Introduces Support Vector Machines (SVM) for classification and regression. Covers real-life applications, maximizing the hyperplane margin, and solving linear equations with a practical 2D example.",
+        "thumbnailUrl": "/image/thumbnails/ml_svm.png"
       }
     }
   },
