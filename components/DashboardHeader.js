@@ -40,11 +40,7 @@ export default function DashboardHeader() {
   return (
     <div className="dashboard-header">
       <Image src="/image/logo.png" alt="TechnoEEE Logo" width={120} height={40} unoptimized />
-      <div className="header-right">
-        <div className="search-container">
-          <Image className="search-icon" src="/image/search.jpg" alt="Search Icon" width={16} height={16} unoptimized />
-          <input type="text" placeholder="    Search" />
-        </div>
+      <div className="header-right" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
         
         {/* Notification Bell */}
         <div ref={notifRef} style={{ position: 'relative' }}>
