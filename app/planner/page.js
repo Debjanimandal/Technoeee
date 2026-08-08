@@ -451,6 +451,51 @@ export default function PlannerPage() {
                 </div>
               </div>
 
+              {/* AI Suggestion Banner */}
+              {selectedDateStr && (
+                <div style={{
+                  background: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)',
+                  padding: '16px 20px', borderRadius: '16px', marginBottom: '24px',
+                  borderLeft: '4px solid #2b5876', display: 'flex', alignItems: 'center', gap: '12px'
+                }}>
+                  <div style={{ fontSize: '24px' }}>
+                    {(() => {
+                      if (!selectedTasks || selectedTasks.length === 0) return '💡';
+                      const isPast = selectedDateStr < todayStr;
+                      const allDone = selectedTasks.every(t => completedTasks.includes(t.id));
+                      if (isPast && !allDone) return '⏳';
+                      if (allDone) return '🎉';
+                      return '🤖';
+                    })()}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#2b5876', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      AI Assistant Suggestion
+                    </div>
+                    <div style={{ fontSize: '14px', color: '#444' }}>
+                      {(() => {
+                        if (!selectedTasks || selectedTasks.length === 0) {
+                          return overdueTasksCount > 0 
+                            ? `You have ${overdueTasksCount} overdue tasks from previous days. Consider using this free day to catch up!` 
+                            : 'You have a clear schedule today! Enjoy your break or review past material to reinforce your memory.';
+                        }
+                        const isPast = selectedDateStr < todayStr;
+                        const pending = selectedTasks.filter(t => !completedTasks.includes(t.id));
+                        const allDone = pending.length === 0;
+
+                        if (isPast && !allDone) {
+                          return `You missed ${pending.length} class(es) on this day. Please learn them ASAP or click "Rebalance Schedule" at the top to shift them forward.`;
+                        } else if (allDone) {
+                          return 'Excellent work finishing your sessions! Do you have any lingering doubts? Ask the AI Chatbot while the concepts are still fresh.';
+                        } else {
+                          return `You have ${pending.length} task(s) remaining for this day. Turn on the Pomodoro timer and tackle them one by one!`;
+                        }
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div style={{ flex: 1 }}>
                 {loading ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
