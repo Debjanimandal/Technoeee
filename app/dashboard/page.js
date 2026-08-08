@@ -96,6 +96,9 @@ export default function DashboardPage() {
   // Dynamic Planner Data
   const [upcomingTasks, setUpcomingTasks] = useState([]);
   const [completedTopicsCount, setCompletedTopicsCount] = useState(0);
+  
+  // AI Insights State
+  const [aiInsight, setAiInsight] = useState("Analyzing your learning patterns...");
 
   // Chart refs
   const chartRef = useRef(null);
@@ -163,6 +166,36 @@ export default function DashboardPage() {
       }
     } catch (e) {}
   }, [courses]);
+
+  // 3. Generate Dynamic AI Insight
+  useEffect(() => {
+    if (analyticsLoading) return;
+    
+    const hour = new Date().getHours();
+    const todayMinutes = stats?.today_minutes || 0;
+    const weeklyHours = stats?.weekly_hours || 0;
+    
+    let insight = "";
+    
+    // Heuristic Engine for AI Insights
+    if (streak >= 3) {
+      insight = `You're on a fire ${streak}-day streak! 🔥 Consistency builds deep memory retention. Let's push it to ${streak + 1} today.`;
+    } else if (weeklyHours >= 10) {
+      insight = `You've crushed over ${weeklyHours} hours this week! Your dedication is impressive. Remember to take short walks to avoid burnout.`;
+    } else if (todayMinutes === 0 && hour >= 18) {
+      insight = `It's getting late and you haven't logged any study time today. Even a quick 15-minute review session keeps your brain primed!`;
+    } else if (todayMinutes > 120) {
+      insight = `You've been studying for over 2 hours today! Cognitive load might be peaking. Consider switching topics or taking a longer break.`;
+    } else if (upcomingTasks.length > 0 && hour < 12) {
+      insight = `Good morning! You have ${upcomingTasks.length} tasks waiting. Tackling the hardest one first (Eat the Frog) is proven to boost all-day productivity.`;
+    } else if (upcomingTasks.length === 0 && courses.length > 0) {
+      insight = `You've cleared your schedule! This is the perfect time to review past notes or explore a brand new course module.`;
+    } else {
+      insight = `Based on your recent activity, short, focused 25-minute bursts (Pomodoro technique) could help accelerate your progress in your active courses.`;
+    }
+    
+    setAiInsight(insight);
+  }, [stats, streak, upcomingTasks, analyticsLoading, courses.length]);
 
   // 4. Fetch Real Chart Data when View Mode changes
   const fetchChartData = useCallback(async () => {
@@ -462,7 +495,7 @@ export default function DashboardPage() {
                       <span style={{ color: '#4f46e5' }}><Icons.Flame /></span> AI Insights
                     </h2>
                     <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.5', margin: 0 }}>
-                      Based on your recent activity, you learn best during <strong>evening sessions</strong>. Try scheduling your next heavy topic after 6 PM for maximum retention!
+                      {aiInsight}
                     </p>
                   </div>
                 </div>
