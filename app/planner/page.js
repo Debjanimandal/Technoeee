@@ -123,6 +123,23 @@ function ContextualAIAssistant({ dateStr, todayStr, tasks, completedTasks, overd
       borderLeft: '4px solid #2b5876', display: 'flex', alignItems: 'flex-start', gap: '12px',
       boxShadow: '0 4px 15px rgba(0,0,0,0.02)'
     }}>
+      <style jsx>{`
+        .dot-anim {
+          display: inline-block;
+          width: 6px; height: 6px; border-radius: 50%; background: #2b5876;
+          animation: bounce 1.4s infinite ease-in-out both;
+        }
+        @keyframes bounce {
+          0%, 80%, 100% { transform: scale(0); }
+          40% { transform: scale(1); }
+        }
+        .cursor-blink {
+          border-right: 2px solid #2b5876;
+          animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { border-color: transparent; } }
+      `}</style>
+
       <div style={{ fontSize: '24px', marginTop: '2px' }}>🤖</div>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#2b5876', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
@@ -131,28 +148,14 @@ function ContextualAIAssistant({ dateStr, todayStr, tasks, completedTasks, overd
         <div style={{ fontSize: '14px', color: '#444', minHeight: '40px', lineHeight: '1.5' }}>
           {state === 'thinking' ? (
             <div style={{ display: 'flex', gap: '4px', alignItems: 'center', height: '21px' }}>
-              <span className="dot-anim" style={{ animationDelay: '0s' }}>.</span>
-              <span className="dot-anim" style={{ animationDelay: '0.2s' }}>.</span>
-              <span className="dot-anim" style={{ animationDelay: '0.4s' }}>.</span>
+              <span className="dot-anim" style={{ animationDelay: '0s' }}></span>
+              <span className="dot-anim" style={{ animationDelay: '0.2s' }}></span>
+              <span className="dot-anim" style={{ animationDelay: '0.4s' }}></span>
               <span style={{ marginLeft: '4px', fontStyle: 'italic', color: '#888' }}>thinking</span>
-              <style jsx>{`
-                .dot-anim {
-                  display: inline-block;
-                  width: 6px; height: 6px; border-radius: 50%; background: #2b5876;
-                  animation: bounce 1.4s infinite ease-in-out both;
-                }
-                @keyframes bounce {
-                  0%, 80%, 100% { transform: scale(0); }
-                  40% { transform: scale(1); }
-                }
-              `}</style>
             </div>
           ) : (
-            <span>{displayedText}{state === 'typing' && <span style={{ borderRight: '2px solid #2b5876', animation: 'blink 1s step-end infinite' }}>&nbsp;</span>}</span>
+            <span>{displayedText}{state === 'typing' && <span className="cursor-blink">&nbsp;</span>}</span>
           )}
-          <style jsx>{`
-            @keyframes blink { 50% { border-color: transparent; } }
-          `}</style>
         </div>
       </div>
     </div>
