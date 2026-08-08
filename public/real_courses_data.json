@@ -506,7 +506,29 @@
     "video_link": "https://drive.google.com/file/d/11dgPWYrd0K-U8QAL0owl8kn5EO_8l7ly/view?usp=sharing",
     "estimated_time": "45 Hours",
     "difficulty": "Intermediate",
-    "relevance": "Core CS Foundation"
+    "relevance": "Core CS Foundation",
+    "topicDetails": {
+      "Introduction to algorithm design and importance of its analysis": {
+        "videoUrl": "https://drive.google.com/file/d/1AG8xO8JQOqAZBDrZyprQq1PLzVDui4Cf/view?usp=sharing",
+        "summary": "Focusing on the importance of algorithm analysis: An introduction to algorithm design, covering key problem-solving steps, characteristics of good algorithms, and asymptotic analysis (Big O, Omega, Theta). Also introduces the divide-and-conquer strategy used in sorting algorithms and outlines future course topics.",
+        "thumbnailUrl": "/image/thumbnails/algorithm_intro.png"
+      },
+      "Asymptotic notations and their significance": {
+        "videoUrl": "https://drive.google.com/file/d/1AG8xO8JQOqAZBDrZyprQq1PLzVDui4Cf/view?usp=sharing",
+        "summary": "Highlighting asymptotic notations: An introduction to algorithm design, covering key problem-solving steps, characteristics of good algorithms, and asymptotic analysis (Big O, Omega, Theta). Also introduces the divide-and-conquer strategy used in sorting algorithms and outlines future course topics.",
+        "thumbnailUrl": "/image/thumbnails/algorithm_intro.png"
+      },
+      "Complexity analysis of algorithms – best case": {
+        "videoUrl": "https://drive.google.com/file/d/1AG8xO8JQOqAZBDrZyprQq1PLzVDui4Cf/view?usp=sharing",
+        "summary": "Delving into complexity analysis (best case): An introduction to algorithm design, covering key problem-solving steps, characteristics of good algorithms, and asymptotic analysis (Big O, Omega, Theta). Also introduces the divide-and-conquer strategy used in sorting algorithms and outlines future course topics.",
+        "thumbnailUrl": "/image/thumbnails/algorithm_intro.png"
+      },
+      "worst case and average case with example of Insertion sort": {
+        "videoUrl": "https://drive.google.com/file/d/1AG8xO8JQOqAZBDrZyprQq1PLzVDui4Cf/view?usp=sharing",
+        "summary": "Exploring worst and average cases via Insertion sort: An introduction to algorithm design, covering key problem-solving steps, characteristics of good algorithms, and asymptotic analysis (Big O, Omega, Theta). Also introduces the divide-and-conquer strategy used in sorting algorithms and outlines future course topics.",
+        "thumbnailUrl": "/image/thumbnails/algorithm_intro.png"
+      }
+    }
   },
   {
     "course_name": "Database Management System",
