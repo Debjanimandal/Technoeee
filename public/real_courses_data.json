@@ -777,6 +777,26 @@
         "videoUrl": "https://drive.google.com/file/d/1my0bShWJjL4lLRlU7b_EL8nRQ_drbbRT/view?usp=sharing",
         "summary": "Touching upon integrity constraints: An introduction to Database Management Systems (DBMS), covering the architecture, types of users (DBAs, end-users), data abstraction, the Three-Schema Architecture (Physical, Logical, View levels), Data Independence, and the distinction between Schema and Instance.",
         "thumbnailUrl": "/image/thumbnails/dbms_intro.jpg"
+      },
+      "Transaction Fundamentals: OLTP environments": {
+        "videoUrl": "https://drive.google.com/file/d/1bCNymWvXSfYNg3qJQoXWEM75m1WpWLWv/view?usp=sharing",
+        "summary": "Focusing on Transaction Fundamentals and OLTP environments: Covers the fundamentals of DBMS transactions, including their necessity for concurrent access, transaction states (active, committed, rolled back), and schedules. Explains the core ACID properties (Atomicity, Consistency, Isolation, Durability) that guarantee database reliability.",
+        "thumbnailUrl": "/image/thumbnails/dbms_transactions.png"
+      },
+      "Concurrency issues": {
+        "videoUrl": "https://drive.google.com/file/d/1bCNymWvXSfYNg3qJQoXWEM75m1WpWLWv/view?usp=sharing",
+        "summary": "Highlighting concurrency issues: Covers the fundamentals of DBMS transactions, including their necessity for concurrent access, transaction states (active, committed, rolled back), and schedules. Explains the core ACID properties (Atomicity, Consistency, Isolation, Durability) that guarantee database reliability.",
+        "thumbnailUrl": "/image/thumbnails/dbms_transactions.png"
+      },
+      "need for transactions": {
+        "videoUrl": "https://drive.google.com/file/d/1bCNymWvXSfYNg3qJQoXWEM75m1WpWLWv/view?usp=sharing",
+        "summary": "Discussing the need for transactions: Covers the fundamentals of DBMS transactions, including their necessity for concurrent access, transaction states (active, committed, rolled back), and schedules. Explains the core ACID properties (Atomicity, Consistency, Isolation, Durability) that guarantee database reliability.",
+        "thumbnailUrl": "/image/thumbnails/dbms_transactions.png"
+      },
+      "Necessary properties of transactions (ACID properties)": {
+        "videoUrl": "https://drive.google.com/file/d/1bCNymWvXSfYNg3qJQoXWEM75m1WpWLWv/view?usp=sharing",
+        "summary": "Detailing the necessary ACID properties: Covers the fundamentals of DBMS transactions, including their necessity for concurrent access, transaction states (active, committed, rolled back), and schedules. Explains the core ACID properties (Atomicity, Consistency, Isolation, Durability) that guarantee database reliability.",
+        "thumbnailUrl": "/image/thumbnails/dbms_transactions.png"
       }
     }
   },
