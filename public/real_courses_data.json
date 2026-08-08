@@ -527,6 +527,11 @@
         "videoUrl": "https://drive.google.com/file/d/1AG8xO8JQOqAZBDrZyprQq1PLzVDui4Cf/view?usp=sharing",
         "summary": "Exploring worst and average cases via Insertion sort: An introduction to algorithm design, covering key problem-solving steps, characteristics of good algorithms, and asymptotic analysis (Big O, Omega, Theta). Also introduces the divide-and-conquer strategy used in sorting algorithms and outlines future course topics.",
         "thumbnailUrl": "/image/thumbnails/algorithm_intro.png"
+      },
+      "Divide-and-Conquer": {
+        "videoUrl": "https://drive.google.com/file/d/1nZ-XFg31VeVNQacmqpswoKLFB8WdeEpP/view?usp=sharing",
+        "summary": "An overview of the Merge Sort algorithm using the 'divide and conquer' approach. Covers the core components like the recursive splitting of arrays, the merge procedure, and the use of sentinel values to efficiently sort and combine elements.",
+        "thumbnailUrl": "/image/thumbnails/merge_sort.png"
       }
     }
   },
