@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardHeader from '@/components/DashboardHeader';
 import coursesData from '../../public/real_courses_data.json';
@@ -13,7 +13,22 @@ const MONTHS = ['January','February','March','April','May','June',
                 'July','August','September','October','November','December'];
 const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-// Helper to format date
+// Colors for tags
+const TAG_COLORS = {
+  Lecture: '#3a8aff',
+  Quiz: '#f57c00',
+  Revision: '#ab47bc',
+  Assignment: '#43a047'
+};
+
+// Fixed time slots for spacing
+const TIME_SLOTS = {
+  Casual: ['10:00 AM - 11:30 AM', '03:00 PM - 04:30 PM'],
+  Moderate: ['09:30 AM - 11:00 AM', '01:30 PM - 03:00 PM', '05:00 PM - 06:30 PM', '08:00 PM - 09:30 PM'],
+  Intensive: ['09:00 AM - 10:00 AM', '11:00 AM - 12:00 PM', '02:00 PM - 03:00 PM', '04:00 PM - 05:00 PM', '07:00 PM - 08:00 PM', '09:00 PM - 10:00 PM']
+};
+
+// Helper: Format date
 function toDateStr(dateObj) {
   const yr = dateObj.getFullYear();
   const mo = dateObj.getMonth() + 1;
@@ -21,46 +36,87 @@ function toDateStr(dateObj) {
   return `${yr}-${String(mo).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
-// ─── Dynamic Scheduling Engine ───────────────────────────────────────────────
-function generateDynamicSchedule(enrollments, pace, startDate) {
+// Helper: Hash string to color
+function getCourseColor(subjectCode) {
+  if (!subjectCode) return '#3a8aff';
+  const colors = ['#e53935', '#d81b60', '#8e24aa', '#5e35b1', '#3949ab', '#1e88e5', '#039be5', '#00acc1', '#00897b', '#43a047', '#f4511e'];
+  let hash = 0;
+  for (let i = 0; i < subjectCode.length; i++) hash = subjectCode.charCodeAt(i) + ((hash << 5) - hash);
+  return colors[Math.abs(hash) % colors.length];
+}
+
+// ─── Dynamic Scheduling Engine (v2) ──────────────────────────────────────────
+function generateDynamicSchedule(enrollments, pace, startDateStr, completedTasksList) {
   const scheduleMap = {};
-  
-  // Flatten all topics from enrolled courses
-  let allTopics = [];
+  const coursesQueues = [];
+
+  // 1. Build Progressive Queues for each course
   enrollments.forEach(enrollment => {
     const course = coursesData.find(
       c => c.course_name === enrollment.course_title || c.subject_code === enrollment.category
     );
-    if (course && course.modules) {
-      course.modules.forEach(mod => {
-        if (mod.topics) {
-          mod.topics.forEach(topic => {
-            allTopics.push({
+    if (!course || !course.modules) return;
+
+    let activeModuleIdx = 0;
+    
+    // Find the first module that isn't fully completed
+    for (let i = 0; i < course.modules.length; i++) {
+      const mod = course.modules[i];
+      const allTopicsCompleted = mod.topics?.every(t => completedTasksList.includes(`task-${course.subject_code}-${t}`));
+      if (!allTopicsCompleted) {
+        activeModuleIdx = i;
+        break;
+      }
+    }
+
+    // Only load topics from Active Module and Active + 1 (Progressive Unlocking)
+    const allowedModules = course.modules.slice(activeModuleIdx, activeModuleIdx + 2);
+    const courseQueue = [];
+
+    allowedModules.forEach((mod, modOffset) => {
+      if (mod.topics) {
+        mod.topics.forEach(topic => {
+          const taskId = `task-${course.subject_code}-${topic}`;
+          if (!completedTasksList.includes(taskId)) {
+            courseQueue.push({
+              id: taskId,
               course_title: course.course_name,
               subject_code: course.subject_code,
               module_name: mod.title,
               topic: topic,
-              type: 'Lecture'
+              type: 'Lecture',
+              course_color: getCourseColor(course.subject_code)
             });
+          }
+        });
+        
+        // Inject a Module Quiz after the module topics
+        const quizId = `quiz-${course.subject_code}-${mod.title}`;
+        if (!completedTasksList.includes(quizId)) {
+          courseQueue.push({
+            id: quizId,
+            course_title: course.course_name,
+            subject_code: course.subject_code,
+            module_name: mod.title,
+            topic: `Module ${activeModuleIdx + modOffset + 1} Assessment`,
+            type: 'Quiz',
+            course_color: getCourseColor(course.subject_code)
           });
         }
-      });
-    }
+      }
+    });
+
+    if (courseQueue.length > 0) coursesQueues.push(courseQueue);
   });
 
-  // Determine tasks per day based on pace
-  let tasksPerDay = 2;
-  if (pace === 'Moderate') tasksPerDay = 4;
-  if (pace === 'Intensive') tasksPerDay = 6;
-
-  let currentDate = new Date(startDate);
-  // Ensure we don't modify the original date object
+  const tasksPerDay = TIME_SLOTS[pace].length;
+  let currentDate = new Date(startDateStr);
   currentDate.setHours(0,0,0,0);
-
-  let topicIndex = 0;
   
-  // Keep scheduling until all topics are assigned
-  while (topicIndex < allTopics.length) {
+  // 2. Interleaved Round-Robin Scheduling
+  let safety = 0;
+  while (coursesQueues.some(q => q.length > 0) && safety < 365) {
+    safety++;
     const dateStr = toDateStr(currentDate);
     scheduleMap[dateStr] = [];
     
@@ -69,42 +125,35 @@ function generateDynamicSchedule(enrollments, pace, startDate) {
     // Weekend Revision Logic
     if (dayOfWeek === 0 || dayOfWeek === 6) {
       scheduleMap[dateStr].push({
-        id: `rev-${dateStr}-1`,
-        course_title: 'Weekly Review',
-        module_name: 'Consolidation & Practice',
+        id: `rev-${dateStr}`,
+        course_title: 'Weekly Consolidation',
+        subject_code: 'REV',
+        module_name: 'Spaced Repetition',
         topic: 'Review concepts learned this week',
         type: 'Revision',
         time_slot: '10:00 AM - 12:00 PM',
-        is_completed: false
+        is_completed: completedTasksList.includes(`rev-${dateStr}`),
+        course_color: TAG_COLORS.Revision
       });
-      // Skip to next day without consuming new topics
       currentDate.setDate(currentDate.getDate() + 1);
       continue;
     }
 
-    // Weekday Logic: Assign topics
-    let startHour = 9; // 9 AM
-    for (let i = 0; i < tasksPerDay; i++) {
-      if (topicIndex >= allTopics.length) break;
+    // Weekday Interleaved Logic
+    let slotsUsed = 0;
+    for (let i = 0; i < coursesQueues.length; i++) {
+      if (slotsUsed >= tasksPerDay) break;
       
-      const t = allTopics[topicIndex];
-      const ampm = startHour >= 12 ? 'PM' : 'AM';
-      const displayHour = startHour > 12 ? startHour - 12 : startHour;
-      const endHour = startHour + 1;
-      const endAmpm = endHour >= 12 ? 'PM' : 'AM';
-      const endDisplay = endHour > 12 ? endHour - 12 : endHour;
-      
-      const timeSlot = `${displayHour}:00 ${ampm} - ${endDisplay}:00 ${endAmpm}`;
-      
-      scheduleMap[dateStr].push({
-        id: `task-${dateStr}-${i}`,
-        ...t,
-        time_slot: timeSlot,
-        is_completed: false
-      });
-      
-      startHour += 1; // 1 hour per topic
-      topicIndex++;
+      const queue = coursesQueues[i];
+      if (queue.length > 0) {
+        const task = queue.shift(); // pop from front
+        scheduleMap[dateStr].push({
+          ...task,
+          time_slot: TIME_SLOTS[pace][slotsUsed],
+          is_completed: false
+        });
+        slotsUsed++;
+      }
     }
     
     currentDate.setDate(currentDate.getDate() + 1);
@@ -117,29 +166,31 @@ function generateDynamicSchedule(enrollments, pace, startDate) {
 export default function PlannerPage() {
   const { user } = useAuth();
   const now = new Date();
+  const todayStr = toDateStr(now);
 
   // Calendar display state
   const [displayYear, setDisplayYear]   = useState(now.getFullYear());
   const [displayMonth, setDisplayMonth] = useState(now.getMonth());
   const [selectedDate, setSelectedDate] = useState(now.getDate());
 
-  // Personalization State
+  // Personalization & Filters
   const [studyPace, setStudyPace] = useState('Moderate'); // Casual, Moderate, Intensive
-
+  const [activeFilter, setActiveFilter] = useState('All');
+  
   // Data state
   const [enrollments, setEnrollments] = useState([]);
   const [scheduleMap, setScheduleMap] = useState({});
   const [loading, setLoading] = useState(true);
+  const [completedTasks, setCompletedTasks] = useState([]);
+  
+  // Scheduling Anchor Date (for detecting overdue tasks)
+  const [plannerStartDate, setPlannerStartDate] = useState(todayStr);
 
-  // 1. Load enrollments
+  // 1. Load enrollments & local state
   useEffect(() => {
     if (!user) { setLoading(false); return; }
     (async () => {
-      const { data } = await supabase
-        .from('enrollments')
-        .select('*')
-        .eq('user_id', user.id);
-
+      const { data } = await supabase.from('enrollments').select('*').eq('user_id', user.id);
       const seen = new Set();
       const deduped = (data || []).filter(e => {
         const k = e.course_title?.toLowerCase().trim();
@@ -148,56 +199,58 @@ export default function PlannerPage() {
         return true;
       });
       setEnrollments(deduped);
+      
+      try {
+        const savedCompleted = JSON.parse(localStorage.getItem('planner_completed') || '[]');
+        setCompletedTasks(savedCompleted);
+        const savedStart = localStorage.getItem('planner_start_date');
+        if (savedStart) setPlannerStartDate(savedStart);
+        else localStorage.setItem('planner_start_date', todayStr);
+      } catch(e) {}
     })();
   }, [user]);
 
-  // 2. Generate Schedule Dynamically whenever enrollments or pace change
+  // 2. Generate Schedule Dynamically
   useEffect(() => {
     if (enrollments.length > 0) {
       setLoading(true);
-      // Generate from today onwards
-      const today = new Date();
-      const newSchedule = generateDynamicSchedule(enrollments, studyPace, today);
-      
-      // Also grab completed tasks from localStorage to cross-reference (simulated persistence)
-      try {
-        const savedCompleted = JSON.parse(localStorage.getItem('planner_completed') || '[]');
-        Object.keys(newSchedule).forEach(date => {
-          newSchedule[date].forEach(task => {
-            if (savedCompleted.includes(task.id)) {
-              task.is_completed = true;
-            }
-          });
-        });
-      } catch(e) {}
-      
+      const newSchedule = generateDynamicSchedule(enrollments, studyPace, plannerStartDate, completedTasks);
       setScheduleMap(newSchedule);
       setLoading(false);
     } else if (enrollments.length === 0) {
       setLoading(false);
     }
-  }, [enrollments, studyPace]);
+  }, [enrollments, studyPace, plannerStartDate, completedTasks]);
+
+  // 3. Compute Overdue Tasks
+  const overdueTasksCount = useMemo(() => {
+    let count = 0;
+    Object.keys(scheduleMap).forEach(date => {
+      if (date < todayStr) {
+        scheduleMap[date].forEach(task => {
+          if (!task.is_completed) count++;
+        });
+      }
+    });
+    return count;
+  }, [scheduleMap, todayStr]);
 
   // Mark task complete (locally)
   const handleComplete = (dateStr, taskId) => {
-    const updatedMap = { ...scheduleMap };
-    const task = updatedMap[dateStr].find(t => t.id === taskId);
-    if (task) {
-      task.is_completed = !task.is_completed; // toggle
-      setScheduleMap(updatedMap);
-      
-      // Save to local storage
-      try {
-        const savedCompleted = JSON.parse(localStorage.getItem('planner_completed') || '[]');
-        if (task.is_completed && !savedCompleted.includes(taskId)) {
-          savedCompleted.push(taskId);
-        } else if (!task.is_completed) {
-          const idx = savedCompleted.indexOf(taskId);
-          if (idx > -1) savedCompleted.splice(idx, 1);
-        }
-        localStorage.setItem('planner_completed', JSON.stringify(savedCompleted));
-      } catch(e) {}
+    let newCompleted = [...completedTasks];
+    if (newCompleted.includes(taskId)) {
+      newCompleted = newCompleted.filter(id => id !== taskId);
+    } else {
+      newCompleted.push(taskId);
     }
+    setCompletedTasks(newCompleted);
+    localStorage.setItem('planner_completed', JSON.stringify(newCompleted));
+  };
+
+  // Rebalance Schedule
+  const handleRebalance = () => {
+    setPlannerStartDate(todayStr);
+    localStorage.setItem('planner_start_date', todayStr);
   };
 
   // Month navigation
@@ -219,7 +272,11 @@ export default function PlannerPage() {
   const realToday     = now.getDate();
 
   const selectedDateStr = selectedDate ? toDateStr(new Date(displayYear, displayMonth, selectedDate)) : null;
-  const selectedTasks   = selectedDateStr ? (scheduleMap[selectedDateStr] || []) : [];
+  let selectedTasks   = selectedDateStr ? (scheduleMap[selectedDateStr] || []) : [];
+  
+  if (activeFilter !== 'All') {
+    selectedTasks = selectedTasks.filter(t => t.type === activeFilter);
+  }
 
   // Build calendar cells
   const calendarCells = [];
@@ -233,11 +290,12 @@ export default function PlannerPage() {
     const dateStr    = toDateStr(new Date(displayYear, displayMonth, d));
     const dayTasks   = scheduleMap[dateStr] || [];
     const hasTasks   = dayTasks.length > 0;
+    const isPast     = dateStr < todayStr;
     
-    // Determine dots
-    const hasLectures = dayTasks.some(t => t.type === 'Lecture');
-    const hasRevision = dayTasks.some(t => t.type === 'Revision');
-    const allDone    = hasTasks && dayTasks.every(s => s.is_completed);
+    // Determine dots (max 3)
+    const pendingTasks = dayTasks.filter(t => !t.is_completed);
+    const allDone = hasTasks && pendingTasks.length === 0;
+    const dots = pendingTasks.slice(0, 3).map(t => TAG_COLORS[t.type] || '#333');
 
     calendarCells.push(
       <div
@@ -245,12 +303,13 @@ export default function PlannerPage() {
         onClick={() => setSelectedDate(d)}
         style={{
           padding: '12px 6px', textAlign: 'center', cursor: 'pointer', borderRadius: '12px',
-          background: isSelected ? 'linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)' : isToday ? '#f0f4ff' : '#fff',
-          color: isSelected ? '#fff' : '#333',
+          background: isSelected ? 'linear-gradient(135deg, #2b5876 0%, #4e4376 100%)' : isToday ? '#f0f4ff' : '#fff',
+          color: isSelected ? '#fff' : (isPast && pendingTasks.length > 0 ? '#d32f2f' : '#333'),
           fontWeight: isSelected || isToday ? 'bold' : 'normal',
-          border: isToday && !isSelected ? '2px solid #26d0ce' : '1px solid #eee',
-          boxShadow: isSelected ? '0 10px 20px rgba(38,208,206,0.3)' : 'none',
+          border: isToday && !isSelected ? '2px solid #4e4376' : '1px solid #eee',
+          boxShadow: isSelected ? '0 10px 20px rgba(78,67,118,0.3)' : 'none',
           transition: 'all 0.2s', position: 'relative', fontSize: '14px',
+          opacity: isPast && !isSelected && allDone ? 0.6 : 1
         }}
       >
         {d}
@@ -259,10 +318,7 @@ export default function PlannerPage() {
             {allDone ? (
                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#4CAF50' }} />
             ) : (
-               <>
-                 {hasLectures && <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: isSelected ? '#fff' : '#3a8aff' }} />}
-                 {hasRevision && <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: isSelected ? '#fff' : '#ab47bc' }} />}
-               </>
+               dots.map((c, i) => <div key={i} style={{ width: '5px', height: '5px', borderRadius: '50%', background: isSelected ? '#fff' : c }} />)
             )}
           </div>
         )}
@@ -284,36 +340,48 @@ export default function PlannerPage() {
           
           {/* Header Banner */}
           <div style={{
-            background: 'linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)',
+            background: 'linear-gradient(135deg, #2b5876 0%, #4e4376 100%)',
             borderRadius: '20px', padding: '30px', color: '#fff', marginBottom: '20px',
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px'
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px',
+            position: 'relative', overflow: 'hidden'
           }}>
-            <div>
-              <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: '0 0 8px 0' }}>Dynamic Study Planner</h1>
+            <div style={{ position: 'relative', zIndex: 2 }}>
+              <h1 style={{ fontSize: '28px', fontWeight: 'bold', margin: '0 0 8px 0' }}>AI Study Planner</h1>
               <p style={{ margin: 0, opacity: 0.9, maxWidth: '600px' }}>
-                Your schedule is auto-generated by our AI engine based on your enrolled courses. 
-                Don't worry if you miss a day—the schedule dynamically adapts to keep you on track.
+                Courses are intelligently interleaved and paced. Modules unlock progressively as you complete them.
               </p>
             </div>
             
-            {/* Study Pace Toggle */}
-            <div style={{ background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '15px', backdropFilter: 'blur(10px)' }}>
-              <div style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '10px', opacity: 0.9 }}>AI Study Pace</div>
-              <div style={{ display: 'flex', gap: '8px', background: 'rgba(0,0,0,0.2)', padding: '4px', borderRadius: '30px' }}>
-                {['Casual', 'Moderate', 'Intensive'].map(p => (
-                  <button
-                    key={p}
-                    onClick={() => setStudyPace(p)}
-                    style={{
-                      background: studyPace === p ? '#fff' : 'transparent',
-                      color: studyPace === p ? '#1a2980' : '#fff',
-                      border: 'none', padding: '6px 16px', borderRadius: '20px',
-                      fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s'
-                    }}
-                  >
-                    {p}
+            <div style={{ display: 'flex', gap: '15px', position: 'relative', zIndex: 2 }}>
+              {overdueTasksCount > 0 && (
+                <div style={{ background: overdueTasksCount > 5 ? '#d32f2f' : '#f57c00', padding: '15px', borderRadius: '15px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '6px' }}>
+                    {overdueTasksCount > 5 ? '⚠️ High Overdue Count' : 'Slightly Behind'}
+                  </div>
+                  <button onClick={handleRebalance} style={{ background: '#fff', color: '#333', border: 'none', padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                    Rebalance Schedule
                   </button>
-                ))}
+                </div>
+              )}
+
+              <div style={{ background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '15px', backdropFilter: 'blur(10px)' }}>
+                <div style={{ fontSize: '13px', fontWeight: 'bold', marginBottom: '10px', opacity: 0.9 }}>Weekly Pace</div>
+                <div style={{ display: 'flex', gap: '8px', background: 'rgba(0,0,0,0.2)', padding: '4px', borderRadius: '30px' }}>
+                  {['Casual', 'Moderate', 'Intensive'].map(p => (
+                    <button
+                      key={p}
+                      onClick={() => setStudyPace(p)}
+                      style={{
+                        background: studyPace === p ? '#fff' : 'transparent',
+                        color: studyPace === p ? '#2b5876' : '#fff',
+                        border: 'none', padding: '6px 16px', borderRadius: '20px',
+                        fontSize: '13px', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.2s'
+                      }}
+                    >
+                      {p}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -324,7 +392,6 @@ export default function PlannerPage() {
             {/* Left Column: Calendar & Timer */}
             <div style={{ width: '380px', display: 'flex', flexDirection: 'column', gap: '24px', flexShrink: 0 }}>
               
-              {/* The Calendar */}
               <div style={{
                 background: '#fff', borderRadius: '24px', padding: '30px',
                 boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0'
@@ -336,45 +403,61 @@ export default function PlannerPage() {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', marginBottom: '12px' }}>
-                  {WEEKDAYS.map(d => (
-                    <div key={d} style={{ textAlign: 'center', fontSize: '12px', fontWeight: 'bold', color: '#aaa' }}>{d}</div>
-                  ))}
+                  {WEEKDAYS.map(d => <div key={d} style={{ textAlign: 'center', fontSize: '12px', fontWeight: 'bold', color: '#aaa' }}>{d}</div>)}
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px' }}>
                   {calendarCells}
                 </div>
 
-                {/* Legend */}
-                <div style={{ display: 'flex', gap: '15px', marginTop: '20px', fontSize: '11px', color: '#888', borderTop: '1px solid #f0f0f0', paddingTop: '15px' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3a8aff' }} /> Lecture</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ab47bc' }} /> Revision</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#4CAF50' }} /> Done</span>
+                {/* Tag Legend */}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '20px', fontSize: '11px', color: '#888', borderTop: '1px solid #f0f0f0', paddingTop: '15px' }}>
+                  {Object.entries(TAG_COLORS).map(([tag, color]) => (
+                    <span key={tag} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: color }} /> {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
 
-              {/* Pomodoro Timer */}
               <PomodoroTimer />
-
             </div>
 
             {/* Right Column: Time-Block View */}
             <div style={{
               flex: 1, background: '#fff', borderRadius: '24px', padding: '30px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0',
-              minHeight: '600px'
+              boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0', minHeight: '600px'
             }}>
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span>📅</span> {selectedDisplay}
-              </h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
+                  <span>📅</span> {selectedDisplay}
+                </h3>
+                
+                {/* Filters */}
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  {['All', 'Lecture', 'Quiz', 'Revision'].map(f => (
+                    <button
+                      key={f} onClick={() => setActiveFilter(f)}
+                      style={{
+                        padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', border: 'none', cursor: 'pointer',
+                        background: activeFilter === f ? '#e3f2fd' : '#f5f5f5',
+                        color: activeFilter === f ? '#1565c0' : '#888',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               <div style={{ flex: 1 }}>
                 {loading ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {[1,2,3].map(i => (
                       <div key={i} style={{ background: '#f8f9fa', padding: '20px', borderRadius: '16px', border: '1px solid #eee', display: 'flex', gap: '20px' }}>
                         <div style={{ width: '100px', height: '20px', background: '#e0e0e0', borderRadius: '4px' }} />
-                        <div style={{ flex: 1, height: '60px', background: '#e0e0e0', borderRadius: '8px' }} />
+                        <div style={{ flex: 1, height: '80px', background: '#e0e0e0', borderRadius: '12px' }} />
                       </div>
                     ))}
                   </div>
@@ -382,103 +465,105 @@ export default function PlannerPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '400px', color: '#aaa', textAlign: 'center' }}>
                     <div style={{ fontSize: '60px', marginBottom: '20px' }}>🗓️</div>
                     <p style={{ fontWeight: '600', fontSize: '18px', color: '#555' }}>Select a date</p>
-                    <p style={{ fontSize: '14px', maxWidth: '300px' }}>Click any date on the calendar to view your dynamically scheduled blocks.</p>
+                    <p style={{ fontSize: '14px', maxWidth: '300px' }}>Click any date on the calendar to view your interleaved schedule.</p>
                   </div>
                 ) : selectedTasks.length === 0 ? (
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '400px', textAlign: 'center' }}>
                     <div style={{ fontSize: '60px', marginBottom: '20px' }}>☕</div>
-                    <p style={{ fontWeight: '600', fontSize: '18px', color: '#333' }}>You're free today!</p>
+                    <p style={{ fontWeight: '600', fontSize: '18px', color: '#333' }}>No {activeFilter !== 'All' ? activeFilter : ''} tasks today!</p>
                     <p style={{ fontSize: '14px', color: '#888', maxWidth: '300px', marginBottom: '24px' }}>
-                      No tasks are scheduled for this day. You can take a break or start studying early.
+                      Your progressive schedule is clear for this day.
                     </p>
-                    <Link href="/dashboard" style={{
-                      padding: '10px 24px', background: '#e3f2fd', color: '#1565c0', borderRadius: '20px', textDecoration: 'none', fontWeight: 'bold', fontSize: '14px'
-                    }}>
+                    <Link href="/dashboard" style={{ padding: '10px 24px', background: '#e3f2fd', color: '#1565c0', borderRadius: '20px', textDecoration: 'none', fontWeight: 'bold', fontSize: '14px' }}>
                       Go to Dashboard
                     </Link>
                   </div>
                 ) : (
-                  <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', paddingLeft: '110px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', position: 'relative', paddingLeft: '110px', paddingTop: '10px' }}>
                     {/* Vertical Line for Timeline */}
-                    <div style={{ position: 'absolute', left: '85px', top: '20px', bottom: '20px', width: '2px', background: '#e0e0e0' }} />
+                    <div style={{ position: 'absolute', left: '85px', top: '20px', bottom: '20px', width: '2px', background: '#eef0f2' }} />
 
-                    {selectedTasks.map((task, idx) => (
-                      <div key={task.id} style={{ position: 'relative', marginBottom: '30px' }}>
-                        
-                        {/* Time Label */}
-                        <div style={{ 
-                          position: 'absolute', left: '-110px', top: '15px', width: '80px', textAlign: 'right',
-                          fontSize: '12px', fontWeight: 'bold', color: task.is_completed ? '#aaa' : '#555'
-                        }}>
-                          {task.time_slot.split(' - ')[0]}
-                        </div>
-                        
-                        {/* Timeline Dot */}
-                        <div style={{
-                          position: 'absolute', left: '-29px', top: '17px',
-                          width: '12px', height: '12px', borderRadius: '50%',
-                          background: task.is_completed ? '#4CAF50' : (task.type === 'Revision' ? '#ab47bc' : '#3a8aff'),
-                          border: '3px solid #fff', zIndex: 2,
-                          boxShadow: '0 0 0 1px #e0e0e0'
-                        }} />
-
-                        {/* Task Card */}
-                        <div style={{
-                          background: task.is_completed ? '#f9fafb' : '#fff',
-                          padding: '20px', borderRadius: '16px',
-                          border: `1px solid ${task.is_completed ? '#eee' : (task.type === 'Revision' ? '#f3e5f5' : '#e3f2fd')}`,
-                          boxShadow: task.is_completed ? 'none' : '0 4px 15px rgba(0,0,0,0.03)',
-                          position: 'relative',
-                          opacity: task.is_completed ? 0.7 : 1,
-                          transition: 'all 0.3s',
-                        }}>
-                          {/* Tags */}
-                          <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
-                            <span style={{ 
-                              padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold',
-                              background: task.type === 'Revision' ? '#f3e5f5' : '#e3f2fd',
-                              color: task.type === 'Revision' ? '#ab47bc' : '#1565c0'
-                            }}>
-                              {task.type}
-                            </span>
-                            {task.subject_code && (
-                              <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', background: '#f5f5f5', color: '#666' }}>
-                                {task.subject_code}
-                              </span>
-                            )}
-                          </div>
+                    {selectedTasks.map((task) => {
+                      const isDone = completedTasks.includes(task.id);
+                      return (
+                        <div key={task.id} style={{ position: 'relative', marginBottom: '35px' }}>
                           
-                          <h4 style={{
-                            fontSize: '16px', fontWeight: 'bold', color: '#1a1a1a', margin: '0 0 6px 0',
-                            textDecoration: task.is_completed ? 'line-through' : 'none',
+                          {/* Time Label */}
+                          <div style={{ 
+                            position: 'absolute', left: '-110px', top: '20px', width: '80px', textAlign: 'right',
+                            fontSize: '13px', fontWeight: 'bold', color: isDone ? '#ccc' : '#444'
                           }}>
-                            {task.course_title}
-                          </h4>
+                            {task.time_slot.split(' - ')[0]}
+                          </div>
                           
-                          <div style={{ fontSize: '13px', color: '#666', fontWeight: '600', marginBottom: '4px' }}>
-                            {task.module_name}
-                          </div>
-                          <div style={{ fontSize: '13px', color: '#888', paddingRight: '50px' }}>
-                            {task.topic}
-                          </div>
+                          {/* Timeline Dot */}
+                          <div style={{
+                            position: 'absolute', left: '-29px', top: '22px',
+                            width: '12px', height: '12px', borderRadius: '50%',
+                            background: isDone ? '#4CAF50' : TAG_COLORS[task.type],
+                            border: '3px solid #fff', zIndex: 2,
+                            boxShadow: '0 0 0 1px #e0e0e0'
+                          }} />
 
-                          {/* Complete Checkbox */}
-                          <div 
-                            onClick={() => handleComplete(dateStr, task.id)}
-                            style={{
-                              position: 'absolute', right: '20px', top: '20px',
-                              width: '28px', height: '28px', borderRadius: '8px',
-                              border: `2px solid ${task.is_completed ? '#4CAF50' : '#e0e0e0'}`,
-                              background: task.is_completed ? '#4CAF50' : '#fff',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              cursor: 'pointer', transition: 'all 0.2s'
-                            }}
-                          >
-                            {task.is_completed && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                          {/* Task Card */}
+                          <div style={{
+                            background: isDone ? '#fcfcfc' : '#fff',
+                            padding: '24px', borderRadius: '20px',
+                            border: `1px solid ${isDone ? '#f0f0f0' : '#eef0f2'}`,
+                            borderLeft: `6px solid ${isDone ? '#e0e0e0' : task.course_color}`,
+                            boxShadow: isDone ? 'none' : '0 8px 24px rgba(0,0,0,0.04)',
+                            position: 'relative',
+                            opacity: isDone ? 0.7 : 1,
+                            transition: 'all 0.3s',
+                          }}>
+                            {/* Tags */}
+                            <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                              <span style={{ 
+                                padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold',
+                                background: `${TAG_COLORS[task.type]}15`, color: TAG_COLORS[task.type]
+                              }}>
+                                {task.type}
+                              </span>
+                              {task.subject_code && task.subject_code !== 'REV' && (
+                                <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: 'bold', background: '#f5f5f5', color: '#666' }}>
+                                  {task.subject_code}
+                                </span>
+                              )}
+                            </div>
+                            
+                            <h4 style={{
+                              fontSize: '18px', fontWeight: 'bold', color: '#1a1a1a', margin: '0 0 8px 0',
+                              textDecoration: isDone ? 'line-through' : 'none',
+                            }}>
+                              {task.course_title}
+                            </h4>
+                            
+                            <div style={{ fontSize: '14px', color: '#555', fontWeight: '600', marginBottom: '6px' }}>
+                              {task.module_name}
+                            </div>
+                            <div style={{ fontSize: '14px', color: '#777', paddingRight: '50px', lineHeight: '1.4' }}>
+                              {task.topic}
+                            </div>
+
+                            {/* Complete Checkbox */}
+                            <div 
+                              onClick={() => handleComplete(dateStr, task.id)}
+                              style={{
+                                position: 'absolute', right: '24px', top: '24px',
+                                width: '32px', height: '32px', borderRadius: '10px',
+                                border: `2px solid ${isDone ? '#4CAF50' : '#e0e0e0'}`,
+                                background: isDone ? '#4CAF50' : '#fff',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                cursor: 'pointer', transition: 'all 0.2s',
+                                boxShadow: isDone ? '0 4px 12px rgba(76,175,80,0.2)' : 'none'
+                              }}
+                            >
+                              {isDone && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
