@@ -178,7 +178,9 @@ export default function DashboardPage() {
     let insight = "";
     
     // Heuristic Engine for AI Insights
-    if (streak >= 3) {
+    if (hour < 4 || hour >= 23) {
+      insight = `It's quite late! 🌙 Studying when you're tired can hurt retention. Consider getting some sleep and tackling your tasks fresh tomorrow.`;
+    } else if (streak >= 3) {
       insight = `You're on a fire ${streak}-day streak! 🔥 Consistency builds deep memory retention. Let's push it to ${streak + 1} today.`;
     } else if (weeklyHours >= 10) {
       insight = `You've crushed over ${weeklyHours} hours this week! Your dedication is impressive. Remember to take short walks to avoid burnout.`;
@@ -186,7 +188,7 @@ export default function DashboardPage() {
       insight = `It's getting late and you haven't logged any study time today. Even a quick 15-minute review session keeps your brain primed!`;
     } else if (todayMinutes > 120) {
       insight = `You've been studying for over 2 hours today! Cognitive load might be peaking. Consider switching topics or taking a longer break.`;
-    } else if (upcomingTasks.length > 0 && hour < 12) {
+    } else if (upcomingTasks.length > 0 && hour >= 5 && hour < 12) {
       insight = `Good morning! You have ${upcomingTasks.length} tasks waiting. Tackling the hardest one first (Eat the Frog) is proven to boost all-day productivity.`;
     } else if (upcomingTasks.length === 0 && courses.length > 0) {
       insight = `You've cleared your schedule! This is the perfect time to review past notes or explore a brand new course module.`;
