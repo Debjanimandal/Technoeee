@@ -298,7 +298,7 @@ export default function CourseLearningPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#666' }}>
                   {expandedModule !== null && course.modules[expandedModule]?.intro ? (
                     <div style={{ maxWidth: '600px', textAlign: 'center' }}>
-                      <div style={{ width: '60px', height: '60px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ede9fe', borderRadius: '16px' }}>
+                      <div style={{ width: '60px', height: '60px', marginBottom: '20px', margin: '0 auto 20px auto', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ede9fe', borderRadius: '16px' }}>
                         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
                       </div>
                       <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333', marginBottom: '16px' }}>
