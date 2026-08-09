@@ -100,7 +100,7 @@ export default function MyCoursesPage() {
           <div style={{ padding: '0 32px' }}>
             <div style={{ marginBottom: '32px' }}>
               <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
-                My Enrolled Courses 📚
+                My Enrolled Courses
               </h1>
               <p style={{ color: '#64748b', fontSize: '15px', margin: 0 }}>Track your progress and pick up right where you left off.</p>
             </div>
@@ -124,7 +124,12 @@ export default function MyCoursesPage() {
 
             ) : enrolledCourses.length === 0 ? (
               <div style={{ background: '#fff', padding: '80px', textAlign: 'center', borderRadius: '24px', border: '2px dashed #cbd5e1' }}>
-                <div style={{ fontSize: '48px', marginBottom: '24px' }}>🎓</div>
+                <div style={{ marginBottom: '24px', color: '#4f46e5' }}>
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                  </svg>
+                </div>
                 <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#1e293b', marginBottom: '12px' }}>No Enrolled Courses Yet</h2>
                 <p style={{ fontSize: '15px', color: '#64748b', marginBottom: '32px', maxWidth: '400px', margin: '0 auto 32px auto', lineHeight: '1.5' }}>
                   Your learning journey starts here. Explore our catalog and pick up a new skill today!
@@ -198,7 +203,8 @@ export default function MyCoursesPage() {
                         cursor: 'pointer', fontSize: '13px', fontWeight: '700',
                         boxShadow: '0 4px 10px rgba(79,70,229,0.2)'
                       }}>
-                        Resume ➔
+                        Resume
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '6px' }}><polyline points="9 18 15 12 9 6"/></svg>
                       </button>
                     </div>
                   </div>

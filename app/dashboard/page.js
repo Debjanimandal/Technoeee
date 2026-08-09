@@ -318,7 +318,7 @@ export default function DashboardPage() {
             }}>
               <div>
                 <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
-                  Welcome back, {profile?.username || user?.email?.split('@')[0] || 'Student'} 👋
+                  Welcome back, {profile?.username || user?.email?.split('@')[0] || 'Student'}
                 </h1>
                 <p style={{ margin: 0, color: '#64748b', fontSize: '15px' }}>Let's learn something new today!</p>
               </div>
@@ -421,7 +421,7 @@ export default function DashboardPage() {
                         {chartData.every(d => !d.totalMinutes || d.totalMinutes === 0) && (
                           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.7)', pointerEvents: 'none' }}>
                             <div style={{ background: '#fff', padding: '16px 24px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', color: '#64748b', fontSize: '14px', fontWeight: '600', border: '1px solid #f1f5f9' }}>
-                              Start studying to see your progress here! 🚀
+                              Start studying to see your progress here!
                             </div>
                           </div>
                         )}
@@ -523,7 +523,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <p style={{ fontSize: '13px', color: '#64748b', margin: '20px 0 0 0', lineHeight: '1.4' }}>
-                    {((stats?.weekly_hours || 0) >= 10) ? "Amazing! You've crushed your weekly goal! 🎉" : "Keep pushing! You're almost there."}
+                    {((stats?.weekly_hours || 0) >= 10) ? "Amazing! You've crushed your weekly goal!" : "Keep pushing! You're almost there."}
                   </p>
                 </div>
 

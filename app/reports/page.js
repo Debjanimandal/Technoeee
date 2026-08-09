@@ -257,7 +257,7 @@ export default function AnalyticsPage() {
               </button>
               <div>
                 <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>
-                  My Analytics 📊
+                  My Analytics
                 </h1>
                 <p style={{ color: '#64748b', fontSize: '15px', margin: 0 }}>
                   Deep insights into your learning habits and schedule efficiency.
@@ -400,7 +400,11 @@ export default function AnalyticsPage() {
                     <div>
                       <h4 style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>Peak Productivity Time</h4>
                       <div style={{ fontSize: '24px', fontWeight: '800', color: '#1e293b' }}>
-                        {advanced.peakTime === 'Morning' ? '🌅 Morning' : advanced.peakTime === 'Afternoon' ? '☀️ Afternoon' : advanced.peakTime === 'Evening' ? '🌇 Evening' : advanced.peakTime === 'Night' ? '🌙 Night' : 'N/A'}
+                        {advanced.peakTime === 'Morning' ? 'Morning'
+                          : advanced.peakTime === 'Afternoon' ? 'Afternoon'
+                          : advanced.peakTime === 'Evening' ? 'Evening'
+                          : advanced.peakTime === 'Night' ? 'Night'
+                          : 'N/A'}
                       </div>
                       <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#94a3b8', fontWeight: '600' }}>Your most consistent focus window.</p>
                     </div>

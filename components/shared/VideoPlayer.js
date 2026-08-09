@@ -133,7 +133,7 @@ export default function VideoPlayer({
               e.currentTarget.style.boxShadow = '0 4px 15px rgba(76, 175, 80, 0.3)';
             }}
           >
-            <span>✓</span> Mark Video as Complete
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Mark Video as Complete
           </button>
         </div>
       )}
@@ -149,7 +149,7 @@ export default function VideoPlayer({
             fontWeight: 'bold',
             display: 'flex', alignItems: 'center', gap: '8px'
           }}>
-            <span>✓</span> Completed
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Completed
           </div>
         </div>
       )}
