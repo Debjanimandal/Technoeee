@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import DashboardHeader from '@/components/DashboardHeader';
-import coursesData from '../../../public/real_courses_data.json';
+import coursesData from '../../../public/data/real_courses_data.json';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import VideoPlayer from '@/components/VideoPlayer';

@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Sidebar from '@/components/layout/Sidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
-import coursesData from '../../public/real_courses_data.json';
+import coursesData from '../../public/data/real_courses_data.json';
 import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
 import PomodoroTimer from '@/components/shared/PomodoroTimer';
