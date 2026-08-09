@@ -227,9 +227,7 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
                       <path d="M6 12v5c3 3 9 3 12 0v-5"/>
                     </svg>
                     <span>{course}</span>
-                    {!user && (
-                      <span style={{ marginLeft: 'auto', fontSize: '11px', color: '#1352f1', fontWeight: '700', background: '#eff4ff', padding: '2px 8px', borderRadius: '6px', flexShrink: 0 }}>Sign in</span>
-                    )}
+
                   </div>
                 ))}
               </div>
