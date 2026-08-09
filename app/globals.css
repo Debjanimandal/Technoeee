@@ -779,7 +779,7 @@ footer {
   flex-direction: column;
   align-items: center;
   padding: 5px;
-  overflow-y: auto;
+  overflow: hidden;
   z-index: 100;
 }
 .sidebar-item {
