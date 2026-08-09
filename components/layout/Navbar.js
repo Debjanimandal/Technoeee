@@ -62,7 +62,7 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
     <>
       <div className={`navbar${active ? ' active' : ''}`} id="navbar">
         <div className="logo">
-          <Image src="/image/logo.png" alt="TechnoEEE Logo" width={90} height={40} />
+          <Image src="/image/logo.png" alt="TechnoEEE Logo" width={160} height={80} style={{ objectFit: 'contain' }} unoptimized />
         </div>
         <div className="navbar-center">
           <div className="browse-dropdown">

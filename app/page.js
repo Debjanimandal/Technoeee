@@ -28,7 +28,7 @@ const CHANNELS = [
 
 const FAQ_ITEMS = [
   { q: 'How do I become a teacher?', a: 'To become a teacher, you need to sign up on our platform, submit an application with your credentials, and complete our teacher training program.' },
-  { q: 'What is Techno EEE?', a: 'In our Techno EEE you will learn how to observe your learning process and how to get improve in such things.' },
+  { q: 'What is TechnoEEE?', a: 'In TechnoEEE you will learn how to observe your learning process and how to get improve in such things.' },
   { q: 'How to become a coder?', a: "To become a coder, you'll typically need to learn programming languages, practice regularly, build projects, and potentially pursue formal education or certifications." },
 ];
 
@@ -108,12 +108,12 @@ export default function Home() {
       {/* Hero section */}
       <div className={`main-content${devMode ? ' dev-mode-on' : ''}`} id="mainContent">
         <div className={`text-content${devMode ? ' dev-mode-on' : ''}`} id="textContent">
-          <h1 id="mainHeading">{devMode ? 'BE YOUR BEST IN' : 'DIVE INTO TECHNO EEE'}</h1>
+          <h1 id="mainHeading">{devMode ? 'BE YOUR BEST IN' : 'DIVE INTO TECHNOEEE'}</h1>
           <div className="paragraph-wrapper">
             <p id="potentialText">
               {devMode ? 'Learn something new today!' : 'Unlock Your Potential and Make an Impact with Your Skills!'}
             </p>
-            {!devMode && <p id="kickstartText">Kickstart Your Journey by Enabling Techno EEE!</p>}
+            {!devMode && <p id="kickstartText">Kickstart Your Journey by Enabling TechnoEEE!</p>}
             {devMode && <p id="startJourneyText">Start your journey</p>}
           </div>
           <div className={`toggle-switch${devMode ? ' dev-mode-on' : ''}`} id="toggleSwitch">
@@ -131,7 +131,7 @@ export default function Home() {
               }}
             />
             <label htmlFor="dev-mode"></label>
-            <span>Techno EEE</span>
+            <span>TechnoEEE</span>
           </div>
         </div>
 
@@ -159,7 +159,7 @@ export default function Home() {
             <div className="code-fragment">function enableDev() &#123;</div>
             <div className="code-fragment">&nbsp;&nbsp;console.log(&quot;Ready!&quot;);</div>
             <div className="code-fragment">&nbsp;&nbsp;return true;</div>
-            <div className="code-fragment">&#125; // Dev Mode On</div>
+            <div className="code-fragment">&#125; // TechnoEEE On</div>
             <div className="sparkle"></div>
             <div className="sparkle"></div>
             <div className="sparkle"></div>
