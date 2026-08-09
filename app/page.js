@@ -7,14 +7,14 @@ import Footer from '@/components/layout/Footer';
 import { useAuth } from '@/lib/context/auth-context';
 
 const COURSES_DATA = [
-  { code: 'TIU-UCS-T214',        title: 'Object Oriented Programming using C++',   duration: '45 Hours', difficulty: 'Beginner',      instructor: 'Dept. of CSE-AI, TIU',    img: '/image/thumbnails/cpp_intro.png' },
-  { code: 'TIU-PC-UCS-T22101',   title: 'Computer Organization and Architecture',    duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/image/ca-banner.png' },
-  { code: 'TIU-UCS-T350',        title: 'Artificial Intelligence',                   duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',        img: '/image/ai-banner.png' },
-  { code: 'TIU-UCS-T321',        title: 'Design and Analysis of Algorithm',          duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/image/daa-banner.png' },
-  { code: 'TIU-UCS-T301',        title: 'Database Management System',                duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/image/dbms-banner.png' },
-  { code: 'TIU-UCS-T451',        title: 'Machine Learning',                          duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',        img: '/image/ml-banner.png' },
-  { code: 'TIU-UCS-T304',        title: 'Computer Networks',                         duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/image/cn-banner.png' },
-  { code: 'TIU-UCS-T351',        title: 'Automata Theory & Compiler Design',         duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of CS Theory, TIU', img: '/image/automata-banner.png' },
+  { code: 'TIU-UCS-T214',        title: 'Object Oriented Programming using C++',   duration: '45 Hours', difficulty: 'Beginner',      instructor: 'Dept. of CSE-AI, TIU',    img: '/course-banners/c++.png' },
+  { code: 'TIU-PC-UCS-T22101',   title: 'Computer Organization and Architecture',    duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/course-banners/coa.png' },
+  { code: 'TIU-UCS-T350',        title: 'Artificial Intelligence',                   duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',        img: '/course-banners/ai.png' },
+  { code: 'TIU-UCS-T321',        title: 'Design and Analysis of Algorithm',          duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/course-banners/daa.png' },
+  { code: 'TIU-UCS-T301',        title: 'Database Management System',                duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/course-banners/dbms.png' },
+  { code: 'TIU-UCS-T451',        title: 'Machine Learning',                          duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',        img: '/course-banners/ml.png' },
+  { code: 'TIU-UCS-T304',        title: 'Computer Networks',                         duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/course-banners/cn.png' },
+  { code: 'TIU-UCS-T351',        title: 'Automata Theory & Compiler Design',         duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of CS Theory, TIU', img: '/course-banners/automata.png' },
 ];
 
 const CATEGORIES = ['Featured', 'Programming Fundamentals', 'Core CS Foundation', 'High Demand Industry Skill', 'Essential Industry Concept', 'Core Infrastructure', 'Theoretical Computer Science', 'Core Hardware Concept'];
@@ -193,40 +193,24 @@ export default function Home() {
       <div className="course-grid">
         {COURSES_DATA.map((course, i) => (
           <div className="course-card" key={i}>
-            {/* Banner image thumbnail with overlay */}
+            {/* Banner image thumbnail – no play button */}
             <div style={{ width: '100%', height: '160px', position: 'relative', overflow: 'hidden' }}>
               <img
                 src={course.img}
                 alt={course.title}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
               />
-              {/* Dark gradient overlay */}
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%)',
-              }} />
-              {/* Play button */}
-              <div style={{
-                position: 'absolute', top: '50%', left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: '40px', height: '40px', borderRadius: '50%',
-                background: 'rgba(255,255,255,0.22)',
-                border: '2px solid rgba(255,255,255,0.65)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
-              </div>
               {/* Course code top-left */}
               <div style={{
                 position: 'absolute', top: '10px', left: '10px',
-                background: 'rgba(0,0,0,0.45)', borderRadius: '6px',
+                background: 'rgba(0,0,0,0.5)', borderRadius: '6px',
                 padding: '2px 8px', fontSize: '9px',
                 color: '#fff', fontWeight: '700', letterSpacing: '0.4px'
               }}>{course.code}</div>
               {/* Difficulty badge bottom-right */}
               <div style={{
                 position: 'absolute', bottom: '9px', right: '10px',
-                background: 'rgba(0,0,0,0.5)', borderRadius: '10px',
+                background: 'rgba(0,0,0,0.55)', borderRadius: '10px',
                 padding: '2px 9px', fontSize: '9px',
                 color: '#fff', fontWeight: '700',
               }}>{course.difficulty}</div>
