@@ -354,7 +354,6 @@ a {
   justify-content: center;
   align-items: center;
   perspective: 1000px;
-  overflow: hidden;
 }
 .sad-animation { position: absolute; width: 120px; height: 50px; opacity: 1; transition: opacity 0.5s ease; }
 .sad-signal {
