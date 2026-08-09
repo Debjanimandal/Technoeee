@@ -87,13 +87,15 @@ export default function CourseLearningPage() {
                     {course.subject_code}
                   </span>
                   {course.difficulty && (
-                    <span style={{ background: 'rgba(255,152,0,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>
-                      🔥 {course.difficulty}
+                    <span style={{ background: 'rgba(255,152,0,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M12 2C8.5 7 6 11 6 14a6 6 0 0 0 12 0c0-3-2.5-7-6-12zm0 16a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
+                      {course.difficulty}
                     </span>
                   )}
                   {course.relevance && (
-                    <span style={{ background: 'rgba(76,175,80,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }}>
-                      💼 {course.relevance}
+                    <span style={{ background: 'rgba(76,175,80,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                      {course.relevance}
                     </span>
                   )}
                 </div>
@@ -120,7 +122,8 @@ export default function CourseLearningPage() {
               boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0'
             }}>
               <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '22px' }}>🎯</span> Course Outcomes
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="#4f46e5"/></svg>
+                Course Outcomes
               </h3>
               <ul style={{ margin: 0, paddingLeft: '24px', fontSize: '14.5px', color: '#444', lineHeight: '1.6' }}>
                 {course.outcomes.map((outcome, idx) => (
@@ -237,7 +240,7 @@ export default function CourseLearningPage() {
                             }}
                             onMouseOver={(e) => e.currentTarget.style.transform = 'translateX(4px)'}
                             onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
-                            <span style={{ fontSize: '15px' }}>📝</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e65100" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                             <span style={{ fontSize: '13px', color: '#e65100', fontWeight: 'bold' }}>Mandatory Module Quiz</span>
                           </div>
                         </div>
@@ -274,7 +277,10 @@ export default function CourseLearningPage() {
                     onMouseOver={(e) => e.currentTarget.style.transform = 'translateX(5px)'}
                     onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
                       <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#fff', border: '3px solid #ffd700', boxShadow: '0 0 15px rgba(255,215,0,0.4)', zIndex: 2, flexShrink: 0 }} />
-                      <h4 style={{ fontSize: '15px', fontWeight: 'bold', color: '#b8860b', margin: 0 }}>🏆 Claim Course Badge</h4>
+                      <h4 style={{ fontSize: '15px', fontWeight: 'bold', color: '#b8860b', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b8860b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                        Claim Course Badge
+                      </h4>
                   </div>
                 </div>
 
@@ -292,7 +298,9 @@ export default function CourseLearningPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#666' }}>
                   {expandedModule !== null && course.modules[expandedModule]?.intro ? (
                     <div style={{ maxWidth: '600px', textAlign: 'center' }}>
-                      <div style={{ fontSize: '50px', marginBottom: '20px' }}>📚</div>
+                      <div style={{ width: '60px', height: '60px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ede9fe', borderRadius: '16px' }}>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                      </div>
                       <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333', marginBottom: '16px' }}>
                         {course.modules[expandedModule].title}
                       </h2>
@@ -303,7 +311,9 @@ export default function CourseLearningPage() {
                     </div>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
-                      <div style={{ fontSize: '60px', marginBottom: '20px' }}>🎯</div>
+                      <div style={{ width: '72px', height: '72px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#eff6ff', borderRadius: '20px' }}>
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="#3b82f6"/></svg>
+                      </div>
                       <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333' }}>Ready to Learn?</h2>
                       <p style={{ fontSize: '15px' }}>Select a module and topic from the roadmap on the left to begin studying.</p>
                     </div>
@@ -311,7 +321,9 @@ export default function CourseLearningPage() {
                 </div>
               ) : selectedTopic === 'GRAND_QUIZ' || selectedTopic.startsWith('MANDATORY_QUIZ_') ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                  <div style={{ fontSize: '70px', marginBottom: '24px' }}>📝</div>
+                  <div style={{ width: '80px', height: '80px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff7ed', borderRadius: '20px', border: '2px solid #fed7aa' }}>
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </div>
                   <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '12px' }}>
                     {selectedTopic === 'GRAND_QUIZ' ? 'Grand Final Quiz' : 'Mandatory Module Quiz'}
                   </h2>
