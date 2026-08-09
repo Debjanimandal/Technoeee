@@ -391,7 +391,7 @@ export default function DashboardPage() {
                   ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
                       {courses.map((c) => (
-                        <div key={c.id} className="hover-lift" style={{ background: '#fff', borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9', overflow: 'hidden' }}>
+                        <div key={c.id} className="hover-lift" style={{ background: '#fff', borderRadius: '20px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)', overflow: 'hidden' }}>
                           {/* Banner thumbnail */}
                           <div style={{ position: 'relative', height: '130px', overflow: 'hidden', flexShrink: 0 }}>
                             <img
@@ -428,7 +428,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Performance Chart */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: '24px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: '24px', padding: '24px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
                     <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Study Performance</h2>
                     <div style={{ display: 'flex', background: '#f1f5f9', padding: '4px', borderRadius: '12px' }}>
@@ -501,7 +501,7 @@ export default function DashboardPage() {
                 )}
 
                 {/* Up Next Widget (Dynamic from Planner) */}
-                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
+                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                     <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Up Next</h2>
                     <Link href="/planner" style={{ color: '#4f46e5', fontSize: '13px', fontWeight: '700', textDecoration: 'none' }}>View All</Link>
@@ -531,7 +531,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* AI Learning Insights Widget */}
-                <div style={{ flex: 1, background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div style={{ flex: 1, background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <div>
                     <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span style={{ color: '#4f46e5' }}><Icons.Flame /></span> AI Insights
@@ -543,7 +543,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Weekly Goal Widget */}
-                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
+                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
                   <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: '0 0 24px 0' }}>Weekly Goal</h2>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                     <div style={{ position: 'relative', width: '80px', height: '80px' }}>
