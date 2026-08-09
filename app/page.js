@@ -274,32 +274,39 @@ export default function Home() {
 
       {/* Features Section */}
       <div className="section-header">Explore Our Features</div>
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-        gap: '20px',
-        padding: '10px 40px 40px',
-        maxWidth: '1100px',
-        margin: '0 auto',
-      }}>
-        {FEATURES.map((f, i) => (
-          <div key={i} style={{
-            background: 'linear-gradient(135deg, #0d1b3e 0%, #1a2f5e 100%)',
-            borderRadius: '16px',
-            padding: '28px 24px',
-            border: '1px solid rgba(58,138,255,0.15)',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
-            cursor: 'default',
-          }}
-          onMouseOver={e => { e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 12px 30px rgba(58,138,255,0.2)'; e.currentTarget.style.borderColor='rgba(58,138,255,0.4)'; }}
-          onMouseOut={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 20px rgba(0,0,0,0.15)'; e.currentTarget.style.borderColor='rgba(58,138,255,0.15)'; }}
-          >
-            <div style={{ fontSize: '36px', marginBottom: '14px' }}>{f.icon}</div>
-            <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#fff', marginBottom: '8px', margin: '0 0 8px' }}>{f.title}</h3>
-            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>{f.desc}</p>
-          </div>
-        ))}
+      <div className="community-container">
+        <div className="channels-section">
+          <h2>Platform Features</h2>
+          {FEATURES.slice(0, 3).map((f, i) => (
+            <div key={i} className="channel" style={{ cursor: 'default' }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
+                background: '#1a2980', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', fontSize: '18px', marginRight: '12px',
+              }}>{f.icon}</div>
+              <div>
+                <div style={{ fontWeight: '700', fontSize: '14px', color: '#1a1a1a' }}>{f.title}</div>
+                <div style={{ fontSize: '12px', color: '#444', marginTop: '2px' }}>{f.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="channels-section">
+          <h2>&nbsp;</h2>
+          {FEATURES.slice(3).map((f, i) => (
+            <div key={i} className="channel" style={{ cursor: 'default' }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: '50%', flexShrink: 0,
+                background: '#1a2980', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', fontSize: '18px', marginRight: '12px',
+              }}>{f.icon}</div>
+              <div>
+                <div style={{ fontWeight: '700', fontSize: '14px', color: '#1a1a1a' }}>{f.title}</div>
+                <div style={{ fontSize: '12px', color: '#444', marginTop: '2px' }}>{f.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Testimonials */}
