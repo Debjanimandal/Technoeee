@@ -10,6 +10,17 @@ import coursesData from '../../public/data/real_courses_data.json';
 import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
 
+const COURSE_BANNER_MAP = {
+  'TIU-UCS-T214':      '/course-banners/cpp.png',
+  'TIU-PC-UCS-T22101': '/course-banners/coa.png',
+  'TIU-UCS-T350':      '/course-banners/ai.png',
+  'TIU-UCS-T321':      '/course-banners/daa.png',
+  'TIU-UCS-T301':      '/course-banners/dbms.png',
+  'TIU-UCS-T451':      '/course-banners/ml.png',
+  'TIU-UCS-T304':      '/course-banners/cn.png',
+  'TIU-UCS-T351':      '/course-banners/automata.png',
+};
+
 const ModuleItem = ({ mod }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -261,24 +272,23 @@ export default function CoursesPage() {
               const isEnrolled = enrolledCourses.includes(cName) || enrolledCourses.includes(cCode);
               
               return (
-                <div 
+                <div
                   key={index}
                   onClick={() => setSelectedCourse(course)}
                   style={{
-                    background: 'rgba(255, 255, 255, 0.7)',
+                    background: 'rgba(255, 255, 255, 0.85)',
                     backdropFilter: 'blur(10px)',
                     border: (course.relevance && (course.relevance.includes('Demand') || course.relevance.includes('Trend')))
                               ? '1px solid rgba(138, 43, 226, 0.4)'
                               : '1px solid rgba(255, 255, 255, 0.5)',
                     borderRadius: '16px',
-                    padding: '25px',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
-                    boxShadow: (course.relevance && (course.relevance.includes('Demand') || course.relevance.includes('Trend'))) 
-                                 ? '0 0 35px rgba(138, 43, 226, 0.5)' 
+                    boxShadow: (course.relevance && (course.relevance.includes('Demand') || course.relevance.includes('Trend')))
+                                 ? '0 0 35px rgba(138, 43, 226, 0.5)'
                                  : '0 10px 30px rgba(0,0,0,0.05)',
                     position: 'relative',
-                    overflow: 'visible' // allow badge to overflow
+                    overflow: 'hidden',
                   }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.transform = 'translateY(-5px)';
@@ -293,64 +303,64 @@ export default function CoursesPage() {
                                                         : '0 10px 30px rgba(0,0,0,0.05)';
                   }}
                 >
-                  {/* Top gradient border */}
-                  <div style={{
-                    position: 'absolute', top: 0, left: 0, width: '100%', height: '6px',
-                    background: 'linear-gradient(90deg, #3a8aff, #800080)',
-                    borderTopLeftRadius: '16px', borderTopRightRadius: '16px'
-                  }} />
-
-
-
-                  {/* Overlapping Badge (Right - Relevance) */}
-                  <div style={{
-                    position: 'absolute', top: '-12px', right: '20px',
-                    background: getRelevanceColor(course.relevance).bg,
-                    color: getRelevanceColor(course.relevance).text,
-                    border: `1px solid ${getRelevanceColor(course.relevance).border}`,
-                    padding: '4px 12px', borderRadius: '20px',
-                    fontSize: '11px', fontWeight: 'bold', boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                    zIndex: 10
-                  }}>
-                    {course.relevance || "Course"}
-                  </div>
-
-                  <div style={{ marginBottom: '15px', marginTop: '10px' }}>
-                    <span style={{ 
-                      display: 'inline-block', 
-                      background: 'rgba(58, 138, 255, 0.1)', 
-                      color: '#3a8aff', 
-                      padding: '4px 10px', 
-                      borderRadius: '20px', 
-                      fontSize: '12px', 
-                      fontWeight: 'bold', 
-                    }}>
-                      {course.subject_code || 'General'}
-                    </span>
-                  </div>
-                  <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '15px', lineHeight: '1.4' }}>
-                    {course.course_name}
-                  </h3>
-                  
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
-                    <span style={{ fontSize: '12px', color: '#888' }}>⏱ {course.estimated_time || '45 Hours'}</span>
-                    {isEnrolled ? (
-                       <div style={{
-                         background: 'linear-gradient(135deg, #00b09b, #96c93d)',
-                         color: '#fff',
-                         border: '1px solid rgba(255,255,255,0.4)',
-                         padding: '4px 12px', borderRadius: '20px',
-                         fontSize: '11px', fontWeight: '900', 
-                         boxShadow: '0 4px 12px rgba(0, 176, 155, 0.3), inset 0 1px 0 rgba(255,255,255,0.3)',
-                         letterSpacing: '0.5px', textTransform: 'uppercase',
-                         display: 'flex', alignItems: 'center', gap: '4px'
-                       }}>
-                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                         Enrolled
-                       </div>
-                    ) : (
-                       <span style={{ fontSize: '13px', fontWeight: '600', color: '#3a8aff' }}>View Details ➔</span>
+                  {/* Banner thumbnail */}
+                  <div style={{ position: 'relative', height: '140px', overflow: 'hidden' }}>
+                    <img
+                      src={COURSE_BANNER_MAP[course.subject_code] || '/course-banners/cpp.png'}
+                      alt={course.course_name}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.55) 100%)' }} />
+                    {course.relevance && (
+                      <span style={{
+                        position: 'absolute', top: '10px', right: '10px',
+                        background: 'rgba(255,255,255,0.92)', color: '#1e293b',
+                        padding: '3px 10px', borderRadius: '20px',
+                        fontSize: '10px', fontWeight: '800', backdropFilter: 'blur(6px)',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                      }}>
+                        {course.relevance}
+                      </span>
                     )}
+                  </div>
+
+                  {/* Card content */}
+                  <div style={{ padding: '18px 20px 20px' }}>
+                    <div style={{ marginBottom: '10px' }}>
+                      <span style={{
+                        display: 'inline-block',
+                        background: 'rgba(58, 138, 255, 0.1)',
+                        color: '#3a8aff',
+                        padding: '4px 10px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                      }}>
+                        {course.subject_code || 'General'}
+                      </span>
+                    </div>
+                    <h3 style={{ fontSize: '17px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '14px', lineHeight: '1.4' }}>
+                      {course.course_name}
+                    </h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '12px', color: '#888', display: 'flex', alignItems: 'center', gap: '4px' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>{course.estimated_time || '45 Hours'}</span>
+                      {isEnrolled ? (
+                         <div style={{
+                           background: 'linear-gradient(135deg, #00b09b, #96c93d)',
+                           color: '#fff', border: '1px solid rgba(255,255,255,0.4)',
+                           padding: '4px 12px', borderRadius: '20px',
+                           fontSize: '11px', fontWeight: '900',
+                           boxShadow: '0 4px 12px rgba(0,176,155,0.3), inset 0 1px 0 rgba(255,255,255,0.3)',
+                           letterSpacing: '0.5px', textTransform: 'uppercase',
+                           display: 'flex', alignItems: 'center', gap: '4px'
+                         }}>
+                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                           Enrolled
+                         </div>
+                      ) : (
+                         <span style={{ fontSize: '13px', fontWeight: '600', color: '#3a8aff', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>View Details <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
