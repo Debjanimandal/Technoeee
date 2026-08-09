@@ -1,11 +1,11 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
-import Sidebar from '@/components/Sidebar';
-import DashboardHeader from '@/components/DashboardHeader';
+import Sidebar from '@/components/layout/Sidebar';
+import DashboardHeader from '@/components/layout/DashboardHeader';
 import coursesData from '../../public/real_courses_data.json';
-import { useAuth } from '@/lib/auth-context';
-import { supabase } from '@/lib/supabaseClient';
-import PomodoroTimer from '@/components/PomodoroTimer';
+import { useAuth } from '@/lib/context/auth-context';
+import { supabase } from '@/lib/supabase/client';
+import PomodoroTimer from '@/components/shared/PomodoroTimer';
 import Link from 'next/link';
 
 // ─── Constants ────────────────────────────────────────────────────────────────

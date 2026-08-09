@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth-context';
+import { useAuth } from '@/lib/context/auth-context';
 import NotificationDropdown from './NotificationDropdown';
 
 export default function DashboardHeader() {

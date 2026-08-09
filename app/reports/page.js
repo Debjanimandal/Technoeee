@@ -5,10 +5,10 @@ import {
   LinearScale, CategoryScale, DoughnutController, ArcElement, 
   Tooltip, Legend, RadarController, RadialLinearScale, PointElement, LineElement
 } from 'chart.js';
-import Sidebar from '@/components/Sidebar';
-import DashboardHeader from '@/components/DashboardHeader';
-import { useAuth } from '@/lib/auth-context';
-import { getLearningStats, getDailyStudyData, getCourseStudyTime, formatStudyTime, getAdvancedAnalytics } from '@/lib/studyService';
+import Sidebar from '@/components/layout/Sidebar';
+import DashboardHeader from '@/components/layout/DashboardHeader';
+import { useAuth } from '@/lib/context/auth-context';
+import { getLearningStats, getDailyStudyData, getCourseStudyTime, formatStudyTime, getAdvancedAnalytics } from '@/lib/services/studyService';
 import { Target, Clock, Zap, TrendingUp, BarChart3, PieChart, Heart, Compass, CalendarCheck } from 'lucide-react';
 
 Chart.register(

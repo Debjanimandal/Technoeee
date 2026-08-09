@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/supabase/client';
 
 export default function AuthModal({ isOpen, onClose, initialTab = 'signup' }) {
   const [activeTab, setActiveTab] = useState(initialTab);

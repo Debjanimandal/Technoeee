@@ -1,6 +1,6 @@
 'use client';
-import Sidebar from '@/components/Sidebar';
-import DashboardHeader from '@/components/DashboardHeader';
+import Sidebar from '@/components/layout/Sidebar';
+import DashboardHeader from '@/components/layout/DashboardHeader';
 import Image from 'next/image';
 
 const CHANNELS = [

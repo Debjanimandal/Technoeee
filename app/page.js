@@ -2,9 +2,9 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { useAuth } from '@/lib/auth-context';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import { useAuth } from '@/lib/context/auth-context';
 
 const COURSES_DATA = [
   { img: '/image/Rectangle 25.jpg', title: '10,000 STUDENTS LEARN CODING WITH ME', duration: '1h 30m', instructor: 'Daniel' },

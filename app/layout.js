@@ -1,6 +1,6 @@
 import { Poppins } from 'next/font/google';
 import './globals.css';
-import { AuthProvider } from '@/lib/auth-context';
+import { AuthProvider } from '@/lib/context/auth-context';
 
 const poppins = Poppins({
   subsets: ['latin'],

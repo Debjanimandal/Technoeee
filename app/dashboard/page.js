@@ -5,11 +5,11 @@ import {
   Chart, LineController, LineElement, PointElement,
   LinearScale, CategoryScale, Tooltip, Filler
 } from 'chart.js';
-import Sidebar from '@/components/Sidebar';
-import DashboardHeader from '@/components/DashboardHeader';
+import Sidebar from '@/components/layout/Sidebar';
+import DashboardHeader from '@/components/layout/DashboardHeader';
 import Link from 'next/link';
-import { useAuth } from '@/lib/auth-context';
-import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/lib/context/auth-context';
+import { supabase } from '@/lib/supabase/client';
 import coursesData from '../../public/real_courses_data.json';
 import {
   getLearningStats,
@@ -19,7 +19,7 @@ import {
   getDailyStudyData,
   getWeeklyStudyData,
   getMonthlyStudyData
-} from '@/lib/studyService';
+} from '@/lib/services/studyService';
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
 

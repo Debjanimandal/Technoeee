@@ -5,16 +5,16 @@ import {
   LinearScale, CategoryScale, BarController, BarElement,
   Tooltip, Filler,
 } from 'chart.js';
-import Sidebar from '@/components/Sidebar';
-import DashboardHeader from '@/components/DashboardHeader';
-import { useAuth } from '@/lib/auth-context';
-import { supabase } from '@/lib/supabaseClient';
+import Sidebar from '@/components/layout/Sidebar';
+import DashboardHeader from '@/components/layout/DashboardHeader';
+import { useAuth } from '@/lib/context/auth-context';
+import { supabase } from '@/lib/supabase/client';
 import {
   getDailyStudyData,
   getLearningStats,
   getCourseStudyTime,
   formatStudyTime,
-} from '@/lib/studyService';
+} from '@/lib/services/studyService';
 
 Chart.register(
   LineController, LineElement, PointElement,
