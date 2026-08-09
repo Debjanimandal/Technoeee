@@ -17,7 +17,7 @@ const COURSES_DATA = [
   { img: '/image/Rectangle 28 (1).jpg', title: '10,000 STUDENTS LEARN PHOTOGRAPHY WITH ME', duration: '1h 30m', instructor: 'Daniel' },
 ];
 
-const CATEGORIES = ['Featured','Music','Drawing & Painting','Animation','Creative Writing','Marketing','UI/UX Design','Social Media','Productivity','Graphics Design','Freelancing & Entrepreneurship','Programming'];
+const CATEGORIES = ['Featured', 'Programming Fundamentals', 'Core CS Foundation', 'High Demand Industry Skill', 'Essential Industry Concept', 'Core Infrastructure', 'Theoretical Computer Science', 'Core Hardware Concept'];
 
 const CHANNELS = [
   { name: 'Marketing Analysis', img: '/image/Ellipse 12.jpg' },
@@ -52,8 +52,13 @@ export default function Home() {
 
   // Body overflow control
   useEffect(() => {
-    document.body.style.overflow = devMode ? 'auto' : 'hidden';
-    return () => { document.body.style.overflow = 'auto'; };
+    const overflow = devMode ? 'auto' : 'hidden';
+    document.body.style.overflow = overflow;
+    document.documentElement.style.overflow = overflow;
+    return () => {
+      document.body.style.overflow = 'auto';
+      document.documentElement.style.overflow = 'auto';
+    };
   }, [devMode]);
 
   // Scroll listener

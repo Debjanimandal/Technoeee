@@ -1,15 +1,17 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
+import { useAuth } from '@/lib/context/auth-context';
 
 function HomeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const username = searchParams.get('username') || 'User';
+  const { signOut, user } = useAuth();
+  const username = searchParams.get('username') || user?.email?.split('@')[0] || 'User';
 
-  function logout() {
-    alert('You have been logged out.');
-    router.push('/');
+  async function logout() {
+    await signOut();
+    router.replace('/');
   }
 
   return (
