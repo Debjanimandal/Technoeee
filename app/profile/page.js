@@ -1,20 +1,22 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
-import EditProfileModal from '@/components/profile/EditProfileModal';
-import { Mail, Phone, MapPin, GraduationCap, Building, BookOpen } from 'lucide-react';
+import { getCourseStudyTime } from '@/lib/services/studyService';
+import { Mail, Phone, MapPin, GraduationCap, Building, BookOpen, Star, Award, TrendingUp, Lock } from 'lucide-react';
 
 export default function ProfilePage() {
   const { user, profile } = useAuth();
+  const router = useRouter();
   
   // Data state
   const [profileData, setProfileData] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
+  const [courseStudyTime, setCourseStudyTime] = useState({});
   const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
 
   // Load Data
   useEffect(() => {
@@ -25,21 +27,28 @@ export default function ProfilePage() {
         try { setProfileData(JSON.parse(saved)); } catch (e) {}
       }
 
-      // 2. Load Enrollments
+      // 2. Load Enrollments and Analytics
       if (user) {
-        const { data } = await supabase.from('enrollments')
-          .select('course_id, course_title')
-          .eq('user_id', user.id);
+        const [enrollRes, studyTime] = await Promise.all([
+          supabase.from('enrollments').select('*').eq('user_id', user.id),
+          getCourseStudyTime(user.id)
+        ]);
         
         // deduplicate by course_title
-        const seen = new Set();
-        const unique = (data || []).filter(e => {
-          const key = e.course_title?.toLowerCase().trim();
-          if (seen.has(key)) return false;
-          seen.add(key);
-          return true;
-        });
+        let unique = (enrollRes.data || []).filter((e, i, a) => a.findIndex(x => x.course_title === e.course_title) === i);
+        
+        // Fallback if supabase hasn't populated yet
+        if (unique.length === 0) {
+           unique = [
+            { course_id: 'TIU-UCS-T351', course_title: 'Automata Theory & Compiler Design', progress: 0 },
+            { course_id: 'TIU-UCS-T214', course_title: 'Object Oriented Programming using C++', progress: 0 },
+            { course_id: 'TIU-UCS-T304', course_title: 'Computer Network', progress: 0 },
+            { course_id: 'TIU-PC-UCS-T22101', course_title: 'Computer Organization and Architecture', progress: 0 },
+            { course_id: 'TIU-UCS-T451', course_title: 'Machine Learning', progress: 0 }
+           ];
+        }
         setEnrollments(unique);
+        setCourseStudyTime(studyTime || {});
       }
       setLoading(false);
     };
@@ -47,7 +56,7 @@ export default function ProfilePage() {
     loadData();
     window.addEventListener('profile_completion_updated', loadData);
     return () => window.removeEventListener('profile_completion_updated', loadData);
-  }, [user, isEditing]);
+  }, [user]);
 
   // Derived Display Values
   const displayName = profileData?.basicDetails?.name || profile?.username || 'Student Name';
@@ -59,6 +68,24 @@ export default function ProfilePage() {
   const displayDegree = profileData?.educationDetails?.degree;
   const avatarLetter = displayName[0]?.toUpperCase() || 'S';
 
+  // Compute Genuine Strengths
+  const strongCourses = [];
+  if (enrollments.length > 0) {
+    const maxH = Math.max(...Object.values(courseStudyTime), 0.001);
+    const scored = enrollments.map(e => {
+      const hours = courseStudyTime[e.course_title] || 0;
+      const studyScore = (hours / maxH) * 100;
+      const progress   = e.progress || 0;
+      const composite  = Math.round(progress * 0.6 + studyScore * 0.4);
+      return { ...e, composite };
+    }).sort((a, b) => b.composite - a.composite);
+    strongCourses.push(...scored.filter(e => e.composite >= 50));
+  }
+  
+  // Dynamic Achievements
+  const hasFastStarter = enrollments.length >= 5;
+  const hasConsistentLearner = Object.values(courseStudyTime).reduce((a, b) => a + b, 0) > 10; // > 10 hours total
+
   return (
     <div className="app-layout">
       <Sidebar />
@@ -68,27 +95,31 @@ export default function ProfilePage() {
         <div style={{ maxWidth: '900px', margin: '0 auto', paddingTop: '20px' }}>
           
           {/* Action Bar */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '16px' }}>
             <button 
-              onClick={() => setIsEditing(true)}
+              onClick={() => {
+                sessionStorage.setItem('keepProfileOpen', 'true');
+                router.back();
+              }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '8px',
-                background: '#3a8aff', color: '#fff', border: 'none', padding: '10px 24px', 
-                borderRadius: '8px', fontWeight: 600, fontSize: '14px', cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(58,138,255,0.2)', transition: 'transform 0.2s'
+                background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '8px 16px',
+                fontSize: '14px', fontWeight: '700', color: '#475569', boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+                cursor: 'pointer', transition: 'all 0.2s'
               }}
-              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-              onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+              onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }}
+              onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)'; }}
             >
-              Edit CV Profile
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              Back
             </button>
           </div>
 
-          {/* CV Document Container */}
+          {/* Profile Document Container (A4 Style) */}
           <div style={{
             background: '#fff', borderRadius: '16px', padding: '48px',
             boxShadow: '0 10px 40px rgba(0,0,0,0.04)', border: '1px solid #f1f5f9',
-            position: 'relative'
+            position: 'relative', minHeight: '1050px' // A4 approximation
           }}>
              {/* Verified Badge */}
              <div style={{
@@ -175,8 +206,33 @@ export default function ProfilePage() {
               </div>
             )}
 
+            {/* Strong Foundations */}
+            <div style={{ marginBottom: '40px' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '4px', height: '18px', background: '#3b82f6', borderRadius: '4px' }}></div>
+                Strong Foundations
+              </h2>
+              {strongCourses.length > 0 ? (
+                <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  {strongCourses.map((s, idx) => (
+                    <div key={idx} style={{
+                      background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px',
+                      padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px'
+                    }}>
+                      <TrendingUp size={20} color="#16a34a" />
+                      <span style={{ fontSize: '14px', fontWeight: '700', color: '#166534' }}>{s.course_title}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px dashed #cbd5e1', color: '#64748b', fontSize: '14px', fontStyle: 'italic' }}>
+                  Keep learning and scoring high progress to unlock your core strengths!
+                </div>
+              )}
+            </div>
+
             {/* Enrolled Courses (Visual Badges) */}
-            <div>
+            <div style={{ marginBottom: '40px' }}>
               <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <div style={{ width: '4px', height: '18px', background: '#3b82f6', borderRadius: '4px' }}></div>
                 Active Course Enrollments
@@ -225,15 +281,70 @@ export default function ProfilePage() {
               )}
             </div>
 
+            {/* Achievements */}
+            <div style={{ marginBottom: '40px' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '4px', height: '18px', background: '#3b82f6', borderRadius: '4px' }}></div>
+                Key Achievements
+              </h2>
+              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                
+                {/* Fast Starter */}
+                {hasFastStarter ? (
+                  <div style={{
+                    background: '#f5f3ff', border: '1px solid #ede9fe', borderRadius: '12px',
+                    padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: '16px', flex: '1 1 200px'
+                  }}>
+                    <div style={{ background: '#ede9fe', padding: '10px', borderRadius: '10px' }}>
+                      <Star size={24} color="#7c3aed" />
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#5b21b6', margin: '0 0 4px 0' }}>Fast Starter</h3>
+                      <p style={{ margin: 0, fontSize: '13px', color: '#7c3aed' }}>Enrolled in 5+ subjects.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{
+                    background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: '12px',
+                    padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '16px', flex: '1 1 200px',
+                    opacity: 0.6
+                  }}>
+                    <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '10px' }}><Lock size={20} color="#94a3b8" /></div>
+                    <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Enroll in 5+ subjects</span>
+                  </div>
+                )}
+
+                {/* Consistent Learner */}
+                {hasConsistentLearner ? (
+                  <div style={{
+                    background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '12px',
+                    padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: '16px', flex: '1 1 200px'
+                  }}>
+                    <div style={{ background: '#fef3c7', padding: '10px', borderRadius: '10px' }}>
+                      <Award size={24} color="#d97706" />
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#92400e', margin: '0 0 4px 0' }}>Dedicated Learner</h3>
+                      <p style={{ margin: 0, fontSize: '13px', color: '#b45309' }}>Accumulated over 10 hours of study.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{
+                    background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: '12px',
+                    padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '16px', flex: '1 1 200px',
+                    opacity: 0.6
+                  }}>
+                    <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '10px' }}><Lock size={20} color="#94a3b8" /></div>
+                    <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Study for 10+ hours</span>
+                  </div>
+                )}
+
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
-      
-      <EditProfileModal 
-        isOpen={isEditing} 
-        onClose={() => setIsEditing(false)} 
-        onBack={() => setIsEditing(false)} 
-      />
     </div>
   );
 }
