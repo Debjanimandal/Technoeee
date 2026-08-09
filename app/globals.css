@@ -747,22 +747,29 @@ footer {
 /* Inner page content wrapper (NOT the landing page .main-content) */
 .page-content {
   flex: 1;
+  margin-left: 200px;
   padding: 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Sidebar */
 .sidebar {
   width: 200px;
-  min-height: 100vh;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
   background-color: #fff;
   border-right: 1px solid #000;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 5px;
+  overflow-y: auto;
+  z-index: 100;
 }
 .sidebar-item {
   width: 100%;
@@ -893,6 +900,7 @@ footer {
     align-items: center;
     padding: 0;
     box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    overflow-y: unset;
   }
   .sidebar-item {
     flex-direction: column;
@@ -918,7 +926,7 @@ footer {
   .sidebar-item img { width: 22px; height: 22px; }
 
   /* ── INNER PAGE CONTENT ── */
-  .page-content { padding: 14px 12px 74px 12px; overflow-y: auto; }
+  .page-content { margin-left: 0; padding: 14px 12px 74px 12px; overflow-y: auto; }
 
   /* ── DASHBOARD HEADER (inner pages) ── */
   .dashboard-header { flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
