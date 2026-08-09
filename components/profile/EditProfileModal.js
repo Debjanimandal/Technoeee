@@ -5,6 +5,7 @@ import {
   MapPin, ShieldCheck, UserCircle, Briefcase, 
   GraduationCap, Medal, Link as LinkIcon 
 } from 'lucide-react';
+import { useAuth } from '@/lib/context/auth-context';
 
 const MENU_TABS = [
   { id: 'basic', label: 'Basic Details' },
@@ -13,7 +14,8 @@ const MENU_TABS = [
   { id: 'personal', label: 'Personal Details' }
 ];
 
-export default function EditProfileModal({ isOpen, onClose, initialTab = 'about' }) {
+export default function EditProfileModal({ isOpen, onClose, onBack, initialTab = 'about' }) {
+  const { user, profile } = useAuth();
   const [activeTab, setActiveTab] = useState(initialTab);
   
   // Frontend State for all 4 sections
@@ -21,6 +23,31 @@ export default function EditProfileModal({ isOpen, onClose, initialTab = 'about'
   const [aboutText, setAboutText] = useState('');
   const [educationDetails, setEducationDetails] = useState({ school: '', degree: '' });
   const [personalDetails, setPersonalDetails] = useState({ phone: '', location: '' });
+
+  useEffect(() => {
+    // 1. Load saved data first
+    const savedDataStr = localStorage.getItem('user_profile_data');
+    if (savedDataStr) {
+      try {
+        const saved = JSON.parse(savedDataStr);
+        if (saved.basicDetails) setBasicDetails(saved.basicDetails);
+        if (saved.aboutText) setAboutText(saved.aboutText);
+        if (saved.educationDetails) setEducationDetails(saved.educationDetails);
+        if (saved.personalDetails) setPersonalDetails(saved.personalDetails);
+      } catch (e) {
+        console.error('Failed to parse saved profile data', e);
+      }
+    }
+
+    // 2. Pre-fill basic details from auth if they are still missing
+    if (user || profile) {
+      setBasicDetails(prev => ({
+        ...prev,
+        name: prev.name || profile?.username || user?.email?.split('@')[0] || '',
+        email: prev.email || user?.email || ''
+      }));
+    }
+  }, [user, profile]);
 
   const [profileCompletion, setProfileCompletion] = useState(0);
 
@@ -67,7 +94,7 @@ export default function EditProfileModal({ isOpen, onClose, initialTab = 'about'
         {/* Header */}
         <div className="modal-header">
           <div className="header-left">
-            <button className="icon-btn" onClick={onClose}><ArrowLeft size={20} color="#1c4980" /></button>
+            <button className="icon-btn" onClick={onBack || onClose}><ArrowLeft size={20} color="#1c4980" /></button>
             <h2 className="header-title">Edit Profile</h2>
           </div>
           <button className="icon-btn" onClick={onClose}><X size={20} color="#1c4980" /></button>
@@ -109,7 +136,6 @@ export default function EditProfileModal({ isOpen, onClose, initialTab = 'about'
                       style={{ marginRight: '12px' }}
                     />
                     <span className="nav-label">{tab.label}</span>
-                    {!isCompleted && <span className="required-tag">Required</span>}
                   </button>
                 )
               })}
@@ -120,16 +146,18 @@ export default function EditProfileModal({ isOpen, onClose, initialTab = 'about'
               <button
                 style={{
                   width: '100%', padding: '12px', borderRadius: '8px',
-                  background: profileCompletion === 100 ? '#10b981' : '#e2e8f0',
-                  color: profileCompletion === 100 ? '#fff' : '#94a3b8',
-                  fontWeight: 600, border: 'none', cursor: profileCompletion === 100 ? 'pointer' : 'not-allowed',
+                  background: '#10b981', color: '#fff',
+                  fontWeight: 600, border: 'none', cursor: 'pointer',
                   transition: 'all 0.2s'
                 }}
-                disabled={profileCompletion !== 100}
                 onClick={() => {
-                  alert('Profile Details Saved Successfully!');
+                  const dataToSave = {
+                    basicDetails, aboutText, educationDetails, personalDetails
+                  };
+                  localStorage.setItem('user_profile_data', JSON.stringify(dataToSave));
                   localStorage.setItem('mock_profile_completion', profileCompletion);
                   window.dispatchEvent(new Event('profile_completion_updated'));
+                  alert('Profile Details Saved Successfully!');
                 }}
               >
                 Save All Changes
@@ -151,17 +179,17 @@ export default function EditProfileModal({ isOpen, onClose, initialTab = 'about'
             <div className="content-body">
               {activeTab === 'basic' && (
                 <div className="form-group">
-                  <label className="form-label">Name <span style={{color: '#ef4444'}}>*</span></label>
+                  <label className="form-label">Name</label>
                   <input className="custom-input" placeholder="Enter your full name" value={basicDetails.name} onChange={e => setBasicDetails({...basicDetails, name: e.target.value})} />
                   
-                  <label className="form-label" style={{marginTop: 16}}>Email <span style={{color: '#ef4444'}}>*</span></label>
+                  <label className="form-label" style={{marginTop: 16}}>Email</label>
                   <input className="custom-input" placeholder="Enter your email" type="email" value={basicDetails.email} onChange={e => setBasicDetails({...basicDetails, email: e.target.value})} />
                 </div>
               )}
 
               {activeTab === 'about' && (
                 <div className="form-group">
-                  <label className="form-label">About Me <span style={{color: '#ef4444'}}>*</span></label>
+                  <label className="form-label">About Me</label>
                   <span className="form-hint">Maximum 1000 characters can be added</span>
                   <textarea
                     className="about-textarea"
@@ -180,20 +208,20 @@ export default function EditProfileModal({ isOpen, onClose, initialTab = 'about'
 
               {activeTab === 'education' && (
                 <div className="form-group">
-                  <label className="form-label">School / University <span style={{color: '#ef4444'}}>*</span></label>
+                  <label className="form-label">School / University</label>
                   <input className="custom-input" placeholder="Enter institution name" value={educationDetails.school} onChange={e => setEducationDetails({...educationDetails, school: e.target.value})} />
                   
-                  <label className="form-label" style={{marginTop: 16}}>Degree <span style={{color: '#ef4444'}}>*</span></label>
+                  <label className="form-label" style={{marginTop: 16}}>Degree</label>
                   <input className="custom-input" placeholder="e.g. Bachelor of Science" value={educationDetails.degree} onChange={e => setEducationDetails({...educationDetails, degree: e.target.value})} />
                 </div>
               )}
 
               {activeTab === 'personal' && (
                 <div className="form-group">
-                  <label className="form-label">Phone Number <span style={{color: '#ef4444'}}>*</span></label>
+                  <label className="form-label">Phone Number</label>
                   <input className="custom-input" placeholder="Enter phone number" value={personalDetails.phone} onChange={e => setPersonalDetails({...personalDetails, phone: e.target.value})} />
                   
-                  <label className="form-label" style={{marginTop: 16}}>Location <span style={{color: '#ef4444'}}>*</span></label>
+                  <label className="form-label" style={{marginTop: 16}}>Location</label>
                   <input className="custom-input" placeholder="City, Country" value={personalDetails.location} onChange={e => setPersonalDetails({...personalDetails, location: e.target.value})} />
                 </div>
               )}

@@ -27,10 +27,11 @@ export default function ProfileDropdown({ isOpen, onClose, user, profile, onSign
       if (stored) {
         setProfileCompletion(Number(stored));
       } else {
-        setProfileCompletion(0);
+        const hasBasic = user?.email || profile?.username;
+        setProfileCompletion(hasBasic ? 25 : 0);
       }
     }
-  }, [isOpen]);
+  }, [isOpen, user, profile]);
 
   if (!isOpen) return null;
 
@@ -46,7 +47,7 @@ export default function ProfileDropdown({ isOpen, onClose, user, profile, onSign
       boxShadow: '0 16px 40px rgba(0,10,40,0.12), 0 0 2px rgba(0,0,0,0.1)',
       zIndex: 1000, overflow: 'hidden',
       animation: 'slideDown 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
-      padding: '28px 0 16px',
+      padding: '16px 0 12px',
       display: 'flex', flexDirection: 'column'
     }}>
       <style jsx>{`
@@ -55,8 +56,8 @@ export default function ProfileDropdown({ isOpen, onClose, user, profile, onSign
           to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .profile-menu-item {
-          padding: 12px 18px;
-          margin: 4px 16px;
+          padding: 8px 16px;
+          margin: 2px 16px;
           cursor: pointer;
           color: #3f4c63;
           font-size: 15px;
@@ -106,7 +107,7 @@ export default function ProfileDropdown({ isOpen, onClose, user, profile, onSign
       `}</style>
 
       {/* Header section (Icon + Circular Progress + Username) */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: '24px', borderBottom: '1px solid rgba(0,0,0,0.06)', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid rgba(0,0,0,0.06)', marginBottom: '8px' }}>
         
         {/* Profile Avatar with Progress Ring */}
         <div style={{ position: 'relative', width: '92px', height: '92px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
@@ -145,7 +146,12 @@ export default function ProfileDropdown({ isOpen, onClose, user, profile, onSign
         <span style={{ fontSize: '19px', fontWeight: '800', color: '#1a1a2e', letterSpacing: '-0.3px', marginTop: '8px' }}>
           {profile?.username || user?.email?.split('@')[0] || 'User'}
         </span>
-        <span style={{ fontSize: '12px', fontWeight: '600', color: '#8aa0b9', marginTop: '4px' }}>
+        {user?.email && (
+          <span style={{ fontSize: '13px', fontWeight: '600', color: '#64748b', marginTop: '2px' }}>
+            {user.email}
+          </span>
+        )}
+        <span style={{ fontSize: '11px', fontWeight: '700', color: '#3a8aff', marginTop: '6px', background: 'rgba(58,138,255,0.1)', padding: '2px 8px', borderRadius: '12px' }}>
           Complete your profile
         </span>
       </div>
@@ -157,7 +163,7 @@ export default function ProfileDropdown({ isOpen, onClose, user, profile, onSign
         </div>
         <ChevronIcon />
       </div>
-      <div className="profile-menu-item" onClick={onOpenAboutMe}>
+      <div className="profile-menu-item" onClick={() => { onClose(); router.push('/profile'); }}>
         <div className="menu-item-left">
           <AboutIcon />
           <span>About Me</span>

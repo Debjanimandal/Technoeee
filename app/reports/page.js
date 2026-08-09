@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Chart, BarController, BarElement,
   LinearScale, CategoryScale, DoughnutController, ArcElement, 
@@ -76,6 +77,7 @@ function EngagementCard({ title, value, subtext, icon: Icon, color, percent, loa
 // ── Main Page ────────────────────────────────────────────────────────────────
 export default function AnalyticsPage() {
   const { user } = useAuth();
+  const router = useRouter();
 
   // Chart refs
   const activityRef = useRef(null); const activityInst = useRef(null);
@@ -238,13 +240,29 @@ export default function AnalyticsPage() {
 
           <div style={{ padding: '0 32px' }}>
             
-            <div style={{ marginBottom: '32px' }}>
-              <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
-                My Analytics 📊
-              </h1>
-              <p style={{ color: '#64748b', fontSize: '15px', margin: 0 }}>
-                Deep insights into your learning habits and schedule efficiency.
-              </p>
+            <div style={{ marginBottom: '32px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+              <button 
+                onClick={() => { sessionStorage.setItem('keepProfileOpen', 'true'); router.back(); }}
+                style={{
+                  background: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '8px 16px',
+                  display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
+                  fontSize: '14px', fontWeight: '700', color: '#475569', boxShadow: '0 2px 4px rgba(0,0,0,0.02)',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)'; }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Back
+              </button>
+              <div>
+                <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 4px 0', letterSpacing: '-0.5px' }}>
+                  My Analytics 📊
+                </h1>
+                <p style={{ color: '#64748b', fontSize: '15px', margin: 0 }}>
+                  Deep insights into your learning habits and schedule efficiency.
+                </p>
+              </div>
             </div>
 
             {/* ── Top Row: Engagement Cards ── */}

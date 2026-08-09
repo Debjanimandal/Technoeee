@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { Menu, UserCircle } from 'lucide-react';
 import { useAuth } from '@/lib/context/auth-context';
 import NotificationDropdown from '../shared/NotificationDropdown';
 import ProfileDropdown from '../shared/ProfileDropdown';
@@ -28,6 +28,11 @@ export default function DashboardHeader() {
     // Initial load
     const stored = localStorage.getItem('mock_profile_completion');
     if (stored) setGlobalCompletion(Number(stored));
+
+    if (sessionStorage.getItem('keepProfileOpen') === 'true') {
+      setShowProfileMenu(true);
+      sessionStorage.removeItem('keepProfileOpen');
+    }
 
     // Listen for updates from modal
     const handleProfileUpdate = () => {
@@ -79,7 +84,7 @@ export default function DashboardHeader() {
               position: 'relative'
             }}
           >
-            <Image src="/image/notification.jpg" alt="Notification" width={30} height={30} unoptimized style={{ borderRadius: '50%' }} />
+            <Image src="/image/notification.jpg" alt="Notification" width={40} height={40} unoptimized style={{ borderRadius: '50%' }} />
             {unreadCount > 0 && (
               <div style={{
                 position: 'absolute', top: '-2px', right: '-2px',
@@ -117,14 +122,11 @@ export default function DashboardHeader() {
             <Menu size={18} color="#334155" strokeWidth={2.5} />
             
             <div style={{
-              width: '28px', height: '28px', borderRadius: '50%',
+              width: '40px', height: '40px', borderRadius: '50%',
               background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              overflow: 'hidden'
+              overflow: 'hidden', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
             }}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ transform: 'translateY(2px)' }}>
-                <circle cx="12" cy="7" r="4.5" fill="#1e40af" />
-                <path d="M4 21C4 16.5 7.5 13 12 13C16.5 13 20 16.5 20 21" fill="#d946ef" />
-              </svg>
+              <Image src="/image/profile_icon.png" alt="Profile" width={40} height={40} unoptimized />
             </div>
           </button>
           
@@ -160,6 +162,10 @@ export default function DashboardHeader() {
         <EditProfileModal
           isOpen={showEditProfileModal}
           onClose={() => setShowEditProfileModal(false)}
+          onBack={() => {
+            setShowEditProfileModal(false);
+            setShowProfileMenu(true);
+          }}
           initialTab={editProfileTab}
         />
       )}

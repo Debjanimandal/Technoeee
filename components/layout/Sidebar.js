@@ -16,7 +16,6 @@ const NAV_ITEMS = [
   { label: 'Dashboard', href: '/dashboard', Icon: LayoutDashboard, color: '#3b82f6' },
   { label: 'Courses', href: '/courses', Icon: BookOpen, color: '#10b981' },
   { label: 'My Courses', href: '/my-courses', Icon: GraduationCap, color: '#8b5cf6' },
-  { label: 'Profile', href: '/profile', Icon: User, color: '#f97316' },
   { label: 'Communities', href: '/community', Icon: Users, color: '#14b8a6' },
   { label: 'Study Planner', href: '/planner', Icon: CalendarClock, color: '#ec4899' },
   { label: 'Chatbot', href: '/chatbot', Icon: BotMessageSquare, color: '#6366f1' },
