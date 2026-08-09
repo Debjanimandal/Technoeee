@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import AuthModal from '../auth/AuthModal';
 import { useAuth } from '@/lib/context/auth-context';
 
@@ -19,7 +19,21 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
   const searchRef = useRef(null);
   const dropdownRef = useRef(null);
   const router = useRouter();
+  const pathname = usePathname();
   const { user, profile, signOut } = useAuth();
+
+  function handleExploreChange(e) {
+    const section = e.target.value;
+    if (section && section !== 'explore') {
+      if (pathname === '/') {
+        const el = document.getElementById(section);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        router.push(`/#${section}`);
+      }
+      e.target.value = 'explore';
+    }
+  }
 
   const filteredCourses = COURSES.filter(c =>
     c.toLowerCase().includes(searchValue.toLowerCase())
@@ -62,11 +76,21 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
     <>
       <div className={`navbar${active ? ' active' : ''}`} id="navbar">
         <div className="logo">
-          <Image src="/image/logo.png" alt="TechnoEEE Logo" width={160} height={80} style={{ objectFit: 'contain' }} unoptimized />
+          <Image src="/image/logo.png" alt="TechnoEEE Logo" width={110} height={48} style={{ objectFit: 'contain' }} unoptimized />
         </div>
         <div className="navbar-center">
-          <div className="browse-dropdown">
-            <select><option>Browse</option></select>
+          <div className="browse-dropdown" style={{ position: 'relative', display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '4px', color: '#333', fontSize: '14px' }}>
+            <span>Explore</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+            <select onChange={handleExploreChange} defaultValue="explore" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}>
+              <option value="explore">Explore</option>
+              <option value="courses">Courses</option>
+              <option value="community">Community</option>
+              <option value="testimonials">Testimonials</option>
+              <option value="faq">FAQ</option>
+            </select>
           </div>
           <div id="search_icon" className="search-bar" style={{ position: 'relative' }}>
             <input

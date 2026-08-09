@@ -122,66 +122,78 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 6px 32px;
   border-bottom: 1px solid #b3b1b1;
   opacity: 0;
   transition: opacity 0.5s ease;
   position: relative;
   z-index: 1000;
   background-color: rgba(255, 255, 255, 0.3);
+  max-width: 100%;
+  height: 60px;
 }
 .navbar.active { opacity: 1; }
 .logo {
   display: flex;
   align-items: center;
   background-color: #ffffff;
-  border-radius: 10px;
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 .navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
-  flex-grow: 1;
-  margin: 0 20px;
+  gap: 24px;
 }
-.browse-dropdown { position: relative; margin-left: 20px; }
+.browse-dropdown { position: relative; }
 .browse-dropdown select {
   padding: 8px 4px;
-  border: 1px solid #8b8585;
-  border-radius: 5px;
+  border: none;
   font-size: 14px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: transparent;
   cursor: pointer;
+  outline: none;
+  color: #333;
 }
 .search-bar {
   flex: 1;
-  max-width: 580px;
-  padding-left: 50px;
-  padding-right: 15px;
+  width: 420px;
   position: relative;
 }
 .search-bar input {
   width: 100%;
-  padding: 8px 8px 8px 30px;
-  border: 1px solid #8b8585;
-  border-radius: 5px;
+  padding: 10px 16px 10px 46px;
+  border: none;
+  border-radius: 50px;
   font-size: 14px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: #f2f5f9;
+  outline: none;
 }
 .search-bar input::-webkit-calendar-picker-indicator { display: none; }
 .search-bar::before {
-  content: '🔍';
+  content: '';
   position: absolute;
-  left: 60px;
+  left: 6px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 14px;
-  color: #666;
+  width: 32px;
+  height: 32px;
+  background-color: #1352f1;
+  border-radius: 50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+  background-size: 16px;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
 }
 .custom-dropdown {
   position: absolute;
   top: 100%;
-  left: 50px;
-  width: calc(100% - 50px);
+  left: 0;
+  width: 100%;
   background-color: white;
   border: 1px solid #8b8585;
   border-radius: 5px;
@@ -194,30 +206,38 @@ a {
 .custom-dropdown.active { display: block; }
 .custom-dropdown div { padding: 8px 12px; cursor: pointer; font-size: 14px; color: #333; }
 .custom-dropdown div:hover { background-color: #f0f0f0; }
-.pricing-dropdown { position: relative; margin-left: 40px; }
+.pricing-dropdown { position: relative; }
 .pricing-dropdown select {
   padding: 8px 4px;
-  border: 1px solid #8b8585;
-  border-radius: 5px;
+  border: none;
   font-size: 14px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: transparent;
   cursor: pointer;
+  outline: none;
+  color: #333;
 }
-.nav-links { display: flex; align-items: center; }
-.nav-links a, .nav-links button { margin-left: 20px; margin-right: 20px; text-decoration: none; color: #333; width: auto; }
+.nav-links { display: flex; align-items: center; gap: 16px; }
+.nav-links a, .nav-links button { text-decoration: none; color: #333; width: auto; }
 .nav-links .signup-btn, .nav-links .signin-btn {
   padding: 8px 16px;
-  border: 1px solid #8b8585;
-  border-radius: 5px;
   font-size: 14px;
-  background-color: rgba(255, 255, 255, 0.5);
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
-.nav-links .signup-btn { color: #006aff; }
-.nav-links .signup-btn:hover { background-color: rgba(255, 255, 255, 0.7); color: #003aff; }
-.nav-links .signin-btn { color: #3a8aff; }
-.nav-links .signin-btn:hover { background-color: rgba(255, 255, 255, 0.7); color: #006aff; }
+.nav-links .signup-btn { 
+  border: 1px solid #1e58ec;
+  border-radius: 5px;
+  background-color: #1e58ec;
+  color: #ffffff; 
+}
+.nav-links .signup-btn:hover { background-color: #1342b5; border-color: #1342b5; color: #ffffff; }
+.nav-links .signin-btn { 
+  border: none;
+  background-color: transparent;
+  color: #3a8aff; 
+}
+.nav-links .signin-btn:hover { background-color: transparent; color: #006aff; }
 
 /* ===== AUTH MODAL ===== */
 .modal {
