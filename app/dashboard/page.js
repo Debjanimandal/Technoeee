@@ -70,7 +70,8 @@ function StatCard({ label, value, icon: Icon, color, bgLight, loading }) {
   return (
     <div className="hover-lift" style={{
       flex: '1 1 200px', background: '#fff', borderRadius: '20px', padding: '24px',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.03)', display: 'flex', alignItems: 'center', gap: '16px',
+      boxShadow: '0 6px 24px rgba(79,70,229,0.09)', border: '1px solid rgba(99,102,241,0.1)',
+      display: 'flex', alignItems: 'center', gap: '16px',
       transition: 'transform 0.3s ease, box-shadow 0.3s ease'
     }}>
       <div style={{
@@ -317,7 +318,7 @@ export default function DashboardPage() {
 
       <div className="app-layout">
         <Sidebar />
-        <div className="page-content" style={{ backgroundColor: '#f8fafc', minHeight: '100vh', paddingBottom: '40px' }}>
+        <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', minHeight: '100vh', paddingBottom: '40px' }}>
           <DashboardHeader />
           
           <div style={{ padding: '0 32px' }}>

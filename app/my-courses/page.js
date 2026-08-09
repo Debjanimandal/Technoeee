@@ -105,7 +105,7 @@ export default function MyCoursesPage() {
 
       <div className="app-layout">
         <Sidebar />
-        <div className="page-content" style={{ backgroundColor: '#f8fafc', minHeight: '100vh', paddingBottom: '40px' }}>
+        <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', minHeight: '100vh', paddingBottom: '40px' }}>
           <DashboardHeader />
 
           <div style={{ padding: '0 32px' }}>
@@ -155,10 +155,10 @@ export default function MyCoursesPage() {
                 {enrolledCourses.map((course) => (
                   <div key={course.id} className="hover-lift" style={{
                     background: '#fff',
-                    border: '1px solid #f1f5f9',
+                    border: '1px solid rgba(99,102,241,0.12)',
                     borderRadius: '24px',
                     display: 'flex', flexDirection: 'column',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
+                    boxShadow: '0 6px 28px rgba(79,70,229,0.10)',
                     position: 'relative', overflow: 'hidden'
                   }}>
 

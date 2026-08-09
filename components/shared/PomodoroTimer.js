@@ -59,10 +59,10 @@ export default function PomodoroTimer() {
   return (
     <div style={{
       background: 'white',
-      borderRadius: '20px',
+      borderRadius: '24px',
       padding: '24px',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-      border: '1px solid #f0f0f0',
+      boxShadow: '0 8px 32px rgba(79,70,229,0.10)',
+      border: '1px solid rgba(99,102,241,0.1)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
