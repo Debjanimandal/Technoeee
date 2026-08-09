@@ -256,6 +256,41 @@ export default function Home() {
               transition: 'transform 0.25s ease, box-shadow 0.25s ease',
             }}
           >
+            {/* Full-card hover overlay — covers image + info */}
+            {hoveredCard === i && (
+              <div
+                onClick={() => setAuthOpen(true)}
+                style={{
+                  position: 'absolute', inset: 0, zIndex: 5,
+                  background: 'rgba(5,15,40,0.88)',
+                  display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center',
+                  gap: '14px', borderRadius: '10px',
+                  animation: 'fadeInOverlay 0.2s ease',
+                  cursor: 'pointer',
+                }}
+              >
+                <span style={{ color: '#fff', fontSize: '13px', fontWeight: '600', textAlign: 'center', padding: '0 16px', lineHeight: 1.5 }}>
+                  {course.title}
+                </span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); setAuthOpen(true); }}
+                  style={{
+                    background: 'linear-gradient(135deg, #3a8aff 0%, #1a2980 100%)',
+                    color: '#fff', border: 'none', borderRadius: '20px',
+                    padding: '10px 26px', fontSize: '13px', fontWeight: '700',
+                    cursor: 'pointer', letterSpacing: '0.3px',
+                    boxShadow: '0 6px 18px rgba(58,138,255,0.45)',
+                    transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                  }}
+                  onMouseOver={e => { e.currentTarget.style.transform='scale(1.06)'; e.currentTarget.style.boxShadow='0 8px 22px rgba(58,138,255,0.6)'; }}
+                  onMouseOut={e => { e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.boxShadow='0 6px 18px rgba(58,138,255,0.45)'; }}
+                >
+                  Learn Now &#8594;
+                </button>
+              </div>
+            )}
+
             {/* Banner image thumbnail */}
             <div style={{ width: '100%', height: '160px', position: 'relative', overflow: 'hidden' }}>
               <img
@@ -277,38 +312,6 @@ export default function Home() {
                 padding: '2px 9px', fontSize: '9px',
                 color: '#fff', fontWeight: '700',
               }}>{course.difficulty}</div>
-
-              {/* Hover overlay with Learn Now button */}
-              {hoveredCard === i && (
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'rgba(5,15,40,0.82)',
-                  display: 'flex', flexDirection: 'column',
-                  alignItems: 'center', justifyContent: 'center',
-                  gap: '12px',
-                  animation: 'fadeInOverlay 0.2s ease',
-                }}>
-                  <span style={{ color: '#fff', fontSize: '12px', fontWeight: '600', textAlign: 'center', padding: '0 12px', lineHeight: 1.4 }}>
-                    {course.title}
-                  </span>
-                  <button
-                    onClick={() => setAuthOpen(true)}
-                    style={{
-                      background: 'linear-gradient(135deg, #3a8aff 0%, #1a2980 100%)',
-                      color: '#fff', border: 'none', borderRadius: '20px',
-                      padding: '9px 24px', fontSize: '13px', fontWeight: '700',
-                      cursor: 'pointer', letterSpacing: '0.3px',
-                      boxShadow: '0 6px 18px rgba(58,138,255,0.45)',
-                      transform: 'scale(1)',
-                      transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-                    }}
-                    onMouseOver={e => { e.currentTarget.style.transform='scale(1.06)'; e.currentTarget.style.boxShadow='0 8px 22px rgba(58,138,255,0.6)'; }}
-                    onMouseOut={e => { e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.boxShadow='0 6px 18px rgba(58,138,255,0.45)'; }}
-                  >
-                    Learn Now ΓåÆ
-                  </button>
-                </div>
-              )}
             </div>
             {/* Card info */}
             <div className="course-info">

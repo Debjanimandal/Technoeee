@@ -566,9 +566,9 @@ a {
   color: #000000;
   font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s, box-shadow 0.2s;
 }
-.category-btn.featured, .category-btn:hover { background-color: #006eff; color: white; }
+.category-btn:hover { background-color: #006eff; color: white; transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,110,255,0.3); }
 .course-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
