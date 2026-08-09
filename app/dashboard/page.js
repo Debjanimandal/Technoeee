@@ -325,20 +325,29 @@ export default function DashboardPage() {
             
             {/* ─── Welcome Banner ───────────────────────────────────────────────── */}
             <div style={{
-              background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #a855f7 100%)',
+              background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #334155 100%)',
               borderRadius: '24px', padding: '32px', marginBottom: '32px',
               display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              boxShadow: '0 12px 40px rgba(79,70,229,0.35), 0 4px 12px rgba(0,0,0,0.1)',
+              boxShadow: '0 12px 40px rgba(15,23,42,0.35), 0 4px 12px rgba(0,0,0,0.2)',
               position: 'relative', overflow: 'hidden'
             }}>
               {/* Decorative circles */}
-              <div style={{ position: 'absolute', top: '-40px', right: '180px', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.07)', pointerEvents: 'none' }} />
-              <div style={{ position: 'absolute', bottom: '-50px', right: '80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
-              <div style={{ position: 'relative', zIndex: 1 }}>
-                <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#fff', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
-                  Welcome back, {profile?.username || user?.email?.split('@')[0] || 'Student'} 👋
-                </h1>
-                <p style={{ margin: 0, color: 'rgba(255,255,255,0.8)', fontSize: '15px' }}>Let's learn something new today!</p>
+              <div style={{ position: 'absolute', top: '-40px', right: '180px', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', bottom: '-50px', right: '80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', top: '20px', right: '280px', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', pointerEvents: 'none' }} />
+              <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid rgba(255,255,255,0.15)' }}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <div>
+                  <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#fff', margin: '0 0 6px 0', letterSpacing: '-0.5px' }}>
+                    Welcome back, {profile?.username || user?.email?.split('@')[0] || 'Student'}
+                  </h1>
+                  <p style={{ margin: 0, color: 'rgba(255,255,255,0.6)', fontSize: '15px' }}>Let's learn something new today!</p>
+                </div>
               </div>
               <div style={{ display: 'flex', gap: '12px', position: 'relative', zIndex: 1 }}>
                  <Link href="/planner" className="hover-lift" style={{ background: 'rgba(255,255,255,0.18)', color: '#fff', padding: '12px 24px', borderRadius: '12px', textDecoration: 'none', fontWeight: '700', fontSize: '14px', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.25)' }}>
