@@ -52,8 +52,13 @@ export default function Home() {
 
   // Body overflow control
   useEffect(() => {
-    document.body.style.overflow = devMode ? 'auto' : 'hidden';
-    return () => { document.body.style.overflow = 'auto'; };
+    const overflow = devMode ? 'auto' : 'hidden';
+    document.body.style.overflow = overflow;
+    document.documentElement.style.overflow = overflow;
+    return () => {
+      document.body.style.overflow = 'auto';
+      document.documentElement.style.overflow = 'auto';
+    };
   }, [devMode]);
 
   // Scroll listener
