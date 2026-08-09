@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Chart, BarController, BarElement,
@@ -9,8 +9,9 @@ import {
 import Sidebar from '@/components/layout/Sidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import { useAuth } from '@/lib/context/auth-context';
+import { supabase } from '@/lib/supabase/client';
 import { getLearningStats, getDailyStudyData, getCourseStudyTime, formatStudyTime, getAdvancedAnalytics } from '@/lib/services/studyService';
-import { Target, Clock, Zap, TrendingUp, BarChart3, PieChart, Heart, Compass, CalendarCheck } from 'lucide-react';
+import { Target, Clock, Zap, TrendingUp, BarChart3, PieChart, Heart, Compass, CalendarCheck, TrendingDown, Award, BookOpen, Star } from 'lucide-react';
 
 Chart.register(
   BarController, BarElement,
@@ -29,12 +30,13 @@ function Skeleton({ h = 20, w = '100%', radius = 8 }) {
   );
 }
 
-function EngagementCard({ title, value, subtext, icon: Icon, color, percent, loading }) {
+function EngagementCard({ title, value, subtext, icon: Icon, color, percent, loading, onClick }) {
   return (
-    <div className="hover-lift" style={{
+    <div className="hover-lift" onClick={onClick} style={{
       background: '#fff', borderRadius: '24px', padding: '24px',
       border: '1px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-      display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+      display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+      cursor: onClick ? 'pointer' : 'default'
     }}>
       {loading ? (
         <>
@@ -89,6 +91,7 @@ export default function AnalyticsPage() {
   const [weeklyData,     setWeeklyData]     = useState([]);
   const [courseTime,     setCourseTime]     = useState({});
   const [advanced,       setAdvanced]       = useState(null);
+  const [enrollments,    setEnrollments]    = useState([]);
   const [loading,        setLoading]        = useState(true);
 
   // ── Load all data ──────────────────────────────────────────────────────────
@@ -97,17 +100,19 @@ export default function AnalyticsPage() {
     (async () => {
       setLoading(true);
 
-      const [statsData, weekly, ctData, adv] = await Promise.all([
+      const [statsData, weekly, ctData, adv, enr] = await Promise.all([
         getLearningStats(user.id),
         getDailyStudyData(user.id, 7),
         getCourseStudyTime(user.id),
-        getAdvancedAnalytics(user.id, 30)
+        getAdvancedAnalytics(user.id, 30),
+        supabase.from('enrollments').select('*').eq('user_id', user.id)
       ]);
 
       setStats(statsData);
       setWeeklyData(weekly);
       setCourseTime(ctData);
       setAdvanced(adv);
+      setEnrollments(enr.data || []);
       setLoading(false);
     })();
   }, [user]);
@@ -120,6 +125,41 @@ export default function AnalyticsPage() {
   // Consistency calculation (Goals: 60m/day, 10h/week)
   const dailyConsistency  = Math.min(Math.round((dailyMinutes / 60) * 100), 100);
   const weeklyConsistency = Math.min(Math.round((weeklyHours / 10) * 100), 100);
+
+  // Unique enrollments (deduplicated by course title)
+  const uniqueEnrollments = useMemo(() => {
+    return enrollments.filter((e, i, a) => a.findIndex(x => x.course_title === e.course_title) === i);
+  }, [enrollments]);
+
+  // Weak courses calculation
+  const weakCoursesCount = useMemo(() => {
+    if (!uniqueEnrollments.length) return 0;
+    const maxH = Math.max(...Object.values(courseTime), 0.001);
+    const scored = uniqueEnrollments.map(e => {
+      const hours = courseTime[e.course_title] || 0;
+      const studyScore = (hours / maxH) * 100;
+      const progress   = e.progress || 0;
+      return Math.round(progress * 0.6 + studyScore * 0.4);
+    });
+    return scored.filter(c => c < 50).length;
+  }, [uniqueEnrollments, courseTime]);
+
+  // Achievements calculation
+  const achievementsEarned = (uniqueEnrollments.length >= 5 ? 1 : 0) + (Object.values(courseTime).reduce((a,b)=>a+b,0) > 10 ? 1 : 0);
+
+  // Average Progress
+  const avgProgress = useMemo(() => {
+    if (!uniqueEnrollments.length) return 0;
+    const total = uniqueEnrollments.reduce((sum, e) => sum + (e.progress || 0), 0);
+    return Math.round(total / uniqueEnrollments.length);
+  }, [uniqueEnrollments]);
+
+  // Top Subject
+  const topSubject = useMemo(() => {
+    if (advanced?.affinity?.length > 0) return advanced.affinity[0].title;
+    if (uniqueEnrollments.length > 0) return uniqueEnrollments[0].course_title;
+    return 'None';
+  }, [advanced, uniqueEnrollments]);
 
   // ── Activity Bar Chart ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -269,8 +309,20 @@ export default function AnalyticsPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', marginBottom: '32px' }}>
               <EngagementCard title="Daily Consistency" value={`${Math.round(dailyMinutes)}m`} subtext="Progress towards 60m goal" icon={Target} color="#10b981" percent={dailyConsistency} loading={loading} />
               <EngagementCard title="Weekly Consistency" value={`${weeklyHours}h`} subtext="Progress towards 10h goal" icon={CalendarCheck} color="#8b5cf6" percent={weeklyConsistency} loading={loading} />
-              <EngagementCard title="Deep Focus Mode" value={formatStudyTime(longestSession)} subtext="Longest single session" icon={Zap} color="#f59e0b" loading={loading} />
+              <EngagementCard title="Needs Improvement" value={weakCoursesCount} subtext="Subjects under 50% score" icon={TrendingDown} color="#ef4444" loading={loading} />
+              <EngagementCard 
+                title="Achievements" 
+                value={achievementsEarned} 
+                subtext="View all badges ➔" 
+                icon={Award} color="#f59e0b" loading={loading} 
+                onClick={() => router.push('/achievements')}
+              />
+              <EngagementCard title="Deep Focus Mode" value={formatStudyTime(longestSession)} subtext="Longest single session" icon={Zap} color="#8b5cf6" loading={loading} />
               <EngagementCard title="Total Study Days" value={stats?.active_days ?? 0} subtext="Days active all-time" icon={TrendingUp} color="#3b82f6" loading={loading} />
+              
+              {/* New Dynamic Cards */}
+              <EngagementCard title="Average Progress" value={`${avgProgress}%`} subtext="Across all courses" icon={BookOpen} color="#14b8a6" percent={avgProgress} loading={loading} />
+              <EngagementCard title="Top Subject" value={topSubject.length > 20 ? topSubject.substring(0, 20) + '...' : topSubject} subtext="Highest affinity course" icon={Star} color="#ec4899" loading={loading} />
             </div>
 
             {/* ── Middle Row: Charts ── */}

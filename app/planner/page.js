@@ -356,7 +356,7 @@ export default function PlannerPage() {
   const handleComplete = (dateStr, taskId) => {
     let newCompleted = [...completedTasks];
     if (newCompleted.includes(taskId)) {
-      newCompleted = newCompleted.filter(id => id !== taskId);
+      return; // Already completed, cannot uncheck manually for now
     } else {
       newCompleted.push(taskId);
     }
@@ -674,15 +674,20 @@ export default function PlannerPage() {
 
                             {/* Complete Checkbox */}
                             <div 
-                              onClick={() => handleComplete(selectedDateStr, task.id)}
+                              onClick={() => {
+                                if (selectedDateStr === todayStr && !isDone) {
+                                  handleComplete(selectedDateStr, task.id);
+                                }
+                              }}
                               style={{
                                 position: 'absolute', right: '24px', top: '24px',
                                 width: '32px', height: '32px', borderRadius: '10px',
                                 border: `2px solid ${isDone ? '#4CAF50' : '#e0e0e0'}`,
                                 background: isDone ? '#4CAF50' : '#fff',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                cursor: 'pointer', transition: 'all 0.2s',
-                                boxShadow: isDone ? '0 4px 12px rgba(76,175,80,0.2)' : 'none'
+                                cursor: (isDone || selectedDateStr !== todayStr) ? 'not-allowed' : 'pointer', transition: 'all 0.2s',
+                                boxShadow: isDone ? '0 4px 12px rgba(76,175,80,0.2)' : 'none',
+                                opacity: isDone ? 0.8 : 1
                               }}
                             >
                               {isDone && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}

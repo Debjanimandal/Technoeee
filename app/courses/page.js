@@ -2,6 +2,10 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/layout/Sidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
+import { useBadges } from '@/lib/context/badge-context';
+import { BADGES } from '@/lib/data/badges';
+import * as Icons from 'lucide-react';
+import { Lock } from 'lucide-react';
 import coursesData from '../../public/data/real_courses_data.json';
 import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
@@ -88,6 +92,8 @@ export default function CoursesPage() {
   const [pendingCourse, setPendingCourse] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterDifficulty, setFilterDifficulty] = useState('All');
+  const { claimedBadges, claimBadge } = useBadges();
+  const [courseProgress, setCourseProgress] = useState({});
 
   const filteredCourses = coursesData.filter(course => {
     const matchesSearch = course.course_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -102,16 +108,28 @@ export default function CoursesPage() {
       if (user) {
         const { data } = await supabase
           .from('enrollments')
-          .select('course_title')
+          .select('course_title, progress, category')
           .eq('user_id', user.id);
-        const codes = (data || []).map(e => e.course_title);
+        const codes = [];
+        (data || []).forEach(e => {
+          if (e.course_title) codes.push(e.course_title.trim().toLowerCase());
+          if (e.category) codes.push(e.category.trim().toLowerCase());
+        });
+        
+        const progMap = {};
+        (data || []).forEach(e => {
+          if (e.course_title) progMap[e.course_title.trim().toLowerCase()] = e.progress || 0;
+          if (e.category) progMap[e.category.trim().toLowerCase()] = e.progress || 0;
+        });
+
         // Also check localStorage for any locally enrolled courses not yet in DB
-        const local = JSON.parse(localStorage.getItem('mockEnrolledCoursesV3') || '[]');
+        const local = JSON.parse(localStorage.getItem('mockEnrolledCoursesV3') || '[]').map(s => s.trim().toLowerCase());
         const merged = [...new Set([...codes, ...local])];
         setEnrolledCourses(merged);
+        setCourseProgress(progMap);
       } else {
-        const saved = localStorage.getItem('mockEnrolledCoursesV3');
-        if (saved) setEnrolledCourses(JSON.parse(saved));
+        const saved = JSON.parse(localStorage.getItem('mockEnrolledCoursesV3') || '[]').map(s => s.trim().toLowerCase());
+        if (saved) setEnrolledCourses(saved);
       }
     }
     loadEnrolled();
@@ -238,7 +256,9 @@ export default function CoursesPage() {
             {filteredCourses.length === 0 ? (
               <p style={{ color: '#888', gridColumn: '1 / -1', textAlign: 'center', padding: '40px' }}>No courses match your criteria.</p>
             ) : filteredCourses.map((course, index) => {
-              const isEnrolled = enrolledCourses.includes(course.course_name) || enrolledCourses.includes(course.subject_code);
+              const cName = course.course_name ? course.course_name.trim().toLowerCase() : '';
+              const cCode = course.subject_code ? course.subject_code.trim().toLowerCase() : '';
+              const isEnrolled = enrolledCourses.includes(cName) || enrolledCourses.includes(cCode);
               
               return (
                 <div 
@@ -457,18 +477,80 @@ export default function CoursesPage() {
               </div>
             )}
 
+            {/* COURSE BADGE PREVIEW */}
+            {(() => {
+              const badge = BADGES.find(b => b.category === 'Course Completion' && b.check({ enrollments: [{ course_id: selectedCourse.subject_code, progress: 100 }] }));
+              if (badge) {
+                const IconComp = Icons[badge.icon] || Icons.Trophy;
+                const isClaimed = claimedBadges.includes(badge.id);
+                // The mock logic for completion: progress >= 100
+                const progress = courseProgress[selectedCourse.subject_code] || courseProgress[selectedCourse.course_name] || 0;
+                const cName = selectedCourse.course_name ? selectedCourse.course_name.trim().toLowerCase() : '';
+                const cCode = selectedCourse.subject_code ? selectedCourse.subject_code.trim().toLowerCase() : '';
+                const isEligible = (enrolledCourses.includes(cName) || enrolledCourses.includes(cCode)) && progress >= 100;
+                
+                return (
+                  <div style={{ marginBottom: '30px', padding: '20px', background: 'linear-gradient(135deg, #f8fafc, #f1f5f9)', borderRadius: '16px', border: `1px solid ${isClaimed ? badge.color : '#e2e8f0'}`, display: 'flex', alignItems: 'center', gap: '20px' }}>
+                    <div style={{
+                      width: '60px', height: '60px', borderRadius: '50%', background: isClaimed ? badge.color : '#e2e8f0',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
+                      boxShadow: isClaimed ? `0 0 15px ${badge.color}66` : 'none', flexShrink: 0,
+                      position: 'relative'
+                    }}>
+                      <IconComp size={28} />
+                      {!isClaimed && (
+                        <div style={{ position: 'absolute', bottom: -5, right: -5, background: '#fff', borderRadius: '50%', padding: '4px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                          <Lock size={12} color="#94a3b8" />
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '12px', fontWeight: '800', color: isClaimed ? badge.color : '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Course Badge</div>
+                      <h4 style={{ margin: '2px 0 4px 0', fontSize: '16px', fontWeight: '700', color: '#0f172a' }}>{badge.title}</h4>
+                      <p style={{ margin: 0, fontSize: '13px', color: '#475569' }}>{badge.description}</p>
+                    </div>
+                    <div>
+                      {isClaimed ? (
+                        <div style={{ padding: '8px 16px', background: '#dcfce7', color: '#166534', borderRadius: '20px', fontSize: '14px', fontWeight: 'bold' }}>Claimed!</div>
+                      ) : isEligible ? (
+                        <button 
+                          onClick={() => {
+                            // Don't claim immediately, let the modal claim it
+                            window.dispatchEvent(new CustomEvent('trigger_badge_claim', { detail: badge.id }));
+                          }}
+                          style={{
+                            background: badge.color, color: '#fff', border: 'none', padding: '10px 20px',
+                            borderRadius: '20px', fontSize: '14px', fontWeight: 'bold', cursor: 'pointer',
+                            boxShadow: `0 4px 12px ${badge.color}80`
+                          }}
+                        >
+                          Claim Badge
+                        </button>
+                      ) : (
+                        <div style={{ padding: '8px 16px', background: '#f1f5f9', color: '#94a3b8', borderRadius: '20px', fontSize: '14px', fontWeight: 'bold' }}>Complete to Claim</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })()}
+
             <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}>Course Modules</h3>
             <div style={{ marginBottom: '30px' }}>
               {renderModules(selectedCourse)}
             </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-                {enrolledCourses.includes(selectedCourse.course_name) ? (
-                  <button onClick={() => window.location.href = `/learn/${selectedCourse.subject_code}`} style={{
-                    background: '#e0e0e0', color: '#1a1a1a', border: 'none', cursor: 'pointer',
-                    padding: '14px 35px', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold'
-                  }}>Go to Course ➔</button>
-                ) : (
+                {(() => {
+                  const cName = selectedCourse.course_name ? selectedCourse.course_name.trim().toLowerCase() : '';
+                  const cCode = selectedCourse.subject_code ? selectedCourse.subject_code.trim().toLowerCase() : '';
+                  return (enrolledCourses.includes(cName) || enrolledCourses.includes(cCode)) ? (
+                    <button onClick={() => window.location.href = `/learn/${selectedCourse.subject_code}`} style={{
+                      background: '#e0e0e0', color: '#1a1a1a', border: 'none', cursor: 'pointer',
+                      padding: '14px 35px', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold'
+                    }}>Go to Course ➔</button>
+                  ) : (
                   <button
                     onClick={handleEnrollClick}
                     disabled={sendingOtp}
@@ -482,7 +564,8 @@ export default function CoursesPage() {
                     onMouseOver={(e) => { if (!sendingOtp) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 25px rgba(38, 208, 206, 0.4)'; } }}
                     onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(38, 208, 206, 0.3)'; }}
                   >{sendingOtp ? 'Sending OTP...' : 'Enroll Now'}</button>
-                )}
+                  );
+                })()}
               </div>
             </div>
           </div>

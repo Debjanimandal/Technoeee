@@ -1,9 +1,11 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useBadges } from '@/lib/context/badge-context';
 
-export default function NotificationDropdown({ isOpen, onClose }) {
-  const [notifications, setNotifications] = useState([]);
+export default function NotificationDropdown({ isOpen, onClose, onClaimBadgeClick }) {
+  const [localNotifications, setLocalNotifications] = useState([]);
+  const { badgeNotifications } = useBadges();
   const router = useRouter();
 
   useEffect(() => {
@@ -69,15 +71,19 @@ export default function NotificationDropdown({ isOpen, onClose }) {
         }
       } catch (e) {}
 
-      // Load dismissed IDs
+      // Filter out permanently dismissed ones
       const dismissed = JSON.parse(localStorage.getItem('dismissed_notifications') || '[]');
+      const active = generated.filter(n => !dismissed.includes(n.id));
       
-      // Filter out dismissed ones and set state
-      setNotifications(generated.filter(n => !dismissed.includes(n.id)));
+      setLocalNotifications(active);
     };
 
     generateNotifications();
+    window.addEventListener('badge_notification_added', generateNotifications);
+    return () => window.removeEventListener('badge_notification_added', generateNotifications);
   }, []);
+
+  const notifications = [...badgeNotifications, ...localNotifications];
 
   // Update badge count globally via an event or just let header read it?
   // We'll dispatch a custom event so the header knows the count.
@@ -87,8 +93,11 @@ export default function NotificationDropdown({ isOpen, onClose }) {
 
   const handleDismiss = (e, id) => {
     e.stopPropagation();
-    const newNotifs = notifications.filter(n => n.id !== id);
-    setNotifications(newNotifs);
+    // Do not allow dismissing badge notifications from here
+    if (badgeNotifications.some(n => n.id === id)) return;
+
+    const newNotifs = localNotifications.filter(n => n.id !== id);
+    setLocalNotifications(newNotifs);
     const dismissed = JSON.parse(localStorage.getItem('dismissed_notifications') || '[]');
     dismissed.push(id);
     localStorage.setItem('dismissed_notifications', JSON.stringify(dismissed));
@@ -96,14 +105,17 @@ export default function NotificationDropdown({ isOpen, onClose }) {
 
   const handleClearAll = () => {
     const dismissed = JSON.parse(localStorage.getItem('dismissed_notifications') || '[]');
-    notifications.forEach(n => dismissed.push(n.id));
+    localNotifications.forEach(n => dismissed.push(n.id));
     localStorage.setItem('dismissed_notifications', JSON.stringify(dismissed));
-    setNotifications([]);
+    setLocalNotifications([]);
   };
 
-  const handleClick = (url) => {
-    if (url) {
-      router.push(url);
+  const handleClick = (notif) => {
+    if (notif.type === 'badge_claim') {
+      router.push('/achievements');
+      if (onClose) onClose();
+    } else if (notif.url) {
+      router.push(notif.url);
       if (onClose) onClose();
     }
   };
@@ -158,7 +170,7 @@ export default function NotificationDropdown({ isOpen, onClose }) {
           </div>
         ) : (
           notifications.map(n => (
-            <NotificationItem key={n.id} notif={n} onClick={() => handleClick(n.url)} onDismiss={(e) => handleDismiss(e, n.id)} />
+            <NotificationItem key={n.id} notif={n} onClick={() => handleClick(n)} onDismiss={(e) => handleDismiss(e, n.id)} />
           ))
         )}
       </div>
@@ -190,8 +202,8 @@ function NotificationItem({ notif, onClick, onDismiss }) {
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
     
-    // Swipe left or right dismisses it
-    if (isLeftSwipe || isRightSwipe) {
+    // Swipe left or right dismisses it (except for badge_claim)
+    if ((isLeftSwipe || isRightSwipe) && notif.type !== 'badge_claim') {
       setIsSwipingOut(true);
       setTimeout(() => onDismiss(e), 200); // wait for animation
     }
@@ -201,6 +213,7 @@ function NotificationItem({ notif, onClick, onDismiss }) {
     switch(type) {
       case 'warning': return { icon: '⚠️', bg: '#ffebee', color: '#d32f2f' };
       case 'revision': return { icon: '🧠', bg: '#f3e5f5', color: '#ab47bc' };
+      case 'badge_claim': return { icon: '🏆', bg: '#fffdeb', color: '#d97706' };
       case 'info': default: return { icon: '📅', bg: '#e3f2fd', color: '#1565c0' };
     }
   };
@@ -230,16 +243,18 @@ function NotificationItem({ notif, onClick, onDismiss }) {
         <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#333', marginBottom: '4px' }}>{notif.title}</div>
         <div style={{ fontSize: '12px', color: '#666', lineHeight: '1.4' }}>{notif.message}</div>
       </div>
-      <button 
-        onClick={onDismiss}
-        style={{
-          background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', padding: '4px',
-          fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }}
-        title="Dismiss"
-      >
-        ×
-      </button>
+      {notif.type !== 'badge_claim' && (
+        <button 
+          onClick={onDismiss}
+          style={{
+            background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', padding: '4px',
+            fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center'
+          }}
+          title="Dismiss"
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 }

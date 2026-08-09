@@ -417,7 +417,14 @@
     "course_name": "Design and Analysis of Algorithm",
     "icon": "/image/daa-banner.png",
     "subject_code": "TIU-UCS-T321",
-    "outcomes": [],
+    "outcomes": [
+      "Understand and apply various algorithm design techniques including divide & conquer, greedy, and dynamic programming.",
+      "Analyze the time and space complexity of algorithms using asymptotic notations.",
+      "Design and implement efficient algorithms for graph problems such as shortest paths and spanning trees.",
+      "Understand NP-completeness and identify problems that are computationally hard.",
+      "Apply backtracking and branch & bound techniques to solve optimization problems.",
+      "Evaluate and compare algorithms based on their performance and scalability."
+    ],
     "modules": [
       {
         "title": "MODULE 1: - Foundation of Algorithm & Analysis",

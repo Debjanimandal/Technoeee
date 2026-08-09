@@ -5,8 +5,11 @@ import Sidebar from '@/components/layout/Sidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
-import { getCourseStudyTime } from '@/lib/services/studyService';
-import { Mail, Phone, MapPin, GraduationCap, Building, BookOpen, Star, Award, TrendingUp, Lock } from 'lucide-react';
+import { getCourseStudyTime, getLearningStats, getAdvancedAnalytics } from '@/lib/services/studyService';
+import { Mail, Phone, MapPin, GraduationCap, Building, BookOpen, Star, Award, TrendingUp, Lock, ArrowRight } from 'lucide-react';
+import { BADGES } from '@/lib/data/badges';
+import * as Icons from 'lucide-react';
+import { useBadges } from '@/lib/context/badge-context';
 
 export default function ProfilePage() {
   const { user, profile } = useAuth();
@@ -16,7 +19,9 @@ export default function ProfilePage() {
   const [profileData, setProfileData] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
   const [courseStudyTime, setCourseStudyTime] = useState({});
+  const [userDataForBadges, setUserDataForBadges] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { claimedBadges } = useBadges();
 
   // Load Data
   useEffect(() => {
@@ -29,9 +34,11 @@ export default function ProfilePage() {
 
       // 2. Load Enrollments and Analytics
       if (user) {
-        const [enrollRes, studyTime] = await Promise.all([
+        const [enrollRes, studyTime, statsData, advanced] = await Promise.all([
           supabase.from('enrollments').select('*').eq('user_id', user.id),
-          getCourseStudyTime(user.id)
+          getCourseStudyTime(user.id),
+          getLearningStats(user.id),
+          getAdvancedAnalytics(user.id, 30)
         ]);
         
         // deduplicate by course_title
@@ -49,6 +56,17 @@ export default function ProfilePage() {
         }
         setEnrollments(unique);
         setCourseStudyTime(studyTime || {});
+        
+        setUserDataForBadges({
+          enrollments: unique,
+          uniqueEnrollments: unique.length,
+          totalHours: statsData?.total_hours || Object.values(studyTime || {}).reduce((a,b)=>a+b,0),
+          activeDays: statsData?.active_days || 0,
+          longestSession: statsData?.longest_session_min || 0,
+          peakTime: advanced?.peakTime || 'N/A',
+          weekendRatio: advanced?.weekendRatio?.weekend || 0,
+          courseTime: studyTime || {}
+        });
       }
       setLoading(false);
     };
@@ -81,10 +99,11 @@ export default function ProfilePage() {
     }).sort((a, b) => b.composite - a.composite);
     strongCourses.push(...scored.filter(e => e.composite >= 50));
   }
-  
   // Dynamic Achievements
-  const hasFastStarter = enrollments.length >= 5;
-  const hasConsistentLearner = Object.values(courseStudyTime).reduce((a, b) => a + b, 0) > 10; // > 10 hours total
+  const unlockedBadges = userDataForBadges 
+    ? BADGES.filter(b => claimedBadges.includes(b.id))
+    : [];
+  const topUnlocked = unlockedBadges.slice(0, 3); // show up to 3 here
 
   return (
     <div className="app-layout">
@@ -121,15 +140,7 @@ export default function ProfilePage() {
             boxShadow: '0 10px 40px rgba(0,0,0,0.04)', border: '1px solid #f1f5f9',
             position: 'relative', minHeight: '1050px' // A4 approximation
           }}>
-             {/* Verified Badge */}
-             <div style={{
-              position: 'absolute', top: '48px', right: '48px', display: 'flex', alignItems: 'center', gap: '8px',
-              background: '#f0fdf4', color: '#166534', padding: '8px 16px', borderRadius: '30px', 
-              fontWeight: 700, fontSize: '13px', border: '1px solid #bbf7d0'
-            }}>
-              <img src="/image/logo.png" alt="Techno EEE" style={{ height: '18px' }} />
-              Verified Profile
-            </div>
+
 
             {/* Header Section */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '32px', marginBottom: '40px' }}>
@@ -281,53 +292,41 @@ export default function ProfilePage() {
               )}
             </div>
 
-            {/* Achievements */}
+            {/* Achievements Section */}
             <div style={{ marginBottom: '40px' }}>
-              <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <div style={{ width: '4px', height: '18px', background: '#3b82f6', borderRadius: '4px' }}></div>
-                Key Achievements
-              </h2>
-              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                
-                {/* Fast Starter */}
-                {hasFastStarter ? (
-                  <div style={{
-                    background: '#f5f3ff', border: '1px solid #ede9fe', borderRadius: '12px',
-                    padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: '16px', flex: '1 1 200px'
-                  }}>
-                    <div style={{ background: '#ede9fe', padding: '10px', borderRadius: '10px' }}>
-                      <Star size={24} color="#7c3aed" />
-                    </div>
-                    <div>
-                      <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#5b21b6', margin: '0 0 4px 0' }}>Fast Starter</h3>
-                      <p style={{ margin: 0, fontSize: '13px', color: '#7c3aed' }}>Enrolled in 5+ subjects.</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div style={{
-                    background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: '12px',
-                    padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '16px', flex: '1 1 200px',
-                    opacity: 0.6
-                  }}>
-                    <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '10px' }}><Lock size={20} color="#94a3b8" /></div>
-                    <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Enroll in 5+ subjects</span>
-                  </div>
-                )}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <h2 style={{ fontSize: '18px', fontWeight: '700', color: '#0f172a', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+                  <div style={{ width: '4px', height: '18px', background: '#f59e0b', borderRadius: '4px' }}></div>
+                  Latest Achievements
+                </h2>
+              </div>
 
-                {/* Consistent Learner */}
-                {hasConsistentLearner ? (
-                  <div style={{
-                    background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '12px',
-                    padding: '16px 20px', display: 'flex', alignItems: 'flex-start', gap: '16px', flex: '1 1 200px'
-                  }}>
-                    <div style={{ background: '#fef3c7', padding: '10px', borderRadius: '10px' }}>
-                      <Award size={24} color="#d97706" />
-                    </div>
-                    <div>
-                      <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#92400e', margin: '0 0 4px 0' }}>Dedicated Learner</h3>
-                      <p style={{ margin: 0, fontSize: '13px', color: '#b45309' }}>Accumulated over 10 hours of study.</p>
-                    </div>
-                  </div>
+              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                
+                {loading ? (
+                  <div style={{ color: '#94a3b8', fontSize: '14px' }}>Loading achievements...</div>
+                ) : topUnlocked.length > 0 ? (
+                  topUnlocked.map((badge, idx) => {
+                    const IconComp = Icons[badge.icon] || Icons.Trophy;
+                    return (
+                      <div key={idx} style={{
+                        background: '#fff', border: `1px solid ${badge.color}40`, borderRadius: '12px',
+                        padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '16px', flex: '1 1 200px',
+                        boxShadow: `0 4px 12px ${badge.color}15`, cursor: 'pointer', transition: 'all 0.2s'
+                      }} 
+                      onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                      onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                      onClick={() => router.push('/achievements')}>
+                        <div style={{ background: badge.color, padding: '10px', borderRadius: '10px', color: '#fff', boxShadow: `0 0 10px ${badge.color}66` }}>
+                          <IconComp size={24} />
+                        </div>
+                        <div>
+                          <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#0f172a', margin: '0 0 4px 0' }}>{badge.title}</h3>
+                          <p style={{ margin: 0, fontSize: '13px', color: badge.color, fontWeight: '600' }}>{badge.category}</p>
+                        </div>
+                      </div>
+                    )
+                  })
                 ) : (
                   <div style={{
                     background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: '12px',
@@ -335,13 +334,12 @@ export default function ProfilePage() {
                     opacity: 0.6
                   }}>
                     <div style={{ background: '#f1f5f9', padding: '10px', borderRadius: '10px' }}><Lock size={20} color="#94a3b8" /></div>
-                    <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Study for 10+ hours</span>
+                    <span style={{ color: '#64748b', fontSize: '14px', fontWeight: '500' }}>Complete tasks to unlock badges</span>
                   </div>
                 )}
 
               </div>
             </div>
-
           </div>
         </div>
       </div>

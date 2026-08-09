@@ -8,6 +8,8 @@ import NotificationDropdown from '../shared/NotificationDropdown';
 import ProfileDropdown from '../shared/ProfileDropdown';
 import AuthModal from '../auth/AuthModal';
 import EditProfileModal from '../profile/EditProfileModal';
+import BadgeClaimModal from '../achievements/BadgeClaimModal';
+import { BADGES } from '@/lib/data/badges';
 
 export default function DashboardHeader() {
   const { user, profile, signOut } = useAuth();
@@ -23,6 +25,7 @@ export default function DashboardHeader() {
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [editProfileTab, setEditProfileTab] = useState('about');
   const [globalCompletion, setGlobalCompletion] = useState(75);
+  const [badgeToClaim, setBadgeToClaim] = useState(null);
   const profileRef = useRef(null);
 
   useEffect(() => {
@@ -47,6 +50,13 @@ export default function DashboardHeader() {
   useEffect(() => {
     const handleNotifCount = (e) => setUnreadCount(e.detail);
     window.addEventListener('notification_count', handleNotifCount);
+
+    const handleTriggerClaim = (e) => {
+      const badgeId = e.detail;
+      const badge = BADGES.find(b => b.id === badgeId);
+      if (badge) setBadgeToClaim(badge);
+    };
+    window.addEventListener('trigger_badge_claim', handleTriggerClaim);
 
     const handleClickOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) {
@@ -124,6 +134,13 @@ export default function DashboardHeader() {
           <NotificationDropdown
             isOpen={showNotifications}
             onClose={() => setShowNotifications(false)}
+            onClaimBadgeClick={(badgeId) => {
+              const badge = BADGES.find(b => b.id === badgeId);
+              if (badge) {
+                setBadgeToClaim(badge);
+                setShowNotifications(false);
+              }
+            }}
           />
         </div>
 
@@ -190,6 +207,17 @@ export default function DashboardHeader() {
             setShowProfileMenu(true);
           }}
           initialTab={editProfileTab}
+        />
+      )}
+
+      {badgeToClaim && (
+        <BadgeClaimModal
+          badge={badgeToClaim}
+          onClose={() => setBadgeToClaim(null)}
+          onClaim={() => {
+            // After successful claim, could redirect or show toast
+            setBadgeToClaim(null);
+          }}
         />
       )}
     </div>

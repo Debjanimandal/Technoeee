@@ -7,6 +7,11 @@ import coursesData from '../../../public/data/real_courses_data.json';
 import Link from 'next/link';
 import { useAuth } from '@/lib/context/auth-context';
 import VideoPlayer from '@/components/shared/VideoPlayer';
+import { useBadges } from '@/lib/context/badge-context';
+import { BADGES } from '@/lib/data/badges';
+import * as Icons from 'lucide-react';
+import { Lock } from 'lucide-react';
+import { supabase } from '@/lib/supabase/client';
 
 export default function CourseLearningPage() {
   const { courseId } = useParams();
@@ -18,6 +23,9 @@ export default function CourseLearningPage() {
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [selectedContentIdx, setSelectedContentIdx] = useState(0);
   const [completedItems, setCompletedItems] = useState([]);
+  
+  const { claimedBadges, claimBadge } = useBadges();
+  const [progressPercent, setProgressPercent] = useState(0);
 
   useEffect(() => {
     if (courseId) {
@@ -30,11 +38,28 @@ export default function CourseLearningPage() {
     }
   }, [courseId, router]);
 
+  useEffect(() => {
+    async function fetchProgress() {
+      if (user && course) {
+        const { data } = await supabase
+          .from('enrollments')
+          .select('progress')
+          .eq('user_id', user.id)
+          .eq('course_title', course.course_name)
+          .maybeSingle();
+        
+        if (data && data.progress) {
+          setProgressPercent(data.progress);
+        }
+      }
+    }
+    fetchProgress();
+  }, [user, course]);
+
   if (!course) return <div style={{ padding: '50px', textAlign: 'center' }}>Loading Course Environment...</div>;
 
   const totalModules = course.modules?.length || 0;
   // Mock tracking
-  const progressPercent = 0; 
   const remainingHours = parseInt(course.estimated_time) || 40; 
   const estRemaining = Math.max(0, Math.floor(remainingHours * (1 - (progressPercent / 100))));
 
@@ -298,16 +323,61 @@ export default function CourseLearningPage() {
                   </div>
                 </div>
               ) : selectedTopic === 'BADGE' ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                  <div style={{ fontSize: '80px', marginBottom: '24px' }}>🏆</div>
-                  <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#b8860b', marginBottom: '12px' }}>Course Badge</h2>
-                  <p style={{ fontSize: '15px', color: '#888', textAlign: 'center', maxWidth: '380px' }}>
-                    Complete all modules and the grand final quiz to unlock your course completion badge!
-                  </p>
-                  <div style={{ marginTop: '24px', padding: '12px 28px', borderRadius: '30px', background: 'linear-gradient(135deg, #ffd700, #ff9800)', color: '#fff', fontSize: '14px', fontWeight: 'bold', opacity: 0.6 }}>
-                    🔒 Locked
-                  </div>
-                </div>
+                (() => {
+                  const badge = BADGES.find(b => b.category === 'Course Completion' && b.check({ enrollments: [{ course_id: course.subject_code, progress: 100 }] }));
+                  if (!badge) return <div style={{ textAlign: 'center', padding: '50px' }}>No badge configured for this course.</div>;
+
+                  const IconComp = Icons[badge.icon] || Icons.Trophy;
+                  const isClaimed = claimedBadges.includes(badge.id);
+                  const isEligible = progressPercent >= 100;
+
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                      <div style={{
+                        width: '120px', height: '120px', borderRadius: '50%', background: isClaimed ? badge.color : '#f1f5f9',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', color: isClaimed ? '#fff' : '#cbd5e1',
+                        border: isClaimed ? `4px solid ${badge.color}` : '4px solid #e2e8f0', marginBottom: '24px',
+                        boxShadow: isClaimed ? `0 0 30px ${badge.color}66` : 'none', position: 'relative'
+                      }}>
+                        <IconComp size={60} />
+                        {!isClaimed && (
+                          <div style={{ position: 'absolute', bottom: 5, right: 5, background: '#fff', borderRadius: '50%', padding: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+                            <Lock size={20} color="#94a3b8" />
+                          </div>
+                        )}
+                      </div>
+                      <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: isClaimed ? badge.color : '#0f172a', marginBottom: '12px' }}>
+                        {badge.title}
+                      </h2>
+                      <p style={{ fontSize: '15px', color: '#64748b', textAlign: 'center', maxWidth: '380px', marginBottom: '32px' }}>
+                        {badge.description}
+                      </p>
+                      
+                      {isClaimed ? (
+                        <div style={{ padding: '12px 32px', background: '#dcfce7', color: '#166534', borderRadius: '30px', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <Icons.CheckCircle size={20} /> Claimed!
+                        </div>
+                      ) : isEligible ? (
+                        <button 
+                          onClick={() => window.dispatchEvent(new CustomEvent('trigger_badge_claim', { detail: badge.id }))}
+                          style={{
+                            background: badge.color, color: '#fff', border: 'none', padding: '16px 40px',
+                            borderRadius: '30px', fontSize: '18px', fontWeight: 'bold', cursor: 'pointer',
+                            boxShadow: `0 10px 25px -5px ${badge.color}80`, transition: 'all 0.3s'
+                          }}
+                          onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                          onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                        >
+                          Claim Badge
+                        </button>
+                      ) : (
+                        <div style={{ padding: '12px 32px', background: '#f1f5f9', color: '#94a3b8', borderRadius: '30px', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <Lock size={18} /> Complete 100% to Unlock
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()
               ) : (
                 <>
                   <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid #eee' }}>

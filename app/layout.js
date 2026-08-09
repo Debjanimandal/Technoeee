@@ -1,6 +1,7 @@
 import { Poppins } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/lib/context/auth-context';
+import { BadgeProvider } from '@/lib/context/badge-context';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -29,7 +30,11 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={poppins.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <BadgeProvider>
+            {children}
+          </BadgeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
