@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/context/auth-context';
-import NotificationDropdown from './NotificationDropdown';
+import NotificationDropdown from '../shared/NotificationDropdown';
 
 export default function DashboardHeader() {
   const { user, profile, signOut } = useAuth();

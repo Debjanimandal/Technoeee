@@ -10,7 +10,7 @@ import DashboardHeader from '@/components/layout/DashboardHeader';
 import Link from 'next/link';
 import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
-import coursesData from '../../public/real_courses_data.json';
+import coursesData from '../../public/data/real_courses_data.json';
 import {
   getLearningStats,
   getActiveDates,
