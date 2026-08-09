@@ -2,8 +2,12 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { Menu } from 'lucide-react';
 import { useAuth } from '@/lib/context/auth-context';
 import NotificationDropdown from '../shared/NotificationDropdown';
+import ProfileDropdown from '../shared/ProfileDropdown';
+import AuthModal from '../auth/AuthModal';
+import EditProfileModal from '../profile/EditProfileModal';
 
 export default function DashboardHeader() {
   const { user, profile, signOut } = useAuth();
@@ -11,9 +15,28 @@ export default function DashboardHeader() {
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const notifRef = useRef(null);
+  
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [editProfileTab, setEditProfileTab] = useState('about');
+  const [globalCompletion, setGlobalCompletion] = useState(75);
   const profileRef = useRef(null);
+
+  useEffect(() => {
+    // Initial load
+    const stored = localStorage.getItem('mock_profile_completion');
+    if (stored) setGlobalCompletion(Number(stored));
+
+    // Listen for updates from modal
+    const handleProfileUpdate = () => {
+      const updated = localStorage.getItem('mock_profile_completion');
+      if (updated) setGlobalCompletion(Number(updated));
+    };
+    window.addEventListener('profile_completion_updated', handleProfileUpdate);
+    return () => window.removeEventListener('profile_completion_updated', handleProfileUpdate);
+  }, []);
 
   useEffect(() => {
     const handleNotifCount = (e) => setUnreadCount(e.detail);
@@ -40,8 +63,6 @@ export default function DashboardHeader() {
     await signOut();
     router.replace('/');
   }
-
-  const initial = (profile?.username || user?.email)?.[0]?.toUpperCase() || 'U';
 
   return (
     <div className="dashboard-header">
@@ -78,105 +99,70 @@ export default function DashboardHeader() {
           />
         </div>
 
-        {/* User Avatar & Profile Dropdown */}
-        <div ref={profileRef} style={{ position: 'relative' }}>
-          {/* Clickable avatar row */}
-          <div
-            onClick={() => setShowProfileMenu(v => !v)}
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}
+        {/* Profile Pill Toggle */}
+        <div 
+          ref={profileRef}
+          style={{ position: 'relative' }}
+        >
+          <button 
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              padding: '4px 6px 4px 10px', borderRadius: '30px',
+              background: '#e0f2fe', border: '1px solid #bae6fd',
+              cursor: 'pointer', transition: 'all 0.2s',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+            }}
           >
+            <Menu size={18} color="#334155" strokeWidth={2.5} />
+            
             <div style={{
-              width: '32px', height: '32px', borderRadius: '50%',
-              background: 'linear-gradient(135deg, #041643, #4F6EF7)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#fff', fontSize: '13px', fontWeight: 'bold', flexShrink: 0
+              width: '28px', height: '28px', borderRadius: '50%',
+              background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              overflow: 'hidden'
             }}>
-              {initial}
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ transform: 'translateY(2px)' }}>
+                <circle cx="12" cy="7" r="4.5" fill="#1e40af" />
+                <path d="M4 21C4 16.5 7.5 13 12 13C16.5 13 20 16.5 20 21" fill="#d946ef" />
+              </svg>
             </div>
-            {profile?.username && (
-              <span style={{ fontSize: '13px', fontWeight: '600', color: '#333' }}>
-                {profile.username}
-              </span>
-            )}
-            {/* Chevron */}
-            <svg
-              width="12" height="12" viewBox="0 0 24 24" fill="none"
-              stroke="#666" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-              style={{ transition: 'transform 0.2s', transform: showProfileMenu ? 'rotate(180deg)' : 'rotate(0deg)' }}
-            >
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </div>
-
-          {/* Dropdown menu */}
-          {showProfileMenu && (
-            <div style={{
-              position: 'absolute', top: 'calc(100% + 10px)', right: 0,
-              background: '#fff',
-              border: '1px solid #e0e0e0',
-              borderRadius: '10px',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-              minWidth: '160px',
-              zIndex: 1000,
-              overflow: 'hidden',
-              animation: 'fadeIn 0.15s ease',
-            }}>
-              {/* Profile info header */}
-              <div style={{
-                padding: '12px 16px',
-                borderBottom: '1px solid #f0f0f0',
-                background: '#fafafa',
-              }}>
-                <div style={{ fontSize: '13px', fontWeight: '700', color: '#1a1a1a' }}>
-                  {profile?.username || 'User'}
-                </div>
-                <div style={{ fontSize: '11px', color: '#888', marginTop: '2px', wordBreak: 'break-all' }}>
-                  {user?.email}
-                </div>
-              </div>
-
-              {/* Profile link */}
-              <button
-                onClick={() => { setShowProfileMenu(false); router.push('/profile'); }}
-                style={{
-                  width: '100%', padding: '11px 16px', background: 'none',
-                  border: 'none', textAlign: 'left', cursor: 'pointer',
-                  fontSize: '13px', color: '#333', display: 'flex', alignItems: 'center', gap: '10px',
-                  transition: 'background 0.15s',
-                }}
-                onMouseOver={e => e.currentTarget.style.background = '#f5f5f5'}
-                onMouseOut={e => e.currentTarget.style.background = 'none'}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-                </svg>
-                My Profile
-              </button>
-
-              {/* Logout */}
-              <button
-                onClick={handleSignOut}
-                style={{
-                  width: '100%', padding: '11px 16px', background: 'none',
-                  border: 'none', textAlign: 'left', cursor: 'pointer',
-                  fontSize: '13px', color: '#e53e3e', display: 'flex', alignItems: 'center', gap: '10px',
-                  borderTop: '1px solid #f0f0f0',
-                  transition: 'background 0.15s',
-                }}
-                onMouseOver={e => e.currentTarget.style.background = '#fff5f5'}
-                onMouseOut={e => e.currentTarget.style.background = 'none'}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e53e3e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                  <polyline points="16 17 21 12 16 7" />
-                  <line x1="21" y1="12" x2="9" y2="12" />
-                </svg>
-                Logout
-              </button>
-            </div>
-          )}
+          </button>
+          
+          <ProfileDropdown 
+            isOpen={showProfileMenu} 
+            onClose={() => setShowProfileMenu(false)}
+            user={user}
+            profile={profile}
+            onSignOut={handleSignOut}
+            onEditProfile={() => {
+              setShowProfileMenu(false);
+              setEditProfileTab('basic');
+              setShowEditProfileModal(true);
+            }}
+            onOpenAboutMe={() => {
+              setShowProfileMenu(false);
+              setEditProfileTab('about');
+              setShowEditProfileModal(true);
+            }}
+          />
         </div>
       </div>
+      
+      {showAuthModal && (
+        <AuthModal 
+          isOpen={showAuthModal} 
+          onClose={() => setShowAuthModal(false)} 
+          initialTab="signup" 
+        />
+      )}
+
+      {showEditProfileModal && (
+        <EditProfileModal
+          isOpen={showEditProfileModal}
+          onClose={() => setShowEditProfileModal(false)}
+          initialTab={editProfileTab}
+        />
+      )}
     </div>
   );
 }
