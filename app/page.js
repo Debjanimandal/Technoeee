@@ -360,7 +360,7 @@ export default function Home() {
       {/* Testimonials */}
       <div id="testimonials" className="background-section">
         <div className="section-header highlighted">
-          What Our <span className="highlight">Clients</span> Say
+          What Our <span className="highlight">Students</span> Say
         </div>
         <div className="testimonials-container">
           <div className="testimonials">
