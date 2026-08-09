@@ -97,8 +97,8 @@ export default function Home() {
 
   return (
     <main>
-      {/* Cosmic pulse loading screen — hides once auth resolves OR devMode is on */}
-      <div className={`navbar-placeholder${(!loading || devMode) ? ' hidden' : ''}`} id="navbarPlaceholder">
+      {/* Cosmic pulse loading screen */}
+      <div className={`navbar-placeholder${devMode ? ' hidden' : ''}`} id="navbarPlaceholder">
         <div className="cosmic-pulse">
           <div className="pulse-orb"></div>
           <div className="energy-wave"></div>
