@@ -28,7 +28,8 @@ const ModuleItem = ({ mod }) => {
         </h4>
         <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexShrink: 0 }}>
           <span style={{ fontSize: '12px', color: '#666', fontWeight: '600', background: '#f0f4f8', padding: '4px 10px', borderRadius: '12px' }}>
-            ⏱ {mod.time || "5 Hours"}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '4px' }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            {mod.time || "5 Hours"}
           </span>
           <span style={{ 
             transform: isOpen ? 'rotate(180deg)' : 'none', 
@@ -52,7 +53,7 @@ const ModuleItem = ({ mod }) => {
               border: '1px solid #eee', borderLeft: '3px solid #3a8aff',
               boxShadow: '0 2px 5px rgba(0,0,0,0.01)'
             }}>
-              <span style={{ color: '#3a8aff', fontSize: '14px', lineHeight: '1.5', fontWeight: '900' }}>➤</span>
+              <span style={{ color: '#3a8aff', display: 'flex', alignItems: 'center', flexShrink: 0 }}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
               <span style={{ lineHeight: '1.5', fontWeight: '500' }}>{topic}</span>
             </li>
           ))}
@@ -313,7 +314,7 @@ export default function CoursesPage() {
                   </h3>
                   
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
-                    <span style={{ fontSize: '12px', color: '#888' }}>⏱ {course.estimated_time || '45 Hours'}</span>
+                    <span style={{ fontSize: '12px', color: '#888', display: 'flex', alignItems: 'center', gap: '4px' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>{course.estimated_time || '45 Hours'}</span>
                     {isEnrolled ? (
                        <div style={{
                          background: 'linear-gradient(135deg, #00b09b, #96c93d)',
@@ -329,7 +330,7 @@ export default function CoursesPage() {
                          Enrolled
                        </div>
                     ) : (
-                       <span style={{ fontSize: '13px', fontWeight: '600', color: '#3a8aff' }}>View Details ➔</span>
+                       <span style={{ fontSize: '13px', fontWeight: '600', color: '#3a8aff', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>View Details <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                     )}
                   </div>
                 </div>
@@ -376,7 +377,7 @@ export default function CoursesPage() {
                 }}
                 onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.4)'}
                 onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.2)'}
-              >✕</button>
+              ><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
               
               <div>
                 <span style={{ 
@@ -467,7 +468,7 @@ export default function CoursesPage() {
                   <button onClick={() => window.location.href = `/learn/${selectedCourse.subject_code}`} style={{
                     background: '#e0e0e0', color: '#1a1a1a', border: 'none', cursor: 'pointer',
                     padding: '14px 35px', borderRadius: '12px', fontSize: '16px', fontWeight: 'bold'
-                  }}>Go to Course ➔</button>
+                  }}>Go to Course <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}><polyline points="9 18 15 12 9 6"/></svg></button>
                 ) : (
                   <button
                     onClick={handleEnrollClick}
@@ -505,7 +506,7 @@ export default function CoursesPage() {
               width: '72px', height: '72px', background: 'linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)',
               borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: '32px', margin: '0 auto 20px', boxShadow: '0 10px 25px rgba(26,41,128,0.3)'
-            }}>📧</div>
+            }}><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
 
             <h3 style={{ fontSize: '22px', fontWeight: 'bold', marginBottom: '10px', color: '#1a1a1a' }}>
               Check Your Email
@@ -526,7 +527,7 @@ export default function CoursesPage() {
                 <strong>Steps:</strong><br />
                 1. Open the email from <strong>Supabase Auth</strong><br />
                 2. Click the <strong>"Sign in"</strong> link<br />
-                3. You'll be redirected back and <strong>automatically enrolled</strong> ✅
+                3. You'll be redirected back and <strong>automatically enrolled</strong> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'middle' }}><polyline points="20 6 9 17 4 12"/></svg>
               </p>
             </div>
             <p style={{ fontSize: '12px', color: '#aaa', marginBottom: '24px' }}>

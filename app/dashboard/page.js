@@ -179,9 +179,9 @@ export default function DashboardPage() {
     
     // Heuristic Engine for AI Insights
     if (hour < 4 || hour >= 23) {
-      insight = `It's quite late! 🌙 Studying when you're tired can hurt retention. Consider getting some sleep and tackling your tasks fresh tomorrow.`;
+      insight = `It's quite late! Studying when you're tired can hurt retention. Consider getting some sleep and tackling your tasks fresh tomorrow.`;
     } else if (streak >= 3) {
-      insight = `You're on a fire ${streak}-day streak! 🔥 Consistency builds deep memory retention. Let's push it to ${streak + 1} today.`;
+      insight = `You're on a ${streak}-day streak! Consistency builds deep memory retention. Let's push it to ${streak + 1} today.`;
     } else if (weeklyHours >= 10) {
       insight = `You've crushed over ${weeklyHours} hours this week! Your dedication is impressive. Remember to take short walks to avoid burnout.`;
     } else if (todayMinutes === 0 && hour >= 18) {
