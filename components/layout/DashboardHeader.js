@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Menu, UserCircle } from 'lucide-react';
 import { useAuth } from '@/lib/context/auth-context';
 import NotificationDropdown from '../shared/NotificationDropdown';
@@ -12,6 +12,7 @@ import EditProfileModal from '../profile/EditProfileModal';
 export default function DashboardHeader() {
   const { user, profile, signOut } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -71,7 +72,29 @@ export default function DashboardHeader() {
 
   return (
     <div className="dashboard-header">
-      <Image src="/image/logo.png" alt="TechnoEEE Logo" width={160} height={80} style={{ objectFit: 'contain' }} unoptimized />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <button
+          onClick={() => {
+            if (pathname === '/dashboard') {
+              router.push('/');
+            } else {
+              router.back();
+            }
+          }}
+          style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#1352f1', padding: '4px'
+          }}
+          title="Go back"
+        >
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        <Image src="/image/logo.png" alt="TechnoEEE Logo" width={120} height={60} style={{ objectFit: 'contain' }} unoptimized />
+      </div>
       <div className="header-right" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
 
         {/* Notification Bell */}

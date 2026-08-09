@@ -221,7 +221,7 @@ export default function CoursesPage() {
                   onClick={() => setFilterDifficulty(level)}
                   style={{
                     padding: '8px 16px', borderRadius: '20px', border: 'none', cursor: 'pointer',
-                    fontWeight: 'bold', fontSize: '13px', transition: 'all 0.2s',
+                    fontWeight: 'bold', fontSize: '13px', transition: 'all 0.2s', fontFamily: 'inherit',
                     background: filterDifficulty === level ? '#3a8aff' : '#e0e0e0',
                     color: filterDifficulty === level ? '#fff' : '#555'
                   }}

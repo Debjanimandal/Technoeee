@@ -390,7 +390,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Performance Chart */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#fff', borderRadius: '24px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
                     <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Study Performance</h2>
                     <div style={{ display: 'flex', background: '#f1f5f9', padding: '4px', borderRadius: '12px' }}>
@@ -410,7 +410,7 @@ export default function DashboardPage() {
                       ))}
                     </div>
                   </div>
-                  <div style={{ flex: 1, width: '100%', minHeight: '300px', position: 'relative' }}>
+                  <div style={{ flex: 1, width: '100%', minHeight: '220px', position: 'relative' }}>
                     {chartLoading ? (
                       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'flex-end', gap: '20px', paddingBottom: '20px' }}>
                         {[80, 140, 100, 180, 120, 200, 160].map((h, i) => <Skeleton key={i} h={h} w="10%" radius={8} />)}

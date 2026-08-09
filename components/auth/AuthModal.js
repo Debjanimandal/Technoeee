@@ -102,7 +102,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'signup' }) {
       if (signUpError) throw signUpError;
 
       onClose();
-      router.push('/home?username=' + encodeURIComponent(username));
+      router.push('/dashboard');
     } catch (err) {
       setError(err.message || 'Sign-up failed. Please try again.');
     } finally {
@@ -133,7 +133,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'signup' }) {
         .single();
 
       onClose();
-      router.push('/home?username=' + encodeURIComponent(profile?.username || email));
+      router.push('/dashboard');
     } catch (err) {
       setError(err.message || 'Sign-in failed. Please try again.');
     } finally {

@@ -95,12 +95,6 @@ export default function Home() {
   const router = useRouter();
   const { user, loading } = useAuth();
 
-  // Auto-redirect logged-in users straight to dashboard
-  useEffect(() => {
-    if (!loading && user) {
-      router.replace('/home');
-    }
-  }, [user, loading, router]);
 
   // Body overflow control
   useEffect(() => {
@@ -181,7 +175,7 @@ export default function Home() {
               onChange={e => {
                 if (e.target.checked && user) {
                   // Already logged in ΓÇö go straight to dashboard
-                  router.push('/home');
+                  router.push('/dashboard');
                 } else {
                   setDevMode(e.target.checked);
                 }
