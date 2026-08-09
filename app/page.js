@@ -21,12 +21,60 @@ const COURSES_DATA = [
 const CATEGORIES = ['Featured', 'Programming Fundamentals', 'Core CS Foundation', 'High Demand Industry Skill', 'Essential Industry Concept', 'Core Infrastructure', 'Theoretical Computer Science', 'Core Hardware Concept'];
 
 const FEATURES = [
-  { icon: '🎓', title: 'My Courses',      desc: 'Enroll in university-grade CS courses and track your progress through structured modules.' },
-  { icon: '📅', title: 'Study Planner',   desc: 'Build a personalized week-by-week schedule and stay on track with smart pacing.' },
-  { icon: '📊', title: 'My Analytics',    desc: 'Visualize study time, topic strengths, and performance trends with detailed charts.' },
-  { icon: '🤖', title: 'AI Chatbot',      desc: 'Ask any subject question and get instant, intelligent answers powered by AI.' },
-  { icon: '🏆', title: 'Course Badges',   desc: 'Complete courses and earn shareable badges to showcase your accomplishments.' },
-  { icon: '🗂️', title: 'Dashboard',       desc: 'See all active courses, streaks, and learning stats at a glance in your hub.' },
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+    ),
+    title: 'My Courses',
+    desc: 'Enroll in university-grade CS courses and track your progress through structured modules.',
+  },
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+      </svg>
+    ),
+    title: 'Study Planner',
+    desc: 'Build a personalized week-by-week schedule and stay on track with smart pacing.',
+  },
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
+      </svg>
+    ),
+    title: 'My Analytics',
+    desc: 'Visualize study time, topic strengths, and performance trends with detailed charts.',
+  },
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    ),
+    title: 'AI Chatbot',
+    desc: 'Ask any subject question and get instant, intelligent answers powered by AI.',
+  },
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+      </svg>
+    ),
+    title: 'Course Badges',
+    desc: 'Complete courses and earn shareable badges to showcase your accomplishments.',
+  },
+  {
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+      </svg>
+    ),
+    title: 'Dashboard',
+    desc: 'See all active courses, streaks, and learning stats at a glance in your hub.',
+  },
 ];
 
 const FAQ_ITEMS = [
