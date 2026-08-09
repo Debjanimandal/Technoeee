@@ -1,8 +1,10 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/lib/auth-context';
 
 const COURSES_DATA = [
   { img: '/image/Rectangle 25.jpg', title: '10,000 STUDENTS LEARN CODING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
@@ -38,6 +40,15 @@ export default function Home() {
   const fragmentsRef = useRef(null);
   const animationRef = useRef(null);
   const coursesHeaderRef = useRef(null);
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  // Auto-redirect logged-in users straight to dashboard
+  useEffect(() => {
+    if (!loading && user) {
+      router.replace('/home');
+    }
+  }, [user, loading, router]);
 
   // Body overflow control
   useEffect(() => {
@@ -110,7 +121,14 @@ export default function Home() {
               type="checkbox"
               id="dev-mode"
               checked={devMode}
-              onChange={e => setDevMode(e.target.checked)}
+              onChange={e => {
+                if (e.target.checked && user) {
+                  // Already logged in — go straight to dashboard
+                  router.push('/home');
+                } else {
+                  setDevMode(e.target.checked);
+                }
+              }}
             />
             <label htmlFor="dev-mode"></label>
             <span>Techno EEE</span>
