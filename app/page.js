@@ -7,14 +7,14 @@ import Footer from '@/components/layout/Footer';
 import { useAuth } from '@/lib/context/auth-context';
 
 const COURSES_DATA = [
-  { img: '/image/Rectangle 25.jpg', title: '10,000 STUDENTS LEARN CODING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
-  { img: '/image/Rectangle 26.jpg', title: '10,000 STUDENTS LEARN WEB DESIGNING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
-  { img: '/image/Rectangle 27.jpg', title: '10,000 STUDENTS LEARN UI/UX DESIGNING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
-  { img: '/image/Rectangle 28.jpg', title: '10,000 STUDENTS LEARN PHOTOGRAPHY WITH ME', duration: '1h 30m', instructor: 'Daniel' },
-  { img: '/image/Rectangle 25 (1).jpg', title: '10,000 STUDENTS LEARN CODING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
-  { img: '/image/Rectangle 26 (1).jpg', title: '10,000 STUDENTS LEARN WEB DESIGNING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
-  { img: '/image/Rectangle 27 (1).jpg', title: '10,000 STUDENTS LEARN UI/UX DESIGNING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
-  { img: '/image/Rectangle 28 (1).jpg', title: '10,000 STUDENTS LEARN PHOTOGRAPHY WITH ME', duration: '1h 30m', instructor: 'Daniel' },
+  { code: 'TIU-UCS-T214', title: 'Object Oriented Programming using C++', duration: '45 Hours', difficulty: 'Beginner',    instructor: 'Dept. of CSE-AI, TIU', gradient: 'linear-gradient(135deg,#0f2027,#203a43,#2c5364)', accent: '#4fc3f7' },
+  { code: 'TIU-PC-UCS-T22101', title: 'Computer Organization and Architecture', duration: '45 Hours', difficulty: 'Intermediate', instructor: 'Dept. of CSE, TIU',    gradient: 'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)', accent: '#9575cd' },
+  { code: 'TIU-UCS-T350', title: 'Artificial Intelligence',                   duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',    gradient: 'linear-gradient(135deg,#200122,#6f0000,#200122)', accent: '#ef5350' },
+  { code: 'TIU-UCS-T321', title: 'Design and Analysis of Algorithm',          duration: '45 Hours', difficulty: 'Intermediate', instructor: 'Dept. of CSE, TIU',    gradient: 'linear-gradient(135deg,#0d1117,#161b22,#1f6feb)', accent: '#58a6ff' },
+  { code: 'TIU-UCS-T301', title: 'Database Management System',                duration: '45 Hours', difficulty: 'Intermediate', instructor: 'Dept. of CSE, TIU',    gradient: 'linear-gradient(135deg,#0a3d0a,#1b5e20,#2e7d32)', accent: '#81c784' },
+  { code: 'TIU-UCS-T451', title: 'Machine Learning',                          duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',    gradient: 'linear-gradient(135deg,#1a0533,#4a148c,#6a1b9a)', accent: '#ce93d8' },
+  { code: 'TIU-UCS-T304', title: 'Computer Networks',                         duration: '45 Hours', difficulty: 'Intermediate', instructor: 'Dept. of CSE, TIU',    gradient: 'linear-gradient(135deg,#003c8f,#1565c0,#0d47a1)', accent: '#90caf9' },
+  { code: 'TIU-UCS-T351', title: 'Automata Theory & Compiler Design',         duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of CS Theory, TIU', gradient: 'linear-gradient(135deg,#212121,#424242,#616161)', accent: '#ffcc80' },
 ];
 
 const CATEGORIES = ['Featured', 'Programming Fundamentals', 'Core CS Foundation', 'High Demand Industry Skill', 'Essential Industry Concept', 'Core Infrastructure', 'Theoretical Computer Science', 'Core Hardware Concept'];
@@ -193,7 +193,59 @@ export default function Home() {
       <div className="course-grid">
         {COURSES_DATA.map((course, i) => (
           <div className="course-card" key={i}>
-            <img src={course.img} alt="Course" style={{ width: '100%', height: '150px', objectFit: 'cover' }} />
+            {/* Lecture Thumbnail */}
+            <div style={{
+              width: '100%', height: '160px',
+              background: course.gradient,
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+              position: 'relative', padding: '14px 12px',
+              boxSizing: 'border-box', gap: '6px',
+            }}>
+              {/* University badge top-left */}
+              <div style={{
+                position: 'absolute', top: '10px', left: '12px',
+                background: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,255,0.25)',
+                borderRadius: '6px', padding: '2px 8px',
+                fontSize: '9px', color: 'rgba(255,255,255,0.8)', fontWeight: '600', letterSpacing: '0.5px'
+              }}>TECHNO INDIA UNIVERSITY</div>
+
+              {/* Play button */}
+              <div style={{
+                width: '38px', height: '38px', borderRadius: '50%',
+                background: 'rgba(255,255,255,0.18)',
+                border: '2px solid rgba(255,255,255,0.5)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginTop: '14px',
+              }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+              </div>
+
+              {/* Course code */}
+              <span style={{ fontSize: '10px', color: course.accent, fontWeight: '700', letterSpacing: '0.5px' }}>
+                {course.code}
+              </span>
+
+              {/* Course title in thumbnail */}
+              <span style={{
+                fontSize: '11px', color: '#fff', fontWeight: '700',
+                textAlign: 'center', lineHeight: '1.3',
+                maxWidth: '90%', display: '-webkit-box',
+                WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
+              }}>{course.title}</span>
+
+              {/* Difficulty badge bottom-right */}
+              <div style={{
+                position: 'absolute', bottom: '8px', right: '10px',
+                background: 'rgba(0,0,0,0.4)',
+                border: `1px solid ${course.accent}55`,
+                borderRadius: '10px', padding: '2px 8px',
+                fontSize: '9px', color: course.accent, fontWeight: '700'
+              }}>{course.difficulty}</div>
+            </div>
+
+            {/* Card info below thumbnail */}
             <div className="course-info">
               <p className="title">{course.title}</p>
               <p>{course.duration}</p>
