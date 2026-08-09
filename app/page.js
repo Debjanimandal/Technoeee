@@ -8,14 +8,14 @@ import AuthModal from '@/components/auth/AuthModal';
 import { useAuth } from '@/lib/context/auth-context';
 
 const COURSES_DATA = [
-  { code: 'TIU-UCS-T214',        title: 'Object Oriented Programming using C++',   duration: '45 Hours', difficulty: 'Beginner',      instructor: 'Dept. of CSE-AI, TIU',    img: '/course-banners/c++.png' },
-  { code: 'TIU-PC-UCS-T22101',   title: 'Computer Organization and Architecture',    duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/course-banners/coa.png' },
-  { code: 'TIU-UCS-T350',        title: 'Artificial Intelligence',                   duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',        img: '/course-banners/ai.png' },
-  { code: 'TIU-UCS-T321',        title: 'Design and Analysis of Algorithm',          duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/course-banners/daa.png' },
-  { code: 'TIU-UCS-T301',        title: 'Database Management System',                duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/course-banners/dbms.png' },
-  { code: 'TIU-UCS-T451',        title: 'Machine Learning',                          duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',        img: '/course-banners/ml.png' },
-  { code: 'TIU-UCS-T304',        title: 'Computer Networks',                         duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/course-banners/cn.png' },
-  { code: 'TIU-UCS-T351',        title: 'Automata Theory & Compiler Design',         duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of CS Theory, TIU', img: '/course-banners/automata.png' },
+  { code: 'TIU-UCS-T214',        title: 'Object Oriented Programming using C++',   duration: '45 Hours', difficulty: 'Beginner',      instructor: 'Dept. of CSE-AI, TIU',    img: '/image/thumbnails/cpp_intro.png' },
+  { code: 'TIU-PC-UCS-T22101',   title: 'Computer Organization and Architecture',    duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/image/ca-banner.png' },
+  { code: 'TIU-UCS-T350',        title: 'Artificial Intelligence',                   duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',        img: '/image/ai-banner.png' },
+  { code: 'TIU-UCS-T321',        title: 'Design and Analysis of Algorithm',          duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/image/daa-banner.png' },
+  { code: 'TIU-UCS-T301',        title: 'Database Management System',                duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/image/dbms-banner.png' },
+  { code: 'TIU-UCS-T451',        title: 'Machine Learning',                          duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of AI, TIU',        img: '/image/ml-banner.png' },
+  { code: 'TIU-UCS-T304',        title: 'Computer Networks',                         duration: '45 Hours', difficulty: 'Intermediate',  instructor: 'Dept. of CSE, TIU',       img: '/image/cn-banner.png' },
+  { code: 'TIU-UCS-T351',        title: 'Automata Theory & Compiler Design',         duration: '45 Hours', difficulty: 'Advanced',      instructor: 'Dept. of CS Theory, TIU', img: '/image/automata-banner.png' },
 ];
 
 const CATEGORIES = ['Featured', 'Programming Fundamentals', 'Core CS Foundation', 'High Demand Industry Skill', 'Essential Industry Concept', 'Core Infrastructure', 'Theoretical Computer Science', 'Core Hardware Concept'];
