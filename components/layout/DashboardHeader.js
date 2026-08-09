@@ -16,6 +16,7 @@ export default function DashboardHeader() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const [mounted, setMounted] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const notifRef = useRef(null);
@@ -29,6 +30,7 @@ export default function DashboardHeader() {
   const profileRef = useRef(null);
 
   useEffect(() => {
+    setMounted(true);
     // Initial load
     const stored = localStorage.getItem('mock_profile_completion');
     if (stored) setGlobalCompletion(Number(stored));
@@ -94,7 +96,7 @@ export default function DashboardHeader() {
           style={{
             background: 'none', border: 'none', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#1352f1', padding: '4px'
+            color: '#1a2980', padding: '4px'
           }}
           title="Go back"
         >
@@ -157,15 +159,17 @@ export default function DashboardHeader() {
         >
           <button 
             onClick={() => setShowProfileMenu(!showProfileMenu)}
+            suppressHydrationWarning
             style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               padding: '4px 6px 4px 10px', borderRadius: '30px',
-              background: '#e0f2fe', border: '1px solid #bae6fd',
+              background: mounted ? '#2b5876' : '#e0f2fe',
+              border: mounted ? '1px solid #1a3c54' : '1px solid #bae6fd',
               cursor: 'pointer', transition: 'all 0.2s',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+              boxShadow: mounted ? '0 4px 10px rgba(43,88,118,0.3)' : '0 2px 4px rgba(0,0,0,0.02)'
             }}
           >
-            <Menu size={18} color="#334155" strokeWidth={2.5} />
+            <Menu size={18} color={mounted ? '#ffffff' : '#334155'} strokeWidth={2.5} />
             
             <div style={{
               width: '40px', height: '40px', borderRadius: '50%',

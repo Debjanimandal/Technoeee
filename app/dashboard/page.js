@@ -363,7 +363,7 @@ export default function DashboardPage() {
             {/* ─── Stat Cards Row ───────────────────────────────────────────────── */}
             <div style={{ display: 'flex', gap: '20px', marginBottom: '32px', flexWrap: 'wrap' }}>
               <StatCard label="Courses in Progress" value={courses.length} icon={Icons.Book} color="#3b82f6" bgLight="#eff6ff" loading={coursesLoading} />
-              <StatCard label="Completed Topics" value={completedTopicsCount} icon={Icons.CheckCircle} color="#10b981" bgLight="#ecfdf5" loading={analyticsLoading} />
+              <StatCard label="Completed Topics" value={completedTopicsCount} icon={Icons.CheckCircle} color="#8b5cf6" bgLight="#f5f3ff" loading={analyticsLoading} />
               <StatCard label="Total Hours Spent" value={`${stats?.total_hours || 0}h`} icon={Icons.Clock} color="#f59e0b" bgLight="#fffbeb" loading={analyticsLoading} />
               <StatCard label="Current Streak" value={`${streak} Days`} icon={Icons.Flame} color="#ef4444" bgLight="#fef2f2" loading={analyticsLoading} />
             </div>

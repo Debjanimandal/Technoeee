@@ -161,7 +161,13 @@ export default function Home() {
       {/* Hero section */}
       <div className={`main-content${devMode ? ' dev-mode-on' : ''}`} id="mainContent">
         <div className={`text-content${devMode ? ' dev-mode-on' : ''}`} id="textContent">
-          <h1 id="mainHeading">{devMode ? 'BE YOUR BEST IN' : 'DIVE INTO TECHNOEEE'}</h1>
+          <h1 id="mainHeading">
+            {devMode ? (
+              <>BE YOUR <span style={{ color: '#2b5876' }}>BEST</span> IN</>
+            ) : (
+              <>DIVE INTO <span style={{ color: '#2b5876' }}>TECHNOEEE</span></>
+            )}
+          </h1>
           <div className="paragraph-wrapper">
             <p id="potentialText">
               {devMode ? 'Learn something new today!' : 'Unlock Your Potential and Make an Impact with Your Skills!'}
@@ -213,6 +219,10 @@ export default function Home() {
             <div className="code-fragment">&nbsp;&nbsp;console.log(&quot;Ready!&quot;);</div>
             <div className="code-fragment">&nbsp;&nbsp;return true;</div>
             <div className="code-fragment">&#125; // TechnoEEE On</div>
+            <div className="sparkle"></div>
+            <div className="sparkle"></div>
+            <div className="sparkle"></div>
+            <div className="sparkle"></div>
             <div className="sparkle"></div>
             <div className="sparkle"></div>
             <div className="sparkle"></div>

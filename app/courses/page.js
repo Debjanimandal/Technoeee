@@ -251,7 +251,7 @@ export default function CoursesPage() {
                   style={{
                     padding: '8px 16px', borderRadius: '20px', border: 'none', cursor: 'pointer',
                     fontWeight: 'bold', fontSize: '13px', transition: 'all 0.2s', fontFamily: 'inherit',
-                    background: filterDifficulty === level ? '#3a8aff' : '#e0e0e0',
+                    background: filterDifficulty === level ? '#2b5876' : '#e0e0e0',
                     color: filterDifficulty === level ? '#fff' : '#555'
                   }}
                 >{level}</button>
@@ -345,18 +345,16 @@ export default function CoursesPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '12px', color: '#888', display: 'flex', alignItems: 'center', gap: '4px' }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>{course.estimated_time || '45 Hours'}</span>
                       {isEnrolled ? (
-                         <div style={{
-                           background: 'linear-gradient(135deg, #00b09b, #96c93d)',
-                           color: '#fff', border: '1px solid rgba(255,255,255,0.4)',
-                           padding: '4px 12px', borderRadius: '20px',
-                           fontSize: '11px', fontWeight: '900',
-                           boxShadow: '0 4px 12px rgba(0,176,155,0.3), inset 0 1px 0 rgba(255,255,255,0.3)',
-                           letterSpacing: '0.5px', textTransform: 'uppercase',
-                           display: 'flex', alignItems: 'center', gap: '4px'
-                         }}>
-                           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                         <button className="hover-lift" style={{
+                           background: 'linear-gradient(135deg, #00b09b, #26d0ce)', color: '#fff', border: 'none',
+                           padding: '10px 20px', borderRadius: '10px',
+                           cursor: 'pointer', fontSize: '13px', fontWeight: '700',
+                           boxShadow: '0 4px 10px rgba(38, 208, 206, 0.3)',
+                           display: 'flex', alignItems: 'center', gap: '6px'
+                         }} onClick={() => window.location.href = `/learn/${course.subject_code}`}>
+                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                            Enrolled
-                         </div>
+                         </button>
                       ) : (
                          <span style={{ fontSize: '13px', fontWeight: '600', color: '#3a8aff', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>View Details <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
                       )}

@@ -73,43 +73,49 @@ export default function CourseLearningPage() {
           
           {/* Header Section */}
           <div style={{
-            background: 'linear-gradient(135deg, #1a2980 0%, #26d0ce 100%)',
-            borderRadius: '20px', padding: '30px', color: '#fff', marginBottom: '20px',
-            boxShadow: '0 15px 30px rgba(38, 208, 206, 0.2)', position: 'relative', overflow: 'hidden'
+            background: 'linear-gradient(135deg, #cce3f0 0%, #c8c4e4 60%, #d4cce8 100%)',
+            borderRadius: '24px', padding: '20px', color: '#1a2e3b', marginBottom: '16px',
+            boxShadow: '0 10px 40px rgba(43,88,118,0.18), 0 2px 8px rgba(0,0,0,0.06)', 
+            border: '1px solid rgba(43,88,118,0.15)', position: 'relative', overflow: 'hidden'
           }}>
-            <Link href="/my-courses" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '14px', marginBottom: '15px', display: 'inline-block' }}>
+            {/* Decorative circles */}
+            <div style={{ position: 'absolute', top: '-40px', right: '180px', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(43,88,118,0.1)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: '-50px', right: '80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(78,67,118,0.08)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', top: '20px', right: '280px', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(43,88,118,0.06)', pointerEvents: 'none' }} />
+            
+            <Link href="/my-courses" style={{ color: '#4a6278', textDecoration: 'none', fontSize: '13px', marginBottom: '10px', display: 'inline-block', position: 'relative', zIndex: 1, fontWeight: '500' }}>
               ← Back to My Courses
             </Link>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 1 }}>
               <div>
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', flexWrap: 'wrap' }}>
-                  <span style={{ background: 'rgba(255,255,255,0.2)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', backdropFilter: 'blur(5px)' }}>
+                <div style={{ display: 'flex', gap: '8px', marginBottom: '10px', flexWrap: 'wrap' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '16px', fontSize: '11px', fontWeight: 'bold', backdropFilter: 'blur(5px)', color: '#2b5876' }}>
                     {course.subject_code}
                   </span>
                   {course.difficulty && (
-                    <span style={{ background: 'rgba(255,152,0,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M12 2C8.5 7 6 11 6 14a6 6 0 0 0 12 0c0-3-2.5-7-6-12zm0 16a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
+                    <span style={{ background: 'rgba(100, 116, 139, 0.85)', padding: '4px 10px', borderRadius: '16px', fontSize: '11px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', color: '#fff' }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M12 2C8.5 7 6 11 6 14a6 6 0 0 0 12 0c0-3-2.5-7-6-12zm0 16a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
                       {course.difficulty}
                     </span>
                   )}
                   {course.relevance && (
-                    <span style={{ background: 'rgba(76,175,80,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                    <span style={{ background: '#2b5876', padding: '4px 10px', borderRadius: '16px', fontSize: '11px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', color: '#fff' }}>
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
                       {course.relevance}
                     </span>
                   )}
                 </div>
-                <h1 style={{ fontSize: '32px', fontWeight: '800', margin: '0 0 10px 0', lineHeight: '1.2', maxWidth: '800px' }}>
+                <h1 style={{ fontSize: '24px', fontWeight: '800', margin: '0 0 6px 0', lineHeight: '1.2', maxWidth: '800px', letterSpacing: '-0.5px' }}>
                   {course.course_name}
                 </h1>
-                <p style={{ margin: 0, opacity: 0.9, fontSize: '15px' }}>
+                <p style={{ margin: 0, color: '#4a6278', fontSize: '13px' }}>
                   Estimated Total Time: {course.estimated_time} • Remaining: <strong>~{estRemaining} Hours</strong>
                 </p>
               </div>
-              <div style={{ width: '300px', background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '15px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '8px', fontWeight: 'bold' }}>
+              <div style={{ width: '150px', background: 'rgba(255,255,255,0.4)', padding: '8px 12px', borderRadius: '12px', color: '#1a2e3b', border: '1px solid rgba(255,255,255,0.5)', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontWeight: 'bold' }}>
                   <span>Course Progress</span>
-                  <span>{progressPercent}%</span>
+                  <span style={{ color: '#2b5876' }}>{progressPercent}%</span>
                 </div>
               </div>
             </div>
@@ -234,14 +240,14 @@ export default function CourseLearningPage() {
                               display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer',
                               padding: '10px 12px', borderRadius: '8px', marginTop: '6px',
                               transition: 'box-shadow 0.2s, background 0.2s',
-                              background: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '#ffe0b2' : '#fff8f1',
-                              border: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '1px solid #ff9800' : '1px solid #ffe0b2',
-                              boxShadow: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '0 0 14px rgba(255,152,0,0.4)' : 'none'
+                              background: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '#fecaca' : '#fef2f2',
+                              border: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '1px solid #b91c1c' : '1px solid #fecaca',
+                              boxShadow: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '0 0 14px rgba(185,28,28,0.4)' : 'none'
                             }}
                             onMouseOver={(e) => e.currentTarget.style.transform = 'translateX(4px)'}
                             onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#e65100" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                            <span style={{ fontSize: '13px', color: '#e65100', fontWeight: 'bold' }}>Mandatory Module Quiz</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            <span style={{ fontSize: '13px', color: '#b91c1c', fontWeight: 'bold' }}>Mandatory Module Quiz</span>
                           </div>
                         </div>
                       )}
@@ -399,11 +405,11 @@ export default function CourseLearningPage() {
                   {/* Content Sub-Timeline (Video -> Notes -> Quiz) */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0', marginBottom: '60px', overflowX: 'visible', padding: '10px 10px' }}>
                     {[
-                      { type: course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? 'Video 1' : 'Video', icon: '▶️', color: '#f44336', bg: '#ffebee' },
-                      ...(course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? [{ type: 'Video 2', icon: '▶️', color: '#3a8aff', bg: '#e3f2fd' }] : []),
-                      ...(course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl3 ? [{ type: 'Video 3', icon: '▶️', color: '#9c27b0', bg: '#f3e5f5' }] : []),
-                      { type: 'Notes',   icon: '📄', color: '#4caf50', bg: '#e8f5e9' },
-                      { type: 'Quiz',    icon: '❓', color: '#ff9800', bg: '#fff3e0' },
+                      { type: course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? 'Video 1' : 'Video', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#3b82f6', bg: '#eff6ff' },
+                      ...(course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? [{ type: 'Video 2', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#0ea5e9', bg: '#e0f2fe' }] : []),
+                      ...(course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl3 ? [{ type: 'Video 3', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#06b6d4', bg: '#cffafe' }] : []),
+                      { type: 'Notes',   icon: <Icons.FileText size={22} strokeWidth={2.5} />, color: '#8b5cf6', bg: '#f5f3ff' },
+                      { type: 'Quiz',    icon: <Icons.HelpCircle size={24} strokeWidth={2.5} />, color: '#b91c1c', bg: '#fef2f2' },
                     ].map((item, idx, arr) => {
                       const isSelected = selectedContentIdx === idx;
                       return (
@@ -420,12 +426,13 @@ export default function CourseLearningPage() {
                             {/* The Icon Box */}
                             <div style={{ 
                               width: '50px', height: '50px', borderRadius: '12px', 
-                              background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                              background: isSelected ? item.color : '#fff',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center', 
                               border: `2px solid ${item.color}`, flexShrink: 0,
                               boxShadow: isSelected ? `0 0 15px ${item.color}66` : 'none',
-                              position: 'relative', zIndex: 2, background: '#fff'
+                              position: 'relative', zIndex: 2, color: isSelected ? '#fff' : item.color
                             }}>
-                              <span style={{ fontSize: '20px' }}>{item.icon}</span>
+                              {item.icon}
                             </div>
                             
                             {/* Absolute Positioned Text (Doesn't affect flex centering) */}

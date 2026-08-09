@@ -153,7 +153,7 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
               }}
               style={{
                 position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)',
-                width: '32px', height: '32px', backgroundColor: '#1352f1', borderRadius: '50%',
+                width: '32px', height: '32px', backgroundColor: '#2b5876', borderRadius: '50%',
                 display: 'flex', justifyContent: 'center', alignItems: 'center',
                 cursor: 'pointer', zIndex: 10
               }}
