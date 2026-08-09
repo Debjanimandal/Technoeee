@@ -103,7 +103,9 @@ export default function DashboardHeader() {
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
         </button>
-        <Image src="/image/logo.png" alt="TechnoEEE Logo" width={120} height={60} style={{ objectFit: 'contain' }} unoptimized />
+        <div style={{ width: '120px', height: '60px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0 }}>
+          <Image src="/image/logo.png" alt="TechnoEEE Logo" width={120} height={60} style={{ objectFit: 'cover', display: 'block', width: '100%', height: '100%' }} unoptimized />
+        </div>
       </div>
       <div className="header-right" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
 
