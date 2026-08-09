@@ -167,7 +167,7 @@ export default function MyCoursesPage() {
                       <img
                         src={COURSE_BANNER_MAP[course.category] || '/course-banners/cpp.png'}
                         alt={course.course_title}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
                       />
                       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 35%, rgba(0,0,0,0.5) 100%)' }} />
                       {/* Category + Status badges on image */}

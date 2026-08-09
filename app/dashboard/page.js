@@ -381,7 +381,7 @@ export default function DashboardPage() {
                             <img
                               src={COURSE_BANNER_MAP[c.category] || '/course-banners/cpp.png'}
                               alt={c.course_title}
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
                             />
                             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%)' }} />
                             <span style={{ position: 'absolute', bottom: '10px', left: '12px', fontSize: '10px', fontWeight: '700', color: '#fff', background: 'rgba(79,70,229,0.85)', padding: '3px 9px', borderRadius: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', backdropFilter: 'blur(4px)' }}>

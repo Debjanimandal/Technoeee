@@ -289,7 +289,7 @@ export default function CoursesPage() {
                     <img
                       src={COURSE_BANNER_MAP[course.subject_code] || '/course-banners/cpp.png'}
                       alt={course.course_name}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
                     />
                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.55) 100%)' }} />
                     {/* Relevance badge on image */}

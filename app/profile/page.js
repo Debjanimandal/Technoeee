@@ -6,7 +6,18 @@ import DashboardHeader from '@/components/layout/DashboardHeader';
 import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
 import { getCourseStudyTime } from '@/lib/services/studyService';
-import { Mail, Phone, MapPin, GraduationCap, Building, BookOpen, Star, Award, TrendingUp, Lock } from 'lucide-react';
+import { Mail, Phone, MapPin, GraduationCap, Building, Star, Award, TrendingUp, Lock } from 'lucide-react';
+
+const COURSE_BANNER_MAP = {
+  'TIU-UCS-T214':      '/course-banners/cpp.png',
+  'TIU-PC-UCS-T22101': '/course-banners/coa.png',
+  'TIU-UCS-T350':      '/course-banners/ai.png',
+  'TIU-UCS-T321':      '/course-banners/daa.png',
+  'TIU-UCS-T301':      '/course-banners/dbms.png',
+  'TIU-UCS-T451':      '/course-banners/ml.png',
+  'TIU-UCS-T304':      '/course-banners/cn.png',
+  'TIU-UCS-T351':      '/course-banners/automata.png',
+};
 
 export default function ProfilePage() {
   const { user, profile } = useAuth();
@@ -243,28 +254,36 @@ export default function ProfilePage() {
               ) : enrollments.length > 0 ? (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '16px' }}>
                   {enrollments.map((course, idx) => {
-                    const courseId = course.course_id || `TC-${Math.floor(Math.random()*1000)+100}`;
-                    
+                    // Use category (subject_code) for banner; fallback to course_id from profile data
+                    const subjectCode = course.category || course.course_id || '';
                     return (
                       <div key={idx} style={{
-                        background: 'linear-gradient(145deg, #ffffff, #f8fafc)',
-                        border: '1px solid #e2e8f0', padding: '20px', borderRadius: '12px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.02)', position: 'relative', overflow: 'hidden',
+                        background: '#fff',
+                        border: '1px solid #e2e8f0', borderRadius: '14px',
+                        boxShadow: '0 2px 10px rgba(0,0,0,0.04)', position: 'relative', overflow: 'hidden',
                         transition: 'all 0.2s', cursor: 'default'
                       }}
-                      onMouseOver={e => { e.currentTarget.style.borderColor = '#bae6fd'; e.currentTarget.style.transform = 'translateY(-2px)' }}
-                      onMouseOut={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.transform = 'translateY(0)' }}
+                      onMouseOver={e => { e.currentTarget.style.borderColor = '#bae6fd'; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.08)'; }}
+                      onMouseOut={e => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 10px rgba(0,0,0,0.04)'; }}
                       >
-                        {/* Decorative background icon */}
-                        <BookOpen size={64} color="#f1f5f9" style={{ position: 'absolute', right: '-10px', bottom: '-10px', zIndex: 0, opacity: 0.7, transform: 'rotate(-15deg)' }} />
-                        
-                        <div style={{ position: 'relative', zIndex: 1 }}>
-                          <div style={{ 
-                            background: '#e0f2fe', color: '#0284c7', fontSize: '11px', fontWeight: 800, 
-                            padding: '4px 8px', borderRadius: '6px', display: 'inline-block', marginBottom: '12px',
+                        {/* Banner thumbnail */}
+                        <div style={{ position: 'relative', height: '110px', overflow: 'hidden' }}>
+                          <img
+                            src={COURSE_BANNER_MAP[subjectCode] || '/course-banners/cpp.png'}
+                            alt={course.course_title}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }}
+                          />
+                          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 35%, rgba(0,0,0,0.45) 100%)' }} />
+                        </div>
+
+                        {/* Card body */}
+                        <div style={{ padding: '14px 16px' }}>
+                          <div style={{
+                            background: '#e0f2fe', color: '#0284c7', fontSize: '11px', fontWeight: 800,
+                            padding: '3px 8px', borderRadius: '6px', display: 'inline-block', marginBottom: '10px',
                             letterSpacing: '0.5px'
                           }}>
-                            {courseId}
+                            {subjectCode || 'General'}
                           </div>
                           <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#1e293b', margin: 0, lineHeight: 1.4 }}>
                             {course.course_title}
