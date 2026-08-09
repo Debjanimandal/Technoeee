@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import AuthModal from '@/components/auth/AuthModal';
 import { useAuth } from '@/lib/context/auth-context';
 
 const COURSES_DATA = [
@@ -19,11 +20,13 @@ const COURSES_DATA = [
 
 const CATEGORIES = ['Featured', 'Programming Fundamentals', 'Core CS Foundation', 'High Demand Industry Skill', 'Essential Industry Concept', 'Core Infrastructure', 'Theoretical Computer Science', 'Core Hardware Concept'];
 
-const CHANNELS = [
-  { name: 'Marketing Analysis', img: '/image/Ellipse 12.jpg' },
-  { name: 'Graphics Designing', img: '/image/Ellipse 12 (1).jpg' },
-  { name: 'Web Development', img: '/image/Ellipse 12 (2).jpg' },
-  { name: 'Web Designing', img: '/image/Ellipse 12 (3).jpg' },
+const FEATURES = [
+  { icon: '🎓', title: 'My Courses',      desc: 'Enroll in university-grade CS courses and track your progress through structured modules.' },
+  { icon: '📅', title: 'Study Planner',   desc: 'Build a personalized week-by-week schedule and stay on track with smart pacing.' },
+  { icon: '📊', title: 'My Analytics',    desc: 'Visualize study time, topic strengths, and performance trends with detailed charts.' },
+  { icon: '🤖', title: 'AI Chatbot',      desc: 'Ask any subject question and get instant, intelligent answers powered by AI.' },
+  { icon: '🏆', title: 'Course Badges',   desc: 'Complete courses and earn shareable badges to showcase your accomplishments.' },
+  { icon: '🗂️', title: 'Dashboard',       desc: 'See all active courses, streaks, and learning stats at a glance in your hub.' },
 ];
 
 const FAQ_ITEMS = [
@@ -34,9 +37,10 @@ const FAQ_ITEMS = [
 
 export default function Home() {
   const [devMode, setDevMode] = useState(false);
-  const [chatChannel, setChatChannel] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
   const [scrollHide, setScrollHide] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [authOpen, setAuthOpen] = useState(false);
   const fragmentsRef = useRef(null);
   const animationRef = useRef(null);
   const coursesHeaderRef = useRef(null);
@@ -192,8 +196,19 @@ export default function Home() {
       </div>
       <div className="course-grid">
         {COURSES_DATA.map((course, i) => (
-          <div className="course-card" key={i}>
-            {/* Banner image thumbnail – no play button */}
+          <div
+            className="course-card"
+            key={i}
+            onMouseEnter={() => setHoveredCard(i)}
+            onMouseLeave={() => setHoveredCard(null)}
+            style={{
+              position: 'relative',
+              transform: hoveredCard === i ? 'translateY(-6px) scale(1.02)' : 'translateY(0) scale(1)',
+              boxShadow: hoveredCard === i ? '0 16px 40px rgba(58,138,255,0.25)' : undefined,
+              transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+            }}
+          >
+            {/* Banner image thumbnail */}
             <div style={{ width: '100%', height: '160px', position: 'relative', overflow: 'hidden' }}>
               <img
                 src={course.img}
@@ -214,6 +229,38 @@ export default function Home() {
                 padding: '2px 9px', fontSize: '9px',
                 color: '#fff', fontWeight: '700',
               }}>{course.difficulty}</div>
+
+              {/* Hover overlay with Learn Now button */}
+              {hoveredCard === i && (
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'rgba(5,15,40,0.82)',
+                  display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center',
+                  gap: '12px',
+                  animation: 'fadeInOverlay 0.2s ease',
+                }}>
+                  <span style={{ color: '#fff', fontSize: '12px', fontWeight: '600', textAlign: 'center', padding: '0 12px', lineHeight: 1.4 }}>
+                    {course.title}
+                  </span>
+                  <button
+                    onClick={() => setAuthOpen(true)}
+                    style={{
+                      background: 'linear-gradient(135deg, #3a8aff 0%, #1a2980 100%)',
+                      color: '#fff', border: 'none', borderRadius: '20px',
+                      padding: '9px 24px', fontSize: '13px', fontWeight: '700',
+                      cursor: 'pointer', letterSpacing: '0.3px',
+                      boxShadow: '0 6px 18px rgba(58,138,255,0.45)',
+                      transform: 'scale(1)',
+                      transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+                    }}
+                    onMouseOver={e => { e.currentTarget.style.transform='scale(1.06)'; e.currentTarget.style.boxShadow='0 8px 22px rgba(58,138,255,0.6)'; }}
+                    onMouseOut={e => { e.currentTarget.style.transform='scale(1)'; e.currentTarget.style.boxShadow='0 6px 18px rgba(58,138,255,0.45)'; }}
+                  >
+                    Learn Now →
+                  </button>
+                </div>
+              )}
             </div>
             {/* Card info */}
             <div className="course-info">
@@ -225,41 +272,34 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Community Section */}
-      <div className="section-header">Explore Our Community</div>
-      <div className="community-container">
-        <div className="channels-section" style={{ display: chatChannel ? 'none' : 'block' }}>
-          <h2>Channels</h2>
-          {CHANNELS.map(ch => (
-            <div key={ch.name} className="channel" onClick={() => setChatChannel(ch.name)}>
-              <img src={ch.img} alt="Channel Icon" style={{ width: 40, height: 40, borderRadius: '50%', marginRight: 10 }} />
-              <span>{ch.name}</span>
-            </div>
-          ))}
-        </div>
-        <div className={`chat-section${chatChannel ? ' active' : ''}`} id="chatSection">
-          <div className="chat-header">
-            <div className="user-info">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" onClick={() => setChatChannel(null)} style={{ cursor: 'pointer' }}>
-                <path d="M15 18l-6-6 6-6"></path>
-              </svg>
-              <img src="/image/Ellipse 12 (4).jpg" alt="User Avatar" style={{ width: 40, height: 40, borderRadius: '50%', marginRight: 10 }} />
-              <span id="channelName">{chatChannel} Chat</span>
-            </div>
-            <div className="icons">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s-8-4.5-8-10V5l8-3 8 3v7c0 5.5-8 10-8 10z"></path>
-              </svg>
-            </div>
+      {/* Features Section */}
+      <div className="section-header">Explore Our Features</div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+        gap: '20px',
+        padding: '10px 40px 40px',
+        maxWidth: '1100px',
+        margin: '0 auto',
+      }}>
+        {FEATURES.map((f, i) => (
+          <div key={i} style={{
+            background: 'linear-gradient(135deg, #0d1b3e 0%, #1a2f5e 100%)',
+            borderRadius: '16px',
+            padding: '28px 24px',
+            border: '1px solid rgba(58,138,255,0.15)',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+            cursor: 'default',
+          }}
+          onMouseOver={e => { e.currentTarget.style.transform='translateY(-4px)'; e.currentTarget.style.boxShadow='0 12px 30px rgba(58,138,255,0.2)'; e.currentTarget.style.borderColor='rgba(58,138,255,0.4)'; }}
+          onMouseOut={e => { e.currentTarget.style.transform='translateY(0)'; e.currentTarget.style.boxShadow='0 4px 20px rgba(0,0,0,0.15)'; e.currentTarget.style.borderColor='rgba(58,138,255,0.15)'; }}
+          >
+            <div style={{ fontSize: '36px', marginBottom: '14px' }}>{f.icon}</div>
+            <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#fff', marginBottom: '8px', margin: '0 0 8px' }}>{f.title}</h3>
+            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>{f.desc}</p>
           </div>
-          <div className="chat-input">
-            <input type="text" placeholder="Doubts or Queries" />
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M22 2L11 13"></path>
-              <path d="M22 2l-7 20-4-9-9-4 20-7z"></path>
-            </svg>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* Testimonials */}
@@ -313,6 +353,21 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Sign-in modal triggered by Learn Now button */}
+      <AuthModal
+        isOpen={authOpen}
+        onClose={() => setAuthOpen(false)}
+        initialTab="signin"
+      />
+
+      {/* Keyframe for hover overlay fade-in */}
+      <style>{`
+        @keyframes fadeInOverlay {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+      `}</style>
 
       <Footer />
     </main>
