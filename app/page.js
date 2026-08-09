@@ -78,9 +78,12 @@ const FEATURES = [
 ];
 
 const FAQ_ITEMS = [
-  { q: 'How do I become a teacher?', a: 'To become a teacher, you need to sign up on our platform, submit an application with your credentials, and complete our teacher training program.' },
-  { q: 'What is TechnoEEE?', a: 'In TechnoEEE you will learn how to observe your learning process and how to get improve in such things.' },
-  { q: 'How to become a coder?', a: "To become a coder, you'll typically need to learn programming languages, practice regularly, build projects, and potentially pursue formal education or certifications." },
+  { q: 'What is TechnoEEE?', a: 'TechnoEEE is a student-focused learning platform designed to make academic learning more organized and accessible. Explore courses, follow structured lessons, access learning resources, and keep track of your progress—all in one place.' },
+  { q: 'Who can use TechnoEEE?', a: 'TechnoEEE is built primarily for students looking to strengthen their academic knowledge and technical skills. Whether you\'re learning a subject for the first time or revising for exams, you can use the platform at your own pace.' },
+  { q: 'What courses are available on TechnoEEE?', a: 'TechnoEEE offers courses across a range of computer science and technical subjects, including Programming, Artificial Intelligence, Machine Learning, Computer Networks, Database Management Systems, Algorithms, and more.' },
+  { q: 'Can I learn at my own pace?', a: 'Yes. TechnoEEE supports self-paced learning, allowing you to study whenever it works for you. You can move through lessons at your own speed and continue your learning whenever you return to the platform.' },
+  { q: 'How can I track my learning progress?', a: 'Your course progress is automatically tracked as you complete lessons and learning activities. This helps you quickly see what you\'ve completed, where you left off, and what you can learn next.' },
+  { q: 'Do I need an account to use TechnoEEE?', a: 'An account gives you access to personalized learning features such as enrolled courses and progress tracking. Signing in also allows TechnoEEE to keep your learning journey organized across sessions.' },
 ];
 
 export default function Home() {
