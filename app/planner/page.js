@@ -457,7 +457,7 @@ export default function PlannerPage() {
   return (
     <div className="app-layout">
       <Sidebar />
-      <div className="page-content" style={{ backgroundColor: '#f4f7fb', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <DashboardHeader />
         
         <div style={{ padding: '0 20px 20px', flex: 1 }}>
@@ -525,7 +525,7 @@ export default function PlannerPage() {
               
               <div style={{
                 background: '#fff', borderRadius: '24px', padding: '30px',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0'
+                boxShadow: '0 8px 32px rgba(79,70,229,0.10)', border: '1px solid rgba(99,102,241,0.1)'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
                   <button onClick={prevMonth} style={{ background: 'none', border: '1px solid #eee', borderRadius: '8px', padding: '6px 12px', cursor: 'pointer', color: '#666', fontWeight: 'bold' }}>&lt;</button>
@@ -557,7 +557,7 @@ export default function PlannerPage() {
             {/* Right Column: Time-Block View */}
             <div style={{
               flex: 1, background: '#fff', borderRadius: '24px', padding: '30px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0', minHeight: '600px'
+              boxShadow: '0 8px 32px rgba(79,70,229,0.10)', border: '1px solid rgba(99,102,241,0.1)', minHeight: '600px'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
                 <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
@@ -663,13 +663,17 @@ export default function PlannerPage() {
 
                           {/* Task Card */}
                           <div style={{
-                            background: isDone ? '#fcfcfc' : '#fff',
-                            padding: '24px', borderRadius: '20px',
-                            border: `1px solid ${isDone ? '#f0f0f0' : '#eef0f2'}`,
-                            borderLeft: `6px solid ${isDone ? '#e0e0e0' : task.course_color}`,
-                            boxShadow: isDone ? 'none' : '0 8px 24px rgba(0,0,0,0.04)',
+                            background: isDone
+                              ? '#f8f8f8'
+                              : `linear-gradient(145deg, #ffffff 0%, ${task.course_color}08 100%)`,
+                            padding: '20px 24px', borderRadius: '18px',
+                            border: `1px solid ${isDone ? '#ebebeb' : task.course_color + '28'}`,
+                            borderLeft: `5px solid ${isDone ? '#d0d0d0' : task.course_color}`,
+                            boxShadow: isDone
+                              ? 'none'
+                              : `0 6px 24px ${task.course_color}18, 0 2px 8px rgba(0,0,0,0.06)`,
                             position: 'relative',
-                            opacity: isDone ? 0.7 : 1,
+                            opacity: isDone ? 0.6 : 1,
                             transition: 'all 0.3s',
                           }}>
                             {/* Tags */}
