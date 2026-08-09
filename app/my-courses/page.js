@@ -7,6 +7,17 @@ import { supabase } from '@/lib/supabase/client';
 import coursesData from '../../public/data/real_courses_data.json';
 import Link from 'next/link';
 
+const COURSE_BANNER_MAP = {
+  'TIU-UCS-T214':      '/course-banners/cpp.png',
+  'TIU-PC-UCS-T22101': '/course-banners/coa.png',
+  'TIU-UCS-T350':      '/course-banners/ai.png',
+  'TIU-UCS-T321':      '/course-banners/daa.png',
+  'TIU-UCS-T301':      '/course-banners/dbms.png',
+  'TIU-UCS-T451':      '/course-banners/ml.png',
+  'TIU-UCS-T304':      '/course-banners/cn.png',
+  'TIU-UCS-T351':      '/course-banners/automata.png',
+};
+
 export default function MyCoursesPage() {
   const { user } = useAuth();
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -145,67 +156,73 @@ export default function MyCoursesPage() {
                   <div key={course.id} className="hover-lift" style={{
                     background: '#fff',
                     border: '1px solid #f1f5f9',
-                    borderRadius: '24px', padding: '24px',
+                    borderRadius: '24px',
                     display: 'flex', flexDirection: 'column',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
                     position: 'relative', overflow: 'hidden'
                   }}>
-                    {/* Top gradient accent */}
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '6px', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)' }} />
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px', marginTop: '4px' }}>
-                      {course.category ? (
-                        <span style={{ fontSize: '11px', fontWeight: '800', color: '#4f46e5', background: '#e0e7ff', padding: '6px 12px', borderRadius: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          {course.category}
+                    {/* Banner thumbnail */}
+                    <div style={{ position: 'relative', height: '140px', overflow: 'hidden', flexShrink: 0 }}>
+                      <img
+                        src={COURSE_BANNER_MAP[course.category] || '/course-banners/cpp.png'}
+                        alt={course.course_title}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 35%, rgba(0,0,0,0.5) 100%)' }} />
+                      {/* Category + Status badges on image */}
+                      <div style={{ position: 'absolute', bottom: '10px', left: '14px', right: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '10px', fontWeight: '800', color: '#fff', background: 'rgba(79,70,229,0.85)', padding: '3px 9px', borderRadius: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', backdropFilter: 'blur(4px)' }}>
+                          {course.category || 'General'}
                         </span>
-                      ) : (
-                        <span style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', background: '#f1f5f9', padding: '6px 12px', borderRadius: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          General
+                        <span style={{
+                          background: course.status === 'Completed' ? 'rgba(22,101,52,0.85)' : course.status === 'Upcoming' ? 'rgba(133,77,14,0.85)' : 'rgba(71,85,105,0.85)',
+                          color: '#fff',
+                          padding: '3px 9px', borderRadius: '8px', fontSize: '10px', fontWeight: '800', textTransform: 'uppercase', backdropFilter: 'blur(4px)'
+                        }}>
+                          {course.status || 'Ongoing'}
                         </span>
-                      )}
-                      <span style={{
-                        background: course.status === 'Completed' ? '#dcfce7' : course.status === 'Upcoming' ? '#fef9c3' : '#f1f5f9',
-                        color:      course.status === 'Completed' ? '#166534' : course.status === 'Upcoming' ? '#854d0e' : '#475569',
-                        padding: '6px 12px', borderRadius: '12px', fontSize: '11px', fontWeight: '800', flexShrink: 0, textTransform: 'uppercase'
-                      }}>
-                        {course.status || 'Ongoing'}
-                      </span>
-                    </div>
-
-                    <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#1e293b', marginBottom: '24px', lineHeight: '1.4', flex: 1 }}>
-                      {course.course_title}
-                    </h2>
-
-                    {/* Progress Bar */}
-                    <div style={{ marginBottom: '24px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#64748b', fontWeight: '600', marginBottom: '8px' }}>
-                        <span>Progress</span>
-                        <span style={{ color: '#0f172a' }}>{course.progress || 0}%</span>
-                      </div>
-                      <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
-                        <div style={{
-                          width: `${course.progress || 0}%`, height: '100%',
-                          background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
-                          borderRadius: '4px',
-                          transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                        }} />
                       </div>
                     </div>
 
-                    {/* Footer */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '20px', borderTop: '1px solid #f1f5f9' }}>
-                      <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: '600' }}>
-                        Enrolled {new Date(course.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </span>
-                      <button onClick={() => window.location.href = `/learn/${course.category}`} className="hover-lift" style={{
-                        background: '#4f46e5', color: '#fff', border: 'none',
-                        padding: '10px 20px', borderRadius: '10px',
-                        cursor: 'pointer', fontSize: '13px', fontWeight: '700',
-                        boxShadow: '0 4px 10px rgba(79,70,229,0.2)'
-                      }}>
-                        Resume
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '6px' }}><polyline points="9 18 15 12 9 6"/></svg>
-                      </button>
+                    {/* Card body */}
+                    <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <h2 style={{ fontSize: '17px', fontWeight: '800', color: '#1e293b', marginBottom: '16px', lineHeight: '1.4', flex: 1 }}>
+                        {course.course_title}
+                      </h2>
+
+                      {/* Progress Bar */}
+                      <div style={{ marginBottom: '20px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#64748b', fontWeight: '600', marginBottom: '8px' }}>
+                          <span>Progress</span>
+                          <span style={{ color: '#0f172a' }}>{course.progress || 0}%</span>
+                        </div>
+                        <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{
+                            width: `${course.progress || 0}%`, height: '100%',
+                            background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
+                            borderRadius: '4px',
+                            transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                          }} />
+                        </div>
+                      </div>
+
+                      {/* Footer */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid #f1f5f9' }}>
+                        <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: '600' }}>
+                          Enrolled {new Date(course.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
+                        <button onClick={() => window.location.href = `/learn/${course.category}`} className="hover-lift" style={{
+                          background: '#4f46e5', color: '#fff', border: 'none',
+                          padding: '10px 20px', borderRadius: '10px',
+                          cursor: 'pointer', fontSize: '13px', fontWeight: '700',
+                          boxShadow: '0 4px 10px rgba(79,70,229,0.2)',
+                          display: 'flex', alignItems: 'center', gap: '6px'
+                        }}>
+                          Resume
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
