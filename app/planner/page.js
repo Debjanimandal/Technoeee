@@ -525,7 +525,7 @@ export default function PlannerPage() {
               
               <div style={{
                 background: '#fff', borderRadius: '24px', padding: '30px',
-                boxShadow: '0 8px 32px rgba(79,70,229,0.10)', border: '1px solid rgba(99,102,241,0.1)'
+                boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
                   <button onClick={prevMonth} style={{ background: 'none', border: '1px solid #eee', borderRadius: '8px', padding: '6px 12px', cursor: 'pointer', color: '#666', fontWeight: 'bold' }}>&lt;</button>
@@ -557,7 +557,7 @@ export default function PlannerPage() {
             {/* Right Column: Time-Block View */}
             <div style={{
               flex: 1, background: '#fff', borderRadius: '24px', padding: '30px',
-              boxShadow: '0 8px 32px rgba(79,70,229,0.10)', border: '1px solid rgba(99,102,241,0.1)', minHeight: '600px'
+              boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)', minHeight: '600px'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
                 <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1a1a1a', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
@@ -667,11 +667,11 @@ export default function PlannerPage() {
                               ? '#f8f8f8'
                               : `linear-gradient(145deg, #ffffff 0%, ${task.course_color}08 100%)`,
                             padding: '20px 24px', borderRadius: '18px',
-                            border: `1px solid ${isDone ? '#ebebeb' : task.course_color + '28'}`,
+                            border: `1px solid ${isDone ? '#ebebeb' : task.course_color + '35'}`,
                             borderLeft: `5px solid ${isDone ? '#d0d0d0' : task.course_color}`,
                             boxShadow: isDone
-                              ? 'none'
-                              : `0 6px 24px ${task.course_color}18, 0 2px 8px rgba(0,0,0,0.06)`,
+                              ? '0 2px 8px rgba(0,0,0,0.04)'
+                              : `0 8px 32px ${task.course_color}28, 0 2px 8px rgba(0,0,0,0.08)`,
                             position: 'relative',
                             opacity: isDone ? 0.6 : 1,
                             transition: 'all 0.3s',

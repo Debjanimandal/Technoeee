@@ -155,10 +155,10 @@ export default function MyCoursesPage() {
                 {enrolledCourses.map((course) => (
                   <div key={course.id} className="hover-lift" style={{
                     background: '#fff',
-                    border: '1px solid rgba(99,102,241,0.12)',
+                    border: '1px solid rgba(99,102,241,0.15)',
                     borderRadius: '24px',
                     display: 'flex', flexDirection: 'column',
-                    boxShadow: '0 6px 28px rgba(79,70,229,0.10)',
+                    boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)',
                     position: 'relative', overflow: 'hidden'
                   }}>
 

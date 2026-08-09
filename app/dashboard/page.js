@@ -70,7 +70,7 @@ function StatCard({ label, value, icon: Icon, color, bgLight, loading }) {
   return (
     <div className="hover-lift" style={{
       flex: '1 1 200px', background: '#fff', borderRadius: '20px', padding: '24px',
-      boxShadow: '0 6px 24px rgba(79,70,229,0.09)', border: '1px solid rgba(99,102,241,0.1)',
+      boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)',
       display: 'flex', alignItems: 'center', gap: '16px',
       transition: 'transform 0.3s ease, box-shadow 0.3s ease'
     }}>
