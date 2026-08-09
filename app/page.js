@@ -111,9 +111,8 @@ export default function Home() {
   useEffect(() => {
     const handleScroll = () => {
       if (!coursesHeaderRef.current) return;
-      const headerTop = coursesHeaderRef.current.getBoundingClientRect().top + window.scrollY;
-      const scrollPos = window.scrollY + window.innerHeight;
-      setScrollHide(scrollPos > headerTop);
+      const rect = coursesHeaderRef.current.getBoundingClientRect();
+      setScrollHide(rect.top < window.innerHeight);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
