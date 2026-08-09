@@ -103,7 +103,13 @@ export default function DashboardHeader() {
             <polyline points="12 19 5 12 12 5"></polyline>
           </svg>
         </button>
-        <Image src="/image/logo.png" alt="TechnoEEE Logo" width={120} height={60} style={{ objectFit: 'contain' }} unoptimized />
+        <div
+          onClick={() => router.push('/dashboard')}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+          title="Go to Dashboard"
+        >
+          <Image src="/image/logo.png" alt="TechnoEEE Logo" width={120} height={60} style={{ objectFit: 'contain' }} unoptimized />
+        </div>
       </div>
       <div className="header-right" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
 
