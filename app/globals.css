@@ -3,6 +3,17 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  min-width: 0;
+}
+
+html {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+main {
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -10,6 +21,8 @@ body {
   margin: 0;
   padding: 0;
   background-color: transparent;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 a {
@@ -140,13 +153,14 @@ a {
   cursor: pointer;
 }
 .search-bar {
-  width: 680px;
+  flex: 1;
+  max-width: 580px;
   padding-left: 50px;
   padding-right: 15px;
   position: relative;
 }
 .search-bar input {
-  width: 650px;
+  width: 100%;
   padding: 8px 8px 8px 30px;
   border: 1px solid #8b8585;
   border-radius: 5px;
@@ -167,7 +181,7 @@ a {
   position: absolute;
   top: 100%;
   left: 50px;
-  width: 650px;
+  width: calc(100% - 50px);
   background-color: white;
   border: 1px solid #8b8585;
   border-radius: 5px;
@@ -334,11 +348,13 @@ a {
   flex: 1;
   position: relative;
   height: 350px;
-  width: 450px;
+  width: 100%;
+  max-width: 450px;
   display: flex;
   justify-content: center;
   align-items: center;
   perspective: 1000px;
+  overflow: hidden;
 }
 .sad-animation { position: absolute; width: 120px; height: 50px; opacity: 1; transition: opacity 0.5s ease; }
 .sad-signal {
@@ -720,7 +736,7 @@ footer {
   padding: 40px 20px;
   text-align: center;
 }
-.footer-links { display: flex; justify-content: center; gap: 100px; margin-bottom: 20px; }
+.footer-links { display: flex; justify-content: center; gap: clamp(20px, 5vw, 100px); margin-bottom: 20px; flex-wrap: wrap; }
 .footer-column h3 { font-size: 18px; margin-bottom: 10px; }
 .footer-column a { display: block; color: #ccc; text-decoration: none; margin-bottom: 5px; font-size: 14px; }
 .footer-column a:hover { color: #fff; }
@@ -956,4 +972,17 @@ footer {
   .sidebar-item span { display: none; }   /* icon only on tiny screens */
   .sidebar { height: 52px; }
   .page-content { padding-bottom: 62px; }
+}
+
+/* ── MEDIUM SCREENS (769px – 1024px) ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .navbar { padding: 8px 16px; }
+  .search-bar { max-width: 320px; }
+  .main-content { padding: 30px 24px; }
+  .text-content h1 { font-size: 36px; }
+  .dev-mode-animation { max-width: 340px; height: 280px; }
+  .course-grid { grid-template-columns: repeat(3, 1fr); }
+  .testimonials { gap: 16px; }
+  .testimonial-card { width: calc(33% - 11px); }
+  .footer-links { gap: 40px; }
 }
