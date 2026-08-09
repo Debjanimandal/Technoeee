@@ -572,12 +572,14 @@ a {
 .course-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  max-width: 1200px;
+  gap: 24px;
+  max-width: min(92vw, 1440px);
+  width: 92vw;
   margin: 0 auto;
+  padding: 0 8px;
 }
-.course-card { background-color: black; border-radius: 10px; overflow: hidden; color: white; text-align: left; }
-.course-card img { width: 100%; height: 150px; object-fit: cover; }
+.course-card { background-color: black; border-radius: 14px; overflow: hidden; color: white; text-align: left; }
+.course-card img { width: 100%; height: 180px; object-fit: cover; }
 .course-info { padding: 15px; }
 .course-info p { margin: 5px 0; font-size: 0.9em; }
 .course-info .title { font-size: 1.1em; font-weight: bold; }
