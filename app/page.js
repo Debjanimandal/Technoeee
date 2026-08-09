@@ -5,25 +5,19 @@ import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/lib/auth-context';
-import coursesData from '../public/real_courses_data.json';
 
-const CATEGORIES = ['All', 'Programming Fundamentals', 'Core CS Foundation', 'High Demand Industry Skill', 'Essential Industry Concept', 'Core Infrastructure', 'Theoretical Computer Science', 'Core Hardware Concept'];
+const COURSES_DATA = [
+  { img: '/image/Rectangle 25.jpg', title: '10,000 STUDENTS LEARN CODING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
+  { img: '/image/Rectangle 26.jpg', title: '10,000 STUDENTS LEARN WEB DESIGNING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
+  { img: '/image/Rectangle 27.jpg', title: '10,000 STUDENTS LEARN UI/UX DESIGNING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
+  { img: '/image/Rectangle 28.jpg', title: '10,000 STUDENTS LEARN PHOTOGRAPHY WITH ME', duration: '1h 30m', instructor: 'Daniel' },
+  { img: '/image/Rectangle 25 (1).jpg', title: '10,000 STUDENTS LEARN CODING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
+  { img: '/image/Rectangle 26 (1).jpg', title: '10,000 STUDENTS LEARN WEB DESIGNING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
+  { img: '/image/Rectangle 27 (1).jpg', title: '10,000 STUDENTS LEARN UI/UX DESIGNING WITH ME', duration: '1h 30m', instructor: 'Daniel' },
+  { img: '/image/Rectangle 28 (1).jpg', title: '10,000 STUDENTS LEARN PHOTOGRAPHY WITH ME', duration: '1h 30m', instructor: 'Daniel' },
+];
 
-function getRelevanceColor(rel) {
-  const r = rel || '';
-  if (r.includes('Demand') || r.includes('Trend')) return { bg: '#f3e5f5', text: '#6a1b9a', border: '#e1bee7' };
-  if (r.includes('Foundation') || r.includes('Core') || r.includes('Essential')) return { bg: '#e3f2fd', text: '#1565c0', border: '#bbdefb' };
-  if (r.includes('Theoretical')) return { bg: '#eceff1', text: '#455a64', border: '#cfd8dc' };
-  return { bg: '#e8eaf6', text: '#283593', border: '#c5cae9' };
-}
-
-function getDifficultyColor(diff) {
-  const d = diff || '';
-  if (d.includes('Beginner')) return { bg: '#e8f5e9', text: '#2e7d32' };
-  if (d.includes('Intermediate')) return { bg: '#fff8e1', text: '#f57f17' };
-  if (d.includes('Advanced')) return { bg: '#ffebee', text: '#c62828' };
-  return { bg: '#f5f5f5', text: '#616161' };
-}
+const CATEGORIES = ['Featured','Music','Drawing & Painting','Animation','Creative Writing','Marketing','UI/UX Design','Social Media','Productivity','Graphics Design','Freelancing & Entrepreneurship','Programming'];
 
 const CHANNELS = [
   { name: 'Marketing Analysis', img: '/image/Ellipse 12.jpg' },
@@ -43,7 +37,6 @@ export default function Home() {
   const [chatChannel, setChatChannel] = useState(null);
   const [openFaq, setOpenFaq] = useState(null);
   const [scrollHide, setScrollHide] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const fragmentsRef = useRef(null);
   const animationRef = useRef(null);
   const coursesHeaderRef = useRef(null);
@@ -187,148 +180,22 @@ export default function Home() {
 
       {/* Courses Section */}
       <div className="section-header" ref={coursesHeaderRef}>Explore Inspiring Online Courses</div>
-      <p style={{ textAlign: 'center', color: '#666', marginTop: '-10px', marginBottom: '10px', fontSize: '15px' }}>
-        Browse our real academic curriculum — enroll and start learning today
-      </p>
-
-      {/* Category Filter */}
       <div className="categories">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`category-btn${selectedCategory === cat ? ' featured' : ''}`}
-          >{cat}</button>
+        {CATEGORIES.map((cat, i) => (
+          <button key={cat} className={`category-btn${i === 0 ? ' featured' : ''}`}>{cat}</button>
         ))}
       </div>
-
-      {/* Real Course Cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-        gap: '28px',
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '0 20px 20px',
-      }}>
-        {coursesData
-          .filter(c => selectedCategory === 'All' || c.relevance === selectedCategory)
-          .slice(0, 8)
-          .map((course, i) => {
-            const relColor = getRelevanceColor(course.relevance);
-            const diffColor = getDifficultyColor(course.difficulty);
-            const isHighDemand = course.relevance && (course.relevance.includes('Demand') || course.relevance.includes('Trend'));
-            return (
-              <div
-                key={i}
-                onClick={() => router.push('/courses')}
-                style={{
-                  background: 'rgba(255,255,255,0.85)',
-                  backdropFilter: 'blur(10px)',
-                  border: isHighDemand ? '1px solid rgba(138,43,226,0.35)' : '1px solid rgba(200,210,230,0.6)',
-                  borderRadius: '16px',
-                  padding: '24px 22px 20px',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: isHighDemand
-                    ? '0 0 30px rgba(138,43,226,0.4)'
-                    : '0 8px 25px rgba(0,0,0,0.06)',
-                  position: 'relative',
-                  overflow: 'visible',
-                }}
-                onMouseOver={e => {
-                  e.currentTarget.style.transform = 'translateY(-6px)';
-                  e.currentTarget.style.boxShadow = isHighDemand
-                    ? '0 0 45px rgba(138,43,226,0.6)'
-                    : '0 16px 40px rgba(0,100,255,0.12)';
-                }}
-                onMouseOut={e => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = isHighDemand
-                    ? '0 0 30px rgba(138,43,226,0.4)'
-                    : '0 8px 25px rgba(0,0,0,0.06)';
-                }}
-              >
-                {/* Top gradient bar */}
-                <div style={{
-                  position: 'absolute', top: 0, left: 0, width: '100%', height: '5px',
-                  background: 'linear-gradient(90deg, #3a8aff, #800080)',
-                  borderTopLeftRadius: '16px', borderTopRightRadius: '16px',
-                }} />
-
-                {/* Relevance badge */}
-                <div style={{
-                  position: 'absolute', top: '-12px', right: '18px',
-                  background: relColor.bg, color: relColor.text,
-                  border: `1px solid ${relColor.border}`,
-                  padding: '3px 11px', borderRadius: '20px',
-                  fontSize: '10.5px', fontWeight: '700',
-                  boxShadow: '0 3px 8px rgba(0,0,0,0.1)', zIndex: 10,
-                }}>
-                  {course.relevance || 'Course'}
-                </div>
-
-                {/* Subject code chip */}
-                <div style={{ marginBottom: '12px', marginTop: '12px' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    background: 'rgba(58,138,255,0.1)', color: '#3a8aff',
-                    padding: '3px 10px', borderRadius: '20px',
-                    fontSize: '11.5px', fontWeight: '700',
-                  }}>
-                    {course.subject_code || 'General'}
-                  </span>
-                </div>
-
-                {/* Title */}
-                <h3 style={{
-                  fontSize: '15px', fontWeight: '700', color: '#1a1a1a',
-                  marginBottom: '14px', lineHeight: '1.45',
-                }}>
-                  {course.course_name}
-                </h3>
-
-                {/* Footer row */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '14px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '12px', color: '#888' }}>⏱ {course.estimated_time || '45 Hours'}</span>
-                    {course.difficulty && (
-                      <span style={{
-                        fontSize: '10px', fontWeight: '700',
-                        background: diffColor.bg, color: diffColor.text,
-                        padding: '2px 8px', borderRadius: '10px',
-                      }}>{course.difficulty}</span>
-                    )}
-                  </div>
-                  <span style={{ fontSize: '12px', fontWeight: '600', color: '#3a8aff' }}>View Details ➔</span>
-                </div>
-              </div>
-            );
-          })
-        }
-      </div>
-
-      {/* View All CTA */}
-      <div style={{ textAlign: 'center', marginTop: '36px', marginBottom: '20px' }}>
-        <button
-          onClick={() => router.push('/courses')}
-          style={{
-            padding: '13px 40px',
-            background: 'linear-gradient(135deg, #3a8aff, #800080)',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '30px',
-            fontSize: '15px',
-            fontWeight: '700',
-            cursor: 'pointer',
-            boxShadow: '0 6px 20px rgba(58,138,255,0.35)',
-            transition: 'transform 0.2s, box-shadow 0.2s',
-          }}
-          onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 28px rgba(58,138,255,0.45)'; }}
-          onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(58,138,255,0.35)'; }}
-        >
-          View All Courses ➔
-        </button>
+      <div className="course-grid">
+        {COURSES_DATA.map((course, i) => (
+          <div className="course-card" key={i}>
+            <img src={course.img} alt="Course" style={{ width: '100%', height: '150px', objectFit: 'cover' }} />
+            <div className="course-info">
+              <p className="title">{course.title}</p>
+              <p>{course.duration}</p>
+              <p className="instructor">{course.instructor}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Community Section */}
