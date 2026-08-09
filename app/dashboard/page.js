@@ -23,6 +23,19 @@ import {
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
 
+
+// ─── Course Banner Map ───────────────────────────────────────────────────────
+const COURSE_BANNER_MAP = {
+  'TIU-UCS-T214':      '/course-banners/cpp.png',
+  'TIU-PC-UCS-T22101': '/course-banners/coa.png',
+  'TIU-UCS-T350':      '/course-banners/ai.png',
+  'TIU-UCS-T321':      '/course-banners/daa.png',
+  'TIU-UCS-T301':      '/course-banners/dbms.png',
+  'TIU-UCS-T451':      '/course-banners/ml.png',
+  'TIU-UCS-T304':      '/course-banners/cn.png',
+  'TIU-UCS-T351':      '/course-banners/automata.png',
+};
+
 // ─── SVG Icons ───────────────────────────────────────────────────────────────
 const Icons = {
   Book: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
@@ -179,9 +192,9 @@ export default function DashboardPage() {
     
     // Heuristic Engine for AI Insights
     if (hour < 4 || hour >= 23) {
-      insight = `It's quite late! 🌙 Studying when you're tired can hurt retention. Consider getting some sleep and tackling your tasks fresh tomorrow.`;
+      insight = `It's quite late! Studying when you're tired can hurt retention. Consider getting some sleep and tackling your tasks fresh tomorrow.`;
     } else if (streak >= 3) {
-      insight = `You're on a fire ${streak}-day streak! 🔥 Consistency builds deep memory retention. Let's push it to ${streak + 1} today.`;
+      insight = `You're on a ${streak}-day streak! Consistency builds deep memory retention. Let's push it to ${streak + 1} today.`;
     } else if (weeklyHours >= 10) {
       insight = `You've crushed over ${weeklyHours} hours this week! Your dedication is impressive. Remember to take short walks to avoid burnout.`;
     } else if (todayMinutes === 0 && hour >= 18) {
@@ -318,7 +331,7 @@ export default function DashboardPage() {
             }}>
               <div>
                 <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: '0 0 8px 0', letterSpacing: '-0.5px' }}>
-                  Welcome back, {profile?.username || user?.email?.split('@')[0] || 'Student'} 👋
+                  Welcome back, {profile?.username || user?.email?.split('@')[0] || 'Student'}
                 </h1>
                 <p style={{ margin: 0, color: '#64748b', fontSize: '15px' }}>Let's learn something new today!</p>
               </div>
@@ -363,24 +376,34 @@ export default function DashboardPage() {
                   ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
                       {courses.map((c) => (
-                        <div key={c.id} className="hover-lift" style={{ background: '#fff', borderRadius: '20px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                            <span style={{ fontSize: '11px', fontWeight: '700', color: '#4f46e5', background: '#e0e7ff', padding: '4px 10px', borderRadius: '12px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <div key={c.id} className="hover-lift" style={{ background: '#fff', borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f1f5f9', overflow: 'hidden' }}>
+                          {/* Banner thumbnail */}
+                          <div style={{ position: 'relative', height: '130px', overflow: 'hidden', flexShrink: 0 }}>
+                            <img
+                              src={COURSE_BANNER_MAP[c.category] || '/course-banners/cpp.png'}
+                              alt={c.course_title}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%)' }} />
+                            <span style={{ position: 'absolute', bottom: '10px', left: '12px', fontSize: '10px', fontWeight: '700', color: '#fff', background: 'rgba(79,70,229,0.85)', padding: '3px 9px', borderRadius: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', backdropFilter: 'blur(4px)' }}>
                               {c.category || 'General'}
                             </span>
                           </div>
-                          <Link href="/my-courses" style={{ textDecoration: 'none' }}>
-                            <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', marginBottom: '20px', lineHeight: '1.4', minHeight: '44px', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#4f46e5'} onMouseLeave={e => e.target.style.color = '#1e293b'}>
-                              {c.course_title}
-                            </h3>
-                          </Link>
-                          <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', fontWeight: '600', color: '#64748b', marginBottom: '8px' }}>
-                              <span>Progress</span>
-                              <span style={{ color: '#0f172a' }}>{c.progress}%</span>
-                            </div>
-                            <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
-                              <div style={{ width: `${c.progress}%`, height: '100%', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', borderRadius: '4px' }} />
+                          {/* Card body */}
+                          <div style={{ padding: '20px' }}>
+                            <Link href="/my-courses" style={{ textDecoration: 'none' }}>
+                              <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#1e293b', marginBottom: '16px', lineHeight: '1.4', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#4f46e5'} onMouseLeave={e => e.target.style.color = '#1e293b'}>
+                                {c.course_title}
+                              </h3>
+                            </Link>
+                            <div>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', fontWeight: '600', color: '#64748b', marginBottom: '8px' }}>
+                                <span>Progress</span>
+                                <span style={{ color: '#0f172a' }}>{c.progress}%</span>
+                              </div>
+                              <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
+                                <div style={{ width: `${c.progress}%`, height: '100%', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', borderRadius: '4px' }} />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -421,7 +444,7 @@ export default function DashboardPage() {
                         {chartData.every(d => !d.totalMinutes || d.totalMinutes === 0) && (
                           <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.7)', pointerEvents: 'none' }}>
                             <div style={{ background: '#fff', padding: '16px 24px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', color: '#64748b', fontSize: '14px', fontWeight: '600', border: '1px solid #f1f5f9' }}>
-                              Start studying to see your progress here! 🚀
+                              Start studying to see your progress here!
                             </div>
                           </div>
                         )}
@@ -523,7 +546,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
                   <p style={{ fontSize: '13px', color: '#64748b', margin: '20px 0 0 0', lineHeight: '1.4' }}>
-                    {((stats?.weekly_hours || 0) >= 10) ? "Amazing! You've crushed your weekly goal! 🎉" : "Keep pushing! You're almost there."}
+                    {((stats?.weekly_hours || 0) >= 10) ? "Amazing! You've crushed your weekly goal!" : "Keep pushing! You're almost there."}
                   </p>
                 </div>
 

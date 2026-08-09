@@ -124,7 +124,7 @@ a {
   justify-content: space-between;
   align-items: center;
   padding: 6px 32px;
-  border-bottom: 1px solid rgba(30, 88, 236, 0.3); /* Light blue border */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
   opacity: 0;
   transition: opacity 0.5s ease;
   position: fixed;
@@ -132,17 +132,16 @@ a {
   left: 0;
   width: 100%;
   z-index: 2000;
-  background-color: rgba(255, 255, 255, 0.85); /* Slightly more opaque so text doesn't clash */
-  backdrop-filter: blur(10px); /* Frosted glass effect for sticky header */
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.10), 0 1px 0 rgba(255,255,255,0.9) inset;
   height: 60px;
 }
 .navbar.active { opacity: 1; }
 .logo {
   display: flex;
   align-items: center;
-  background-color: #ffffff;
-  border-radius: 8px;
   flex-shrink: 0;
 }
 .navbar-center {
