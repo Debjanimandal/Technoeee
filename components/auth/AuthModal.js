@@ -3,6 +3,63 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 
+// Reusable password field with show/hide toggle
+function PasswordField({ id, name, placeholder, label }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div>
+      <label htmlFor={id}>{label}</label>
+      <div style={{ position: 'relative' }}>
+        <input
+          type={show ? 'text' : 'password'}
+          id={id}
+          name={name}
+          placeholder={placeholder}
+          required
+          style={{ paddingRight: '40px', width: '100%', boxSizing: 'border-box' }}
+        />
+        <button
+          type="button"
+          onClick={() => setShow(v => !v)}
+          style={{
+            position: 'absolute',
+            right: '10px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '0',
+            color: '#888',
+            fontSize: '16px',
+            lineHeight: 1,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+          aria-label={show ? 'Hide password' : 'Show password'}
+        >
+          {show ? (
+            // Eye-off icon
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+              <line x1="1" y1="1" x2="23" y2="23" />
+            </svg>
+          ) : (
+            // Eye icon
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          )}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function AuthModal({ isOpen, onClose, initialTab = 'signup' }) {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [loading, setLoading] = useState(false);
@@ -37,7 +94,6 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'signup' }) {
 
     setLoading(true);
     try {
-      // Sign up — pass username in metadata so the DB trigger auto-creates the profile
       const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -70,7 +126,6 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'signup' }) {
       const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
 
-      // Fetch username from profiles
       const { data: profile } = await supabase
         .from('profiles')
         .select('username')
@@ -126,14 +181,8 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'signup' }) {
             <label htmlFor="signup-email">Email</label>
             <input type="email" id="signup-email" name="email" placeholder="Enter your email" required />
           </div>
-          <div>
-            <label htmlFor="signup-password">Password</label>
-            <input type="password" id="signup-password" name="password" placeholder="At least 6 characters" required />
-          </div>
-          <div>
-            <label htmlFor="confirm-password">Confirm Password</label>
-            <input type="password" id="confirm-password" name="confirm" placeholder="Confirm your password" required />
-          </div>
+          <PasswordField id="signup-password" name="password" placeholder="At least 6 characters" label="Password" />
+          <PasswordField id="confirm-password" name="confirm" placeholder="Confirm your password" label="Confirm Password" />
           <button type="submit" disabled={loading}>
             {loading ? 'Creating account...' : 'Sign Up'}
           </button>
@@ -149,10 +198,7 @@ export default function AuthModal({ isOpen, onClose, initialTab = 'signup' }) {
             <label htmlFor="signin-email">Email</label>
             <input type="email" id="signin-email" name="email" placeholder="Enter your email" required />
           </div>
-          <div>
-            <label htmlFor="signin-password">Password</label>
-            <input type="password" id="signin-password" name="password" placeholder="Enter your password" required />
-          </div>
+          <PasswordField id="signin-password" name="password" placeholder="Enter your password" label="Password" />
           <button type="submit" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
