@@ -1,12 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Sidebar from '@/components/Sidebar';
-import DashboardHeader from '@/components/DashboardHeader';
+import Sidebar from '@/components/layout/Sidebar';
+import DashboardHeader from '@/components/layout/DashboardHeader';
 import coursesData from '../../../public/data/real_courses_data.json';
 import Link from 'next/link';
-import { useAuth } from '@/lib/auth-context';
-import VideoPlayer from '@/components/VideoPlayer';
+import { useAuth } from '@/lib/context/auth-context';
+import VideoPlayer from '@/components/shared/VideoPlayer';
 
 export default function CourseLearningPage() {
   const { courseId } = useParams();
