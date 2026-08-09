@@ -72,6 +72,12 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
   function selectCourse(course) {
     setSearchValue(course);
     setDropdownOpen(false);
+    // If not logged in, prompt sign-in; otherwise navigate to courses page
+    if (!user) {
+      openModal('signin');
+    } else {
+      router.push('/courses');
+    }
   }
 
   function submitSearch() {
@@ -163,7 +169,7 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
               placeholder={active ? 'what you want to learn today ?..' : 'Search for skills, subjects'}
               value={searchValue}
               onChange={handleSearchChange}
-              onClick={() => active && setDropdownOpen(true)}
+              onClick={() => setDropdownOpen(true)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && searchValue.trim()) {
                   submitSearch();
@@ -188,10 +194,43 @@ export default function Navbar({ active, onSignIn, onSignUp }) {
                 </svg>
               </div>
             )}
-            {dropdownOpen && active && (
-              <div ref={dropdownRef} className="custom-dropdown active">
+            {dropdownOpen && filteredCourses.length > 0 && (
+              <div
+                ref={dropdownRef}
+                style={{
+                  position: 'absolute', top: 'calc(100% + 8px)', left: 0,
+                  width: '100%', background: '#fff',
+                  borderRadius: '14px', overflow: 'hidden',
+                  boxShadow: '0 8px 32px rgba(19,82,241,0.15), 0 2px 8px rgba(0,0,0,0.08)',
+                  border: '1px solid rgba(19,82,241,0.12)',
+                  zIndex: 2000, maxHeight: '260px', overflowY: 'auto'
+                }}
+              >
+                <div style={{ padding: '8px 12px 4px', fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #f1f5f9' }}>
+                  Courses
+                </div>
                 {filteredCourses.map(course => (
-                  <div key={course} onClick={() => selectCourse(course)}>{course}</div>
+                  <div
+                    key={course}
+                    onClick={() => selectCourse(course)}
+                    style={{
+                      padding: '12px 16px', cursor: 'pointer',
+                      fontSize: '14px', color: '#1e293b', fontWeight: '500',
+                      display: 'flex', alignItems: 'center', gap: '10px',
+                      transition: 'background 0.15s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#f0f4ff'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1352f1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                      <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                      <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                    <span>{course}</span>
+                    {!user && (
+                      <span style={{ marginLeft: 'auto', fontSize: '11px', color: '#1352f1', fontWeight: '700', background: '#eff4ff', padding: '2px 8px', borderRadius: '6px', flexShrink: 0 }}>Sign in</span>
+                    )}
+                  </div>
                 ))}
               </div>
             )}
