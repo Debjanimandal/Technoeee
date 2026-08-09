@@ -117,24 +117,12 @@ export default function CoursesPage() {
     loadEnrolled();
   }, [user]);
 
-  // ── Handle magic-link return: auto-enroll ONLY when user returns via email link ──
+  // ── Handle magic-link return: auto-enroll the pending course ──────────────
   useEffect(() => {
     if (!user) return;
-
-    // Guard: only run when the URL contains '?enroll=confirm'
-    // This param is ONLY present when the user clicks the link in the email.
-    // Without this guard, the effect fires as soon as the OTP is sent (auth state change),
-    // causing immediate enrollment before the user clicks the email link.
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('enroll') !== 'confirm') return;
-
-    // Clean the URL so refreshing won't re-trigger
-    window.history.replaceState({}, '', '/courses');
-
-    // Use localStorage so data persists even if the link opens in a new browser tab
-    const pending = localStorage.getItem('pendingEnrollment');
+    const pending = sessionStorage.getItem('pendingEnrollment');
     if (!pending) return;
-    localStorage.removeItem('pendingEnrollment');
+    sessionStorage.removeItem('pendingEnrollment');
 
     const course = JSON.parse(pending);
     (async () => {
@@ -149,11 +137,11 @@ export default function CoursesPage() {
       if (existing) return; // already enrolled
 
       const { error } = await supabase.from('enrollments').insert({
-        user_id:      user.id,
+        user_id: user.id,
         course_title: course.course_name,
         category:     course.subject_code || null,
-        progress:     0,
-        status:       'Ongoing',
+        progress: 0,
+        status:   'Ongoing',
       });
       if (!error) {
         setEnrolledCourses(prev => [...prev, course.course_name]);
@@ -166,20 +154,19 @@ export default function CoursesPage() {
     if (!user) { alert('Please sign in to enroll.'); return; }
     setSendingOtp(true);
     try {
-      // Store pending enrollment in localStorage (persists across tabs)
-      localStorage.setItem('pendingEnrollment', JSON.stringify(selectedCourse));
+      // Store pending enrollment before redirect
+      sessionStorage.setItem('pendingEnrollment', JSON.stringify(selectedCourse));
 
       const appUrl = window.location.origin;
       const { error } = await supabase.auth.signInWithOtp({
         email: user.email,
         options: {
           shouldCreateUser: false,
-          // '?enroll=confirm' tells the auto-enroll effect the user came from the email link
-          emailRedirectTo: `${appUrl}/courses?enroll=confirm`,
+          emailRedirectTo: `${appUrl}/courses`,
         },
       });
       if (error) {
-        localStorage.removeItem('pendingEnrollment');
+        sessionStorage.removeItem('pendingEnrollment');
         alert('Failed to send verification email: ' + error.message);
         return;
       }
