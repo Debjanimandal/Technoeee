@@ -54,6 +54,38 @@ const VIEW_OPTIONS = [
   { key: 'monthly', label: 'Monthly' }
 ];
 
+// ─── Mock Data for Demo (used only when real data is all-zero) ────────────────
+const MOCK_CHART_DATA = {
+  daily:   [0.5, 1.2, 0.8, 2.0, 1.5, 0.3, 1.8],
+  weekly:  [3.2, 5.1, 4.4, 6.8, 5.5, 7.2, 6.0, 8.1],
+  monthly: [12.5, 18.2, 15.8, 22.4, 19.6, 25.0],
+  dailyLabels:   ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  weeklyLabels:  ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'],
+  monthlyLabels: ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+};
+const MOCK_STATS_DASHBOARD = {
+  total_hours: 12,
+  today_minutes: 45,
+  weekly_hours: 12.3,
+  longest_session_min: 110,
+  active_days: 14,
+};
+const MOCK_STREAK = 5;
+
+/**
+ * Returns a deterministic mock progress (25–75%) for a course title.
+ * Uses a simple char-code hash so the same course always gives the same %.
+ * Only used client-side — never written to the DB.
+ */
+function getMockProgress(courseTitle) {
+  if (!courseTitle) return 0;
+  let hash = 0;
+  for (let i = 0; i < courseTitle.length; i++) {
+    hash = (hash * 31 + courseTitle.charCodeAt(i)) & 0xffff;
+  }
+  return 25 + (hash % 51); // range: 25 – 75
+}
+
 // ─── Skeleton ────────────────────────────────────────────────────────────────
 function Skeleton({ w = '100%', h = 20, radius = 6 }) {
   return (
@@ -133,7 +165,18 @@ export default function DashboardPage() {
         seen.add(key);
         return true;
       });
-      setCourses(deduped);
+      // Apply deterministic mock progress to previously-enrolled courses that still show 0%
+      // "Previously enrolled" = created_at is before today's date (not enrolled today)
+      const todayStr = new Date().toISOString().split('T')[0];
+      const withMockProgress = deduped.map(e => {
+        const enrolledDate = e.created_at ? e.created_at.split('T')[0] : todayStr;
+        const isOldEnrollment = enrolledDate < todayStr;
+        if (isOldEnrollment && (!e.progress || e.progress === 0)) {
+          return { ...e, progress: getMockProgress(e.course_title) };
+        }
+        return e;
+      });
+      setCourses(withMockProgress);
       setCoursesLoading(false);
 
       // Fetch Stats
@@ -142,8 +185,15 @@ export default function DashboardPage() {
         getLearningStats(user.id),
         getActiveDates(user.id),
       ]);
-      setStats(statsData);
-      setStreak(calcStreak(dates));
+      // Apply mock stats when RPC returns all-zero (no real sessions recorded)
+      const noRealStats = !statsData
+        || ((statsData.total_hours || 0) === 0
+         && (statsData.today_minutes || 0) === 0
+         && (statsData.weekly_hours || 0) === 0
+         && (statsData.active_days || 0) === 0);
+      const realStreak = calcStreak(dates);
+      setStats(noRealStats ? MOCK_STATS_DASHBOARD : statsData);
+      setStreak(noRealStats ? MOCK_STREAK : realStreak);
       setAnalyticsLoading(false);
     })();
   }, [user]);
@@ -236,8 +286,15 @@ export default function DashboardPage() {
     if (chartInstanceRef.current) chartInstanceRef.current.destroy();
 
     const mode = viewMode;
-    const labels = chartData.map(d => d.label);
-    const dataPoints = chartData.map(d => parseFloat(((d.totalMinutes || 0) / 60).toFixed(2))); // Convert to hours
+    const allZero = chartData.every(d => !d.totalMinutes || d.totalMinutes === 0);
+
+    // Use mock data for demo when no real study sessions exist
+    const labels = allZero
+      ? MOCK_CHART_DATA[`${mode}Labels`] || chartData.map(d => d.label)
+      : chartData.map(d => d.label);
+    const dataPoints = allZero
+      ? MOCK_CHART_DATA[mode]
+      : chartData.map(d => parseFloat(((d.totalMinutes || 0) / 60).toFixed(2)));
 
     // Create Gradient
     const ctx = chartRef.current.getContext('2d');
@@ -456,13 +513,6 @@ export default function DashboardPage() {
                     ) : (
                       <>
                         <canvas ref={chartRef} />
-                        {chartData.every(d => !d.totalMinutes || d.totalMinutes === 0) && (
-                          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.7)', pointerEvents: 'none' }}>
-                            <div style={{ background: '#fff', padding: '16px 24px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', color: '#64748b', fontSize: '14px', fontWeight: '600', border: '1px solid #f1f5f9' }}>
-                              Start studying to see your progress here!
-                            </div>
-                          </div>
-                        )}
                       </>
                     )}
                   </div>
@@ -549,7 +599,7 @@ export default function DashboardPage() {
                     <div style={{ position: 'relative', width: '80px', height: '80px' }}>
                       <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%' }}>
                         <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" strokeWidth="4" />
-                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" strokeWidth="4" strokeDasharray={`${Math.min(((stats?.weekly_hours || 0) / 10) * 100, 100)}, 100`} />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#8b5cf6" strokeWidth="4" strokeDasharray={`${Math.min(((stats?.weekly_hours || 0) / 10) * 100, 100)}, 100`} />
                       </svg>
                       <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
                         <span style={{ fontSize: '16px', fontWeight: '800', color: '#0f172a' }}>{Math.min(Math.round(((stats?.weekly_hours || 0) / 10) * 100), 100)}%</span>

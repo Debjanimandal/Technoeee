@@ -18,6 +18,32 @@ const COURSE_BANNER_MAP = {
   'TIU-UCS-T351':      '/course-banners/automata.png',
 };
 
+/**
+ * Deterministic mock progress (25–75%) derived from course title.
+ * Same course always returns the same % — purely client-side, never written to DB.
+ */
+function getMockProgress(courseTitle) {
+  if (!courseTitle) return 0;
+  let hash = 0;
+  for (let i = 0; i < courseTitle.length; i++) {
+    hash = (hash * 31 + courseTitle.charCodeAt(i)) & 0xffff;
+  }
+  return 25 + (hash % 51); // range: 25 – 75
+}
+
+/** Apply mock progress to old enrollments that still show 0%. */
+function applyMockProgress(enrollments) {
+  const todayStr = new Date().toISOString().split('T')[0];
+  return enrollments.map(e => {
+    const enrolledDate = e.created_at ? e.created_at.split('T')[0] : todayStr;
+    const isOldEnrollment = enrolledDate < todayStr;
+    if (isOldEnrollment && (!e.progress || e.progress === 0)) {
+      return { ...e, progress: getMockProgress(e.course_title) };
+    }
+    return e;
+  });
+}
+
 export default function MyCoursesPage() {
   const { user } = useAuth();
   const [enrolledCourses, setEnrolledCourses] = useState([]);
@@ -86,9 +112,9 @@ export default function MyCoursesPage() {
           seen2.add(key);
           return true;
         });
-        setEnrolledCourses(deduped2);
+        setEnrolledCourses(applyMockProgress(deduped2));
       } else {
-        setEnrolledCourses(deduped);
+        setEnrolledCourses(applyMockProgress(deduped));
       }
 
       setLoading(false);

@@ -11,13 +11,54 @@ import DashboardHeader from '@/components/layout/DashboardHeader';
 import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
 import { getLearningStats, getDailyStudyData, getCourseStudyTime, formatStudyTime, getAdvancedAnalytics } from '@/lib/services/studyService';
-import { Target, Clock, Zap, TrendingUp, BarChart3, PieChart, Heart, Compass, CalendarCheck, TrendingDown, Award, BookOpen, Star } from 'lucide-react';
+import { Target, Clock, Zap, TrendingUp, BarChart3, PieChart, Heart, Compass, CalendarCheck, TrendingDown, Award, BookOpen, Star, Flame } from 'lucide-react';
 
 Chart.register(
   BarController, BarElement,
   LinearScale, CategoryScale, DoughnutController, ArcElement, 
   Tooltip, Legend, RadarController, RadialLinearScale, PointElement, LineElement
 );
+
+// ─── Mock Data for Demo (zero DB impact) ────────────────────────────────────────────────
+const MOCK_WEEKLY_DATA = [
+  { label: 'Mon', totalHours: 1.5 },
+  { label: 'Tue', totalHours: 2.2 },
+  { label: 'Wed', totalHours: 0.8 },
+  { label: 'Thu', totalHours: 3.0 },
+  { label: 'Fri', totalHours: 2.5 },
+  { label: 'Sat', totalHours: 0.5 },
+  { label: 'Sun', totalHours: 1.8 },
+];
+const MOCK_COURSE_TIME = {
+  'Machine Learning': 8.5,
+  'Database Management System': 6.2,
+  'Computer Networks': 4.8,
+  'Artificial Intelligence': 3.5,
+  'Design and Analysis of Algorithm': 2.1,
+};
+const MOCK_ADVANCED = {
+  peakTime: 'Evening',
+  weekendRatio: { weekday: 72, weekend: 28 },
+  affinity: [
+    { title: 'Machine Learning',               count: 12, hours: 8.5,  label: 'Loved' },
+    { title: 'Database Management System',      count: 8,  hours: 6.2,  label: 'Consistent' },
+    { title: 'Computer Networks',               count: 5,  hours: 4.8,  label: 'Consistent' },
+    { title: 'Artificial Intelligence',         count: 3,  hours: 3.5,  label: 'Occasional' },
+    { title: 'Design and Analysis of Algorithm', count: 2,  hours: 2.1,  label: 'Occasional' },
+  ],
+};
+const MOCK_STATS = {
+  today_minutes: 45,
+  weekly_hours: 12.3,
+  longest_session_min: 110,
+  active_days: 14,
+};
+const MOCK_ENROLLMENTS = [
+  { course_title: 'Machine Learning',               progress: 65 },
+  { course_title: 'Database Management System',      progress: 40 },
+  { course_title: 'Computer Networks',               progress: 55 },
+  { course_title: 'Artificial Intelligence',         progress: 30 },
+];
 
 // ── Components ──────────────────────────────────────────────────────────────
 function Skeleton({ h = 20, w = '100%', radius = 8 }) {
@@ -108,11 +149,28 @@ export default function AnalyticsPage() {
         supabase.from('enrollments').select('*').eq('user_id', user.id)
       ]);
 
-      setStats(statsData);
-      setWeeklyData(weekly);
-      setCourseTime(ctData);
-      setAdvanced(adv);
-      setEnrollments(enr.data || []);
+      // Fall back to mock data when real data is absent (demo-safe)
+      const realWeekly = weekly || [];
+      const noRealActivity  = realWeekly.every(d => !d.totalHours || d.totalHours === 0);
+      const noRealCourseTime = !ctData || Object.keys(ctData).length === 0;
+      const noRealAdvanced  = !adv || adv.peakTime === 'N/A';
+      // RPC returns a zero-filled object even when no sessions exist — check all key fields
+      const noRealStats = !statsData
+        || ((statsData.total_hours || 0) === 0
+         && (statsData.today_minutes || 0) === 0
+         && (statsData.weekly_hours || 0) === 0
+         && (statsData.active_days || 0) === 0);
+
+      const realEnrollments = enr.data || [];
+      // Use mock enrollments when DB has none OR all have zero progress (no real learning yet)
+      const noRealEnrollments = realEnrollments.length === 0
+        || realEnrollments.every(e => !e.progress || e.progress === 0);
+
+      setStats(noRealStats ? MOCK_STATS : statsData);
+      setWeeklyData(noRealActivity ? MOCK_WEEKLY_DATA : realWeekly);
+      setCourseTime(noRealCourseTime ? MOCK_COURSE_TIME : ctData);
+      setAdvanced(noRealAdvanced ? MOCK_ADVANCED : adv);
+      setEnrollments(noRealEnrollments ? MOCK_ENROLLMENTS : realEnrollments);
       setLoading(false);
     })();
   }, [user]);
@@ -339,8 +397,6 @@ export default function AnalyticsPage() {
                 </div>
                 {loading ? (
                   <Skeleton h={250} />
-                ) : weeklyData.every(d => d.totalHours === 0) ? (
-                  <div style={{ height: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', border: '2px dashed #e2e8f0', borderRadius: '16px' }}>No activity data for this week.</div>
                 ) : (
                   <div style={{ height: '250px', position: 'relative' }}>
                     <canvas ref={activityRef} />
@@ -359,8 +415,6 @@ export default function AnalyticsPage() {
                 </div>
                 {loading ? (
                   <Skeleton h={250} />
-                ) : Object.keys(courseTime).length === 0 ? (
-                  <div style={{ height: '250px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', border: '2px dashed #e2e8f0', borderRadius: '16px' }}>No course time logged yet.</div>
                 ) : (
                   <div style={{ height: '250px', position: 'relative' }}>
                     <canvas ref={donutRef} />
@@ -397,9 +451,12 @@ export default function AnalyticsPage() {
                         </div>
                         <div style={{ fontSize: '12px', fontWeight: '700', padding: '4px 8px', borderRadius: '8px', flexShrink: 0,
                           background: a.label.includes('Loved') ? '#ffe4e6' : a.label.includes('Consistent') ? '#fef3c7' : '#f1f5f9',
-                          color: a.label.includes('Loved') ? '#e11d48' : a.label.includes('Consistent') ? '#b45309' : '#64748b'
+                          color: a.label.includes('Loved') ? '#e11d48' : a.label.includes('Consistent') ? '#b45309' : '#64748b',
+                          display: 'flex', alignItems: 'center', gap: '4px'
                         }}>
-                          {a.label}
+                          <span>{a.label}</span>
+                          {a.label.includes('Loved') && <Heart size={14} fill="currentColor" />}
+                          {a.label.includes('Consistent') && <Flame size={14} fill="currentColor" color="transparent" strokeWidth={2.5} />}
                         </div>
                       </div>
                     ))}
@@ -419,10 +476,6 @@ export default function AnalyticsPage() {
 
                 {loading ? (
                   <Skeleton h={220} />
-                ) : advanced?.affinity?.length < 3 ? (
-                  <div style={{ height: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', border: '2px dashed #e2e8f0', borderRadius: '16px', textAlign: 'center', padding: '20px', fontSize: '13px' }}>
-                    Complete sessions in at least 3 distinct courses to unlock radar mapping.
-                  </div>
                 ) : (
                   <div style={{ height: '220px', position: 'relative' }}>
                     <canvas ref={radarRef} />
