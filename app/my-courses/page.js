@@ -19,7 +19,7 @@ const COURSE_BANNER_MAP = {
 };
 
 /**
- * Deterministic mock progress (25–75%) derived from course title.
+ * Deterministic mock progress (60–98%) derived from course title.
  * Same course always returns the same % — purely client-side, never written to DB.
  */
 function getMockProgress(courseTitle) {
@@ -28,16 +28,13 @@ function getMockProgress(courseTitle) {
   for (let i = 0; i < courseTitle.length; i++) {
     hash = (hash * 31 + courseTitle.charCodeAt(i)) & 0xffff;
   }
-  return 25 + (hash % 51); // range: 25 – 75
+  return 60 + (hash % 39); // range: 60 – 98
 }
 
-/** Apply mock progress to old enrollments that still show 0%. */
+/** Apply mock progress to courses that still show 0% (demo-safe). */
 function applyMockProgress(enrollments) {
-  const todayStr = new Date().toISOString().split('T')[0];
   return enrollments.map(e => {
-    const enrolledDate = e.created_at ? e.created_at.split('T')[0] : todayStr;
-    const isOldEnrollment = enrolledDate < todayStr;
-    if (isOldEnrollment && (!e.progress || e.progress === 0)) {
+    if (!e.progress || e.progress === 0) {
       return { ...e, progress: getMockProgress(e.course_title) };
     }
     return e;

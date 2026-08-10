@@ -73,7 +73,7 @@ const MOCK_STATS_DASHBOARD = {
 const MOCK_STREAK = 5;
 
 /**
- * Returns a deterministic mock progress (25–75%) for a course title.
+ * Returns a deterministic mock progress (60–98%) for a course title.
  * Uses a simple char-code hash so the same course always gives the same %.
  * Only used client-side — never written to the DB.
  */
@@ -83,7 +83,7 @@ function getMockProgress(courseTitle) {
   for (let i = 0; i < courseTitle.length; i++) {
     hash = (hash * 31 + courseTitle.charCodeAt(i)) & 0xffff;
   }
-  return 25 + (hash % 51); // range: 25 – 75
+  return 60 + (hash % 39); // range: 60 – 98
 }
 
 // ─── Skeleton ────────────────────────────────────────────────────────────────
@@ -165,13 +165,9 @@ export default function DashboardPage() {
         seen.add(key);
         return true;
       });
-      // Apply deterministic mock progress to previously-enrolled courses that still show 0%
-      // "Previously enrolled" = created_at is before today's date (not enrolled today)
-      const todayStr = new Date().toISOString().split('T')[0];
+      // Apply deterministic mock progress to courses that still show 0% (demo-safe)
       const withMockProgress = deduped.map(e => {
-        const enrolledDate = e.created_at ? e.created_at.split('T')[0] : todayStr;
-        const isOldEnrollment = enrolledDate < todayStr;
-        if (isOldEnrollment && (!e.progress || e.progress === 0)) {
+        if (!e.progress || e.progress === 0) {
           return { ...e, progress: getMockProgress(e.course_title) };
         }
         return e;
@@ -426,7 +422,7 @@ export default function DashboardPage() {
             </div>
 
             {/* ─── Main Grid Layout ─────────────────────────────────────────────── */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '32px', alignItems: 'stretch' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '32px', alignItems: 'start' }}>
               
               {/* Left Column */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', height: '100%' }}>
