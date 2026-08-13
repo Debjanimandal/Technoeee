@@ -21,7 +21,7 @@ import {
   getWeeklyStudyData,
   getMonthlyStudyData
 } from '@/lib/services/studyService';
-import { generateDynamicSchedule, toDateStr } from '@/lib/utils/scheduler';
+import { generateDynamicSchedule, toDateStr, TIME_SLOTS } from '@/lib/utils/scheduler';
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
 
@@ -247,7 +247,9 @@ export default function DashboardPage() {
            module: t.module_name,
            course: t.course_title
         }));
-        setUpcomingTasks(tasks.slice(0, 4));
+        
+        const paceLimit = TIME_SLOTS[savedPace] ? TIME_SLOTS[savedPace].length : 4;
+        setUpcomingTasks(tasks.slice(0, paceLimit));
       }
     } catch (e) {}
   }, [courses]);
