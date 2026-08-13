@@ -101,7 +101,7 @@
     "icon": "/image/ca-banner.png",
     "subject_code": "TIU-PC-UCS-T22101",
     "outcomes": [
-      "Explain computer architectures, Von Neumann/Harvard models, Flynn’s taxonomy, and RISC–CISC processors.",
+      "Explain computer architectures, Von Neumann/Harvard models, Flynn's taxonomy, and RISCâ€“CISC processors.",
       "Apply data representation methods and perform arithmetic operations using adders, multipliers, and dividers.",
       "Analyze instruction sets, addressing modes, instruction cycles, and control unit organization.",
       "Evaluate memory hierarchy, cache/virtual memory techniques, and I/O systems including DMA.",
@@ -114,7 +114,7 @@
         "topics": [
           "Evolution of Computer Architectures",
           "Von Neumann and Harvard Models",
-          "Flynn’s Taxonomy: SISD",
+          "Flynn's Taxonomy: SISD",
           "SIMD",
           "MISD",
           "MIMD; CISC and RISC Processors",
@@ -128,51 +128,6 @@
         "title": "MODULE 2: - Data Representation and Arithmetic",
         "topics": [
           "Number systems and data representation; Signed numbers",
-          "fixed- and floating-point formats; Integer arithmetic: addition",
-          "subtraction (ripple carry",
-          "carry look-ahead adders); Multiplication: Booth’s algorithm; Division: restoring and non-restoring techniques"
-        ],
-        "videos": [],
-        "time": "6 Hours",
-        "intro": "Welcome to MODULE 2: - Data Representation and Arithmetic! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
-      },
-      {
-        "title": "MODULE 3: - Instruction Set Architecture and CPU Organization",
-        "topics": [
-          "Instruction set architecture (ISA): instruction formats and types; Addressing modes: immediate",
-          "direct",
-          "indirect",
-          "register",
-          "etc",
-          "; Zero/One/Two/Three-address instructions; Instruction cycle and micro-operations; RISC vs CISC instruction sets (case study of a common CPU); Control Unit: hardwired vs microprogrammed; ALU and datapath organization"
-        ],
-        "videos": [],
-        "time": "7 Hours",
-        "intro": "Welcome to MODULE 3: - Instruction Set Architecture and CPU Organization! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
-      },
-      {
-        "title": "MODULE 4: - Memory and I/O Organization",
-        "topics": [
-          "Hierarchical memory organization: registers",
-          "cache",
-          "main",
-          "secondary; Cache memory: mapping",
-          "replacement",
-          "and optimization techniques; Virtual memory: organization",
-          "mapping",
-          "and replacement policies; Memory interleaving and coherence; Semiconductor memory technologies; I/O Systems: I/O subsystems",
-          "characteristics of peripheral devices; I/O techniques: program-controlled",
-          "interrupt-driven",
-          "and Direct Memory Access (DMA)"
-        ],
-        "videos": [],
-        "time": "8 Hours",
-        "intro": "Welcome to MODULE 4: - Memory and I/O Organization! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
-      },
-      {
-        "title": "MODULE 5: - Pipelining and Instruction-Level Parallelism",
-        "topics": [
-          "Basic concepts of pipelining: throughput and speedup; Pipeline hazards: structural",
           "data",
           "control; Techniques to handle hazards; Instruction-level parallelism (ILP); Vector and array processors"
         ],
@@ -185,7 +140,7 @@
         "topics": [
           "Parallel processor and pipeline architectures; Multiprocessor systems: Centralized shared-memory models; Distributed shared-memory models; Synchronization",
           "consistency",
-          "and interconnection networks; Cluster computers; Non–Von Neumann architectures: dataflow",
+          "and interconnection networks; Cluster computers; Nonâ€“Von Neumann architectures: dataflow",
           "reduction",
           "systolic architectures"
         ],
@@ -199,34 +154,44 @@
     "difficulty": "Intermediate",
     "relevance": "Core Hardware Concept",
     "topicDetails": {
-      "Hierarchical memory organization: registers": {
+      "Evolution of Computer Architectures": {
+      "summary": "This video traces the evolution of computer architectures from early vacuum tube machines through transistors, integrated circuits, and modern multi-core processors. Understand how Moore's Law has driven architectural changes.",
+      "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Evolution%20of%20Computer%20Architectures.mp4",
+      "thumbnail": "/image/thumbnails/computer_architecture.png"
+    },
+    "Von Neumann and Harvard Models": {
+      "summary": "This video compares the Von Neumann and Harvard memory architectures. Understand why the Von Neumann bottleneck occurs and how the Harvard architecture separates instruction and data memory for improved performance.",
+      "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Von%20Neumann%20and%20Harvard%20Models.mp4",
+      "thumbnail": "/image/thumbnails/computer_architecture.png"
+    },
+    "Hierarchical memory organization: registers": {
         "summary": "This video outlines the organization of computer memory, covering its hierarchy, types, and the concept of virtual memory. You will learn the difference between Primary Memory (volatile RAM and non-volatile ROM) and Secondary Memory (permanent storage like hard disks). The lecture details the memory hierarchy pyramid based on access speed and capacity: CPU Registers at the top, followed by Cache Memory, Main Memory (RAM), and Virtual Memory techniques.",
         "videoUrl": "https://drive.google.com/file/d/1xbSXj1IqYXYVsBRjfvgMghliBl_C0t6W/view?usp=sharing",
         "thumbnail": "/image/thumbnails/memory_hierarchy.png"
       },
-      "Flynn’s Taxonomy: SISD": {
+      "Flynn's Taxonomy: SISD": {
         "summary": "This video introduces Flynn's Taxonomy of parallel computers, focusing on Single Instruction, Single Data (SISD) architecture. Learn about the Von Neumann architecture, its limitations, and how sequential processing compares to modern parallel techniques. Core components like the CPU and Memory Units are also covered.",
-        "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
         "thumbnail": "/image/thumbnails/computer_architecture.png"
       },
       "SIMD": {
         "summary": "This video explains Single Instruction, Multiple Data (SIMD) architecture within Flynn's Taxonomy. Discover how a single instruction is applied across multiple data sets simultaneously, enabling efficient parallel processing in systems like the ILLIAC IV.",
-        "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
         "thumbnail": "/image/thumbnails/computer_architecture.png"
       },
       "MISD": {
         "summary": "Explore the Multiple Instruction, Single Data (MISD) architecture in this video. Understand why this theoretical model, where multiple instructions are applied to a single data set, is rarely implemented in practical, real-life systems.",
-        "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
         "thumbnail": "/image/thumbnails/computer_architecture.png"
       },
       "MIMD; CISC and RISC Processors": {
         "summary": "This video covers Multiple Instruction, Multiple Data (MIMD) architectures, the foundation of modern multi-core systems. Learn about Shared Memory Multiprocessors, Message Passing Multi-computers, and the essential concept of Pipelining to improve processing efficiency.",
-        "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
         "thumbnail": "/image/thumbnails/computer_architecture.png"
       },
       "Performance metrics: measuring and reporting performance": {
         "summary": "This video discusses core system components and processing techniques that impact computer performance. Understand the roles of the Processor, Memory Unit, Sequential vs. Parallel Processing, and how pipelining decomposes tasks to significantly reduce total processing time.",
-        "videoUrl": "https://drive.google.com/file/d/1cDe2v-MYNk1gUzWb287AVYHl_JAQsNQZ/view?usp=sharing",
+        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
         "thumbnail": "/image/thumbnails/computer_architecture.png"
       },
       "secondary; Cache memory: mapping": {
@@ -431,12 +396,12 @@
         "topics": [
           "Introduction to algorithm design and importance of its analysis",
           "Asymptotic notations and their significance",
-          "Complexity analysis of algorithms – best case",
+          "Complexity analysis of algorithms â€“ best case",
           "worst case and average case with example of Insertion sort",
           "Quick sort and Heap sort",
           "Time & space trade-offs",
-          "Analysis of recursive algorithms – Substitution method",
-          "Recursion tree method and Masters’ theorem",
+          "Analysis of recursive algorithms â€“ Substitution method",
+          "Recursion tree method and Mastersâ€™ theorem",
           "Lower bound for comparison-based sort"
         ],
         "videos": [],
@@ -470,11 +435,11 @@
           "Traversal algorithms: DFS",
           "BFS - concept",
           "complexity analysis and applications",
-          "Minimum Spanning Tree finding algorithm: Prim’s",
+          "Minimum Spanning Tree finding algorithm: Primâ€™s",
           "Kruskal - concept",
           "complexity analysis",
           "Disjoint set operations",
-          "shortest path finding algorithm: single source and all pairs –Bellman-Ford",
+          "shortest path finding algorithm: single source and all pairs â€“Bellman-Ford",
           "Dijkstra and Floyd-Warshall",
           "Topological sort",
           "Network flow algorithm: Ford-Fulkerson",
@@ -490,10 +455,10 @@
           "Problem classification on Computability: P",
           "NP",
           "NP-complete and NP-hard",
-          "Reducibility of NP-complete problems with example – Satisfiability",
+          "Reducibility of NP-complete problems with example â€“ Satisfiability",
           "Vertex cover",
           "Traveling Salesman problem",
-          "Cook’s theorem"
+          "Cookâ€™s theorem"
         ],
         "videos": [],
         "time": "8 Hours",
@@ -525,7 +490,7 @@
         "summary": "Highlighting asymptotic notations: An introduction to algorithm design, covering key problem-solving steps, characteristics of good algorithms, and asymptotic analysis (Big O, Omega, Theta). Also introduces the divide-and-conquer strategy used in sorting algorithms and outlines future course topics.",
         "thumbnail": "/image/thumbnails/algorithm_intro.png"
       },
-      "Complexity analysis of algorithms – best case": {
+      "Complexity analysis of algorithms â€“ best case": {
         "videoUrl": "https://drive.google.com/file/d/1AG8xO8JQOqAZBDrZyprQq1PLzVDui4Cf/view?usp=sharing",
         "summary": "Delving into complexity analysis (best case): An introduction to algorithm design, covering key problem-solving steps, characteristics of good algorithms, and asymptotic analysis (Big O, Omega, Theta). Also introduces the divide-and-conquer strategy used in sorting algorithms and outlines future course topics.",
         "thumbnail": "/image/thumbnails/algorithm_intro.png"
@@ -623,7 +588,7 @@
           "Importance of a good schema design",
           "Problems encountered with bad schema designs",
           "Motivation for normal forms",
-          "dependency theory – functional dependencies",
+          "dependency theory â€“ functional dependencies",
           "Armstrong's axioms for FD's",
           "Closure of a set of FDs",
           "Minimal covers",
@@ -845,7 +810,7 @@
         "title": "MODULE 3: - LINEAR AND PROBABILISTIC MODELS",
         "topics": [
           "Least Squares method - Multivariate Linear Regression - Perceptron",
-          "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data – Naïve Bayes Classifier"
+          "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data â€“ NaÃ¯ve Bayes Classifier"
         ],
         "videos": [],
         "time": "7 Hours",
@@ -854,7 +819,7 @@
       {
         "title": "MODULE 4: - DISTANCE BASED MODELS",
         "topics": [
-          "Distance Based Models: Neighbors and Examples - Nearest Neighbors Classification - Distance based clustering – K-Means Algorithm - K-Medoids Algorithm - Hierarchical clustering - Vector Quantization",
+          "Distance Based Models: Neighbors and Examples - Nearest Neighbors Classification - Distance based clustering â€“ K-Means Algorithm - K-Medoids Algorithm - Hierarchical clustering - Vector Quantization",
           "Self-Organizing Feature Map - Principal Component Analysis"
         ],
         "videos": [],
@@ -874,7 +839,7 @@
         "title": "MODULE 6: - TRENDS IN MACHINE LEARNING",
         "topics": [
           "Ensemble Learning",
-          "- Bagging and Boosting - Random Forest - Meta learning - Deep Learning - Reinforcement Learning – Applications"
+          "- Bagging and Boosting - Random Forest - Meta learning - Deep Learning - Reinforcement Learning â€“ Applications"
         ],
         "videos": [],
         "time": "8 Hours",
@@ -891,9 +856,9 @@
         "summary": "This video introduces foundational concepts including the Least Squares method, Multivariate Linear Regression, and the Perceptron algorithm, establishing the groundwork for predictive and descriptive linear models.",
         "thumbnail": "/image/thumbnails/ml_svm.png"
       },
-      "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data – Naïve Bayes Classifier": {
+      "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data â€“ NaÃ¯ve Bayes Classifier": {
         "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "This lecture covers Support Vector Machines (SVM) for maximizing hyperplane margins, alongside Multiple Layer Perceptrons, kernel methods for non-linearity, and probabilistic categorical models such as the Naïve Bayes Classifier.",
+        "summary": "This lecture covers Support Vector Machines (SVM) for maximizing hyperplane margins, alongside Multiple Layer Perceptrons, kernel methods for non-linearity, and probabilistic categorical models such as the NaÃ¯ve Bayes Classifier.",
         "videoUrl2": "https://drive.google.com/file/d/1W5v5CqyaTOf6iyjdzUvgw-Njgd1y43Be/view?usp=sharing",
         "summary2": "Explains the application of Support Vector Machines to non-linearly separable datasets by transforming data into higher-dimensional spaces using Kernel functions, ensuring linear classification.",
         "videoUrl3": "https://drive.google.com/file/d/1ObZDzhjtSEVfbyMZoDBkgM_e-PxEyJmM/view?usp=sharing",
@@ -1008,7 +973,7 @@
       {
         "title": "MODULE 5: - 5 Hours",
         "topics": [
-          "Application Layer –Domain name system",
+          "Application Layer â€“Domain name system",
           "SNMP",
           "Electronic Mail; the World WEB",
           "HTTP",
@@ -1112,7 +1077,7 @@
           "Church-Turing Thesis",
           "Universal Turing Machine",
           "The Universal and Diagonalization Languages",
-          "Reduction between Languages and Rice’s Theorem",
+          "Reduction between Languages and Riceâ€™s Theorem",
           "Undecidable Problems about Languages"
         ],
         "videos": [],

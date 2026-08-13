@@ -96,6 +96,9 @@ export default function VideoPlayer({
               height="100%" 
               controls 
               autoPlay
+              playsInline
+              preload="metadata"
+              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               onEnded={() => onComplete && onComplete()}
             />
           )
@@ -106,8 +109,8 @@ export default function VideoPlayer({
         )}
       </div>
 
-      {/* Completion Actions (Specifically for GDrive where auto-detect fails) */}
-      {isGoogleDrive && !isCompleted && (isPlaying || !thumbnailUrl) && (
+      {/* Completion Actions */}
+      {!isCompleted && (isPlaying || !thumbnailUrl) && (
         <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
           <button 
             onClick={() => onComplete && onComplete()}

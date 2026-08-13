@@ -77,45 +77,48 @@ export default function CourseLearningPage() {
             borderRadius: '24px', padding: '20px', color: '#1a2e3b', marginBottom: '16px',
             boxShadow: '0 10px 40px rgba(43,88,118,0.18), 0 2px 8px rgba(0,0,0,0.06)', 
             border: '1px solid rgba(43,88,118,0.15)', position: 'relative', overflow: 'hidden'
+            background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+            borderRadius: '20px', padding: '30px', color: '#fff', marginBottom: '20px',
+            boxShadow: '0 15px 30px rgba(15, 23, 42, 0.3)', position: 'relative', overflow: 'hidden'
           }}>
             {/* Decorative circles */}
             <div style={{ position: 'absolute', top: '-40px', right: '180px', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(43,88,118,0.1)', pointerEvents: 'none' }} />
             <div style={{ position: 'absolute', bottom: '-50px', right: '80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(78,67,118,0.08)', pointerEvents: 'none' }} />
             <div style={{ position: 'absolute', top: '20px', right: '280px', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(43,88,118,0.06)', pointerEvents: 'none' }} />
             
-            <Link href="/my-courses" style={{ color: '#4a6278', textDecoration: 'none', fontSize: '13px', marginBottom: '10px', display: 'inline-block', position: 'relative', zIndex: 1, fontWeight: '500' }}>
+            <Link href="/my-courses" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '14px', marginBottom: '15px', display: 'inline-block' }}>
               ← Back to My Courses
             </Link>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
-                <div style={{ display: 'flex', gap: '8px', marginBottom: '10px', flexWrap: 'wrap' }}>
-                  <span style={{ background: 'rgba(255,255,255,0.5)', padding: '4px 10px', borderRadius: '16px', fontSize: '11px', fontWeight: 'bold', backdropFilter: 'blur(5px)', color: '#2b5876' }}>
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', flexWrap: 'wrap' }}>
+                  <span style={{ background: 'rgba(255,255,255,0.2)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', backdropFilter: 'blur(5px)' }}>
                     {course.subject_code}
                   </span>
                   {course.difficulty && (
-                    <span style={{ background: 'rgba(100, 116, 139, 0.85)', padding: '4px 10px', borderRadius: '16px', fontSize: '11px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', color: '#fff' }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M12 2C8.5 7 6 11 6 14a6 6 0 0 0 12 0c0-3-2.5-7-6-12zm0 16a2 2 0 0 1-2-2c0-2 2-4 2-4s2 2 2 4a2 2 0 0 1-2 2z"/></svg>
+                    <span style={{ background: 'rgba(255,152,0,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <Icons.Flame size={14} fill="#fff" />
                       {course.difficulty}
                     </span>
                   )}
                   {course.relevance && (
-                    <span style={{ background: '#2b5876', padding: '4px 10px', borderRadius: '16px', fontSize: '11px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px', color: '#fff' }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                    <span style={{ background: 'rgba(76,175,80,0.8)', padding: '5px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <Icons.Briefcase size={14} />
                       {course.relevance}
                     </span>
                   )}
                 </div>
-                <h1 style={{ fontSize: '24px', fontWeight: '800', margin: '0 0 6px 0', lineHeight: '1.2', maxWidth: '800px', letterSpacing: '-0.5px' }}>
+                <h1 style={{ fontSize: '32px', fontWeight: '800', margin: '0 0 10px 0', lineHeight: '1.2', maxWidth: '800px' }}>
                   {course.course_name}
                 </h1>
-                <p style={{ margin: 0, color: '#4a6278', fontSize: '13px' }}>
+                <p style={{ margin: 0, opacity: 0.9, fontSize: '15px' }}>
                   Estimated Total Time: {course.estimated_time} • Remaining: <strong>~{estRemaining} Hours</strong>
                 </p>
               </div>
-              <div style={{ width: '150px', background: 'rgba(255,255,255,0.4)', padding: '8px 12px', borderRadius: '12px', color: '#1a2e3b', border: '1px solid rgba(255,255,255,0.5)', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '12px', fontWeight: 'bold' }}>
+              <div style={{ width: '300px', background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '15px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '8px', fontWeight: 'bold' }}>
                   <span>Course Progress</span>
-                  <span style={{ color: '#2b5876' }}>{progressPercent}%</span>
+                  <span>{progressPercent}%</span>
                 </div>
               </div>
             </div>
@@ -128,7 +131,7 @@ export default function CourseLearningPage() {
               boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0'
             }}>
               <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="#4f46e5"/></svg>
+                <Icons.Target size={20} color="#3b82f6" />
                 Course Outcomes
               </h3>
               <ul style={{ margin: 0, paddingLeft: '24px', fontSize: '14.5px', color: '#444', lineHeight: '1.6' }}>
@@ -240,14 +243,14 @@ export default function CourseLearningPage() {
                               display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer',
                               padding: '10px 12px', borderRadius: '8px', marginTop: '6px',
                               transition: 'box-shadow 0.2s, background 0.2s',
-                              background: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '#fecaca' : '#fef2f2',
-                              border: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '1px solid #b91c1c' : '1px solid #fecaca',
-                              boxShadow: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '0 0 14px rgba(185,28,28,0.4)' : 'none'
+                              background: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '#ffe0b2' : '#fff8f1',
+                              border: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '1px solid #ff9800' : '1px solid #ffe0b2',
+                              boxShadow: selectedTopic === `MANDATORY_QUIZ_${modIdx}` ? '0 0 14px rgba(255,152,0,0.4)' : 'none'
                             }}
                             onMouseOver={(e) => e.currentTarget.style.transform = 'translateX(4px)'}
                             onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                            <span style={{ fontSize: '13px', color: '#b91c1c', fontWeight: 'bold' }}>Mandatory Module Quiz</span>
+                            <Icons.FileQuestion size={16} color="#e65100" />
+                            <span style={{ fontSize: '13px', color: '#e65100', fontWeight: 'bold' }}>Mandatory Module Quiz</span>
                           </div>
                         </div>
                       )}
@@ -284,7 +287,7 @@ export default function CourseLearningPage() {
                     onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
                       <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#fff', border: '3px solid #ffd700', boxShadow: '0 0 15px rgba(255,215,0,0.4)', zIndex: 2, flexShrink: 0 }} />
                       <h4 style={{ fontSize: '15px', fontWeight: 'bold', color: '#b8860b', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b8860b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                        <Icons.Award size={18} color="#b8860b" />
                         Claim Course Badge
                       </h4>
                   </div>
@@ -305,7 +308,7 @@ export default function CourseLearningPage() {
                   {expandedModule !== null && course.modules[expandedModule]?.intro ? (
                     <div style={{ maxWidth: '600px', textAlign: 'center' }}>
                       <div style={{ width: '60px', height: '60px', marginBottom: '20px', margin: '0 auto 20px auto', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#ede9fe', borderRadius: '16px' }}>
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                        <Icons.BookOpen size={32} color="#7c3aed" />
                       </div>
                       <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333', marginBottom: '16px' }}>
                         {course.modules[expandedModule].title}
@@ -318,7 +321,7 @@ export default function CourseLearningPage() {
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', opacity: 0.8 }}>
                       <div style={{ width: '72px', height: '72px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#eff6ff', borderRadius: '20px' }}>
-                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="#3b82f6"/></svg>
+                        <Icons.Target size={36} color="#3b82f6" />
                       </div>
                       <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333' }}>Ready to Learn?</h2>
                       <p style={{ fontSize: '15px' }}>Select a module and topic from the roadmap on the left to begin studying.</p>
@@ -328,7 +331,7 @@ export default function CourseLearningPage() {
               ) : selectedTopic === 'GRAND_QUIZ' || selectedTopic.startsWith('MANDATORY_QUIZ_') ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                   <div style={{ width: '80px', height: '80px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff7ed', borderRadius: '20px', border: '2px solid #fed7aa' }}>
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ea580c" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    <Icons.FileQuestion size={40} color="#ea580c" />
                   </div>
                   <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '12px' }}>
                     {selectedTopic === 'GRAND_QUIZ' ? 'Grand Final Quiz' : 'Mandatory Module Quiz'}
@@ -405,9 +408,9 @@ export default function CourseLearningPage() {
                   {/* Content Sub-Timeline (Video -> Notes -> Quiz) */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0', marginBottom: '60px', overflowX: 'visible', padding: '10px 10px' }}>
                     {[
-                      { type: course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? 'Video 1' : 'Video', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#3b82f6', bg: '#eff6ff' },
-                      ...(course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? [{ type: 'Video 2', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#0ea5e9', bg: '#e0f2fe' }] : []),
-                      ...(course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl3 ? [{ type: 'Video 3', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#06b6d4', bg: '#cffafe' }] : []),
+                      { type: currentTopicData?.videoUrl2 ? 'Video 1' : 'Video', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#3b82f6', bg: '#eff6ff' },
+                      ...(currentTopicData?.videoUrl2 ? [{ type: 'Video 2', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#0ea5e9', bg: '#e0f2fe' }] : []),
+                      ...(currentTopicData?.videoUrl3 ? [{ type: 'Video 3', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#06b6d4', bg: '#cffafe' }] : []),
                       { type: 'Notes',   icon: <Icons.FileText size={22} strokeWidth={2.5} />, color: '#8b5cf6', bg: '#f5f3ff' },
                       { type: 'Quiz',    icon: <Icons.HelpCircle size={24} strokeWidth={2.5} />, color: '#b91c1c', bg: '#fef2f2' },
                     ].map((item, idx, arr) => {
@@ -462,12 +465,12 @@ export default function CourseLearningPage() {
                   <div style={{ flex: 1, background: '#f9fafb', borderRadius: '16px', border: '1px dashed #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
                     
                     {/* Render VideoPlayer if Video is selected AND we have a topicDetails object for this topic */}
-                    {selectedContentIdx === 0 && course.topicDetails && course.topicDetails[selectedTopic] ? (
+                    {selectedContentIdx === 0 && currentTopicData ? (
                       <VideoPlayer 
-                        videoUrl={course.topicDetails[selectedTopic].videoUrl}
+                        videoUrl={currentTopicData.videoUrl}
                         title={selectedTopic}
-                        summary={course.topicDetails[selectedTopic].summary}
-                        thumbnailUrl={course.topicDetails[selectedTopic].thumbnail}
+                        summary={currentTopicData.summary}
+                        thumbnailUrl={currentTopicData.thumbnail}
                         isCompleted={completedItems.includes(selectedTopic)}
                         onComplete={() => {
                           if (!completedItems.includes(selectedTopic)) {
@@ -475,12 +478,12 @@ export default function CourseLearningPage() {
                           }
                         }}
                       />
-                    ) : selectedContentIdx === 1 && course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl2 ? (
+                    ) : selectedContentIdx === 1 && currentTopicData?.videoUrl2 ? (
                       <VideoPlayer 
-                        videoUrl={course.topicDetails[selectedTopic].videoUrl2}
+                        videoUrl={currentTopicData.videoUrl2}
                         title={selectedTopic + " (Part 2)"}
-                        summary={course.topicDetails[selectedTopic].summary2}
-                        thumbnailUrl={course.topicDetails[selectedTopic].thumbnail2}
+                        summary={currentTopicData.summary2}
+                        thumbnailUrl={currentTopicData.thumbnail2}
                         isCompleted={completedItems.includes(selectedTopic + "_2")}
                         onComplete={() => {
                           if (!completedItems.includes(selectedTopic + "_2")) {
@@ -488,12 +491,12 @@ export default function CourseLearningPage() {
                           }
                         }}
                       />
-                    ) : selectedContentIdx === 2 && course.topicDetails && course.topicDetails[selectedTopic]?.videoUrl3 ? (
+                    ) : selectedContentIdx === 2 && currentTopicData?.videoUrl3 ? (
                       <VideoPlayer 
-                        videoUrl={course.topicDetails[selectedTopic].videoUrl3}
+                        videoUrl={currentTopicData.videoUrl3}
                         title={selectedTopic + " (Part 3)"}
-                        summary={course.topicDetails[selectedTopic].summary3}
-                        thumbnailUrl={course.topicDetails[selectedTopic].thumbnail3}
+                        summary={currentTopicData.summary3}
+                        thumbnailUrl={currentTopicData.thumbnail3}
                         isCompleted={completedItems.includes(selectedTopic + "_3")}
                         onComplete={() => {
                           if (!completedItems.includes(selectedTopic + "_3")) {
