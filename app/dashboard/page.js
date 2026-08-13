@@ -248,8 +248,8 @@ export default function DashboardPage() {
            course: t.course_title
         }));
         
-        const paceLimit = TIME_SLOTS[savedPace] ? TIME_SLOTS[savedPace].length : 4;
-        setUpcomingTasks(tasks.slice(0, paceLimit));
+        // Always strictly cap to top 2 upcoming tasks as requested
+        setUpcomingTasks(tasks.slice(0, 2));
       }
     } catch (e) {}
   }, [courses]);
