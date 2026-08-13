@@ -13,6 +13,8 @@ import * as Icons from 'lucide-react';
 import { Lock } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 
+import SecureNotesViewer from '@/components/shared/SecureNotesViewer';
+
 export default function CourseLearningPage() {
   const { courseId } = useParams();
   const router = useRouter();
@@ -23,6 +25,7 @@ export default function CourseLearningPage() {
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [selectedContentIdx, setSelectedContentIdx] = useState(0);
   const [completedItems, setCompletedItems] = useState([]);
+  const [isNotesViewerOpen, setIsNotesViewerOpen] = useState(false);
   
   const { claimedBadges, claimBadge } = useBadges();
   const [progressPercent, setProgressPercent] = useState(0);
@@ -542,6 +545,60 @@ export default function CourseLearningPage() {
                         }
                       }
                       
+                      // Notes Tab Logic
+                      if (selectedContentIdx === videoCount) {
+                        const isLocked = !isVideoUnlocked(selectedTopic, 0); // If topic is locked, notes are locked
+                        let notesContent = isTopicArray ? currentTopicData[0]?.notes : currentTopicData?.notes;
+
+                        if (isLocked) {
+                          return (
+                            <div style={{ textAlign: 'center', padding: '40px' }}>
+                              <div style={{ width: '80px', height: '80px', background: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#64748b' }}>
+                                <Lock size={40} />
+                              </div>
+                              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>Notes Locked</h3>
+                              <p style={{ color: '#64748b', fontSize: '14px', maxWidth: '400px', margin: '0 auto' }}>
+                                You must complete the videos in the previous topic before you can access these notes.
+                              </p>
+                            </div>
+                          );
+                        }
+
+                        if (!notesContent) {
+                          return (
+                            <div style={{ textAlign: 'center', padding: '40px' }}>
+                              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>No Notes Available</h3>
+                              <p style={{ color: '#64748b' }}>Notes for this topic have not been uploaded yet.</p>
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <div style={{ textAlign: 'center', padding: '40px', width: '100%', maxWidth: '600px' }}>
+                            <div style={{ width: '80px', height: '80px', background: '#eff6ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#3b82f6' }}>
+                              <Icons.FileText size={40} />
+                            </div>
+                            <h3 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1e293b', marginBottom: '12px' }}>Topic Notes</h3>
+                            <p style={{ color: '#64748b', fontSize: '15px', marginBottom: '30px' }}>
+                              These notes are highly secure and can only be viewed in the secure reader.
+                            </p>
+                            <button 
+                              onClick={() => setIsNotesViewerOpen(true)}
+                              style={{
+                                padding: '12px 24px', backgroundColor: '#3b82f6', color: 'white',
+                                border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '16px',
+                                fontWeight: '600', transition: 'background-color 0.2s',
+                                display: 'inline-flex', alignItems: 'center', gap: '8px'
+                              }}
+                            >
+                              <Lock size={18} />
+                              Open Secure Reader
+                            </button>
+                          </div>
+                        );
+                      }
+                      
+                      // Fallback for Quiz or upcoming content
                       return (
                         <>
                           <div style={{ width: '80px', height: '80px', background: '#e3f2fd', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: '#1565c0' }}>
@@ -563,6 +620,14 @@ export default function CourseLearningPage() {
           
         </div>
       </div>
+
+      {isNotesViewerOpen && (
+        <SecureNotesViewer 
+          title={selectedTopic}
+          markdownContent={Array.isArray(currentTopicData) ? currentTopicData[0]?.notes : currentTopicData?.notes}
+          onClose={() => setIsNotesViewerOpen(false)}
+        />
+      )}
     </div>
   );
 }
