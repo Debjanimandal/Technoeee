@@ -63,6 +63,20 @@ export default function CourseLearningPage() {
   const remainingHours = parseInt(course.estimated_time) || 40; 
   const estRemaining = Math.max(0, Math.floor(remainingHours * (1 - (progressPercent / 100))));
 
+  // Robust topic lookup — handles apostrophe encoding differences (Flynn's vs Flynn's)
+  const getTopicDetails = (topicName) => {
+    if (!course || !course.topicDetails || !topicName) return null;
+    if (course.topicDetails[topicName]) return course.topicDetails[topicName];
+    const norm = (s) => s.replace(/\u2019|â€™/g, "'").trim();
+    const searchNorm = norm(topicName);
+    for (const key of Object.keys(course.topicDetails)) {
+      if (norm(key) === searchNorm) return course.topicDetails[key];
+    }
+    return null;
+  };
+
+  const currentTopicData = getTopicDetails(selectedTopic);
+
   return (
     <div className="app-layout">
       <Sidebar />
