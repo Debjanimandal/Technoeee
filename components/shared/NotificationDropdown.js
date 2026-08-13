@@ -2,10 +2,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useBadges } from '@/lib/context/badge-context';
+import { useAnalytics } from '@/lib/context/analytics-context';
 
 export default function NotificationDropdown({ isOpen, onClose, onClaimBadgeClick }) {
   const [localNotifications, setLocalNotifications] = useState([]);
   const { badgeNotifications } = useBadges();
+  const { notifications: analyticsNotifs, markNotificationRead, markAllNotificationsRead } = useAnalytics();
   const router = useRouter();
 
   useEffect(() => {
@@ -83,7 +85,8 @@ export default function NotificationDropdown({ isOpen, onClose, onClaimBadgeClic
     return () => window.removeEventListener('badge_notification_added', generateNotifications);
   }, []);
 
-  const notifications = [...badgeNotifications, ...localNotifications];
+  const activeAnalyticsNotifs = analyticsNotifs.filter(n => !n.read);
+  const notifications = [...badgeNotifications, ...localNotifications, ...activeAnalyticsNotifs];
 
   // Update badge count globally via an event or just let header read it?
   // We'll dispatch a custom event so the header knows the count.
@@ -95,6 +98,11 @@ export default function NotificationDropdown({ isOpen, onClose, onClaimBadgeClic
     e.stopPropagation();
     // Do not allow dismissing badge notifications from here
     if (badgeNotifications.some(n => n.id === id)) return;
+    
+    if (analyticsNotifs.some(n => n.id === id)) {
+        markNotificationRead(id);
+        return;
+    }
 
     const newNotifs = localNotifications.filter(n => n.id !== id);
     setLocalNotifications(newNotifs);
@@ -108,6 +116,7 @@ export default function NotificationDropdown({ isOpen, onClose, onClaimBadgeClic
     localNotifications.forEach(n => dismissed.push(n.id));
     localStorage.setItem('dismissed_notifications', JSON.stringify(dismissed));
     setLocalNotifications([]);
+    markAllNotificationsRead();
   };
 
   const handleClick = (notif) => {

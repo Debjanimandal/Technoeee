@@ -21,6 +21,7 @@ import {
   getWeeklyStudyData,
   getMonthlyStudyData
 } from '@/lib/services/studyService';
+import { generateDynamicSchedule, toDateStr } from '@/lib/utils/scheduler';
 
 Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Filler);
 
@@ -213,28 +214,40 @@ export default function DashboardPage() {
       setCompletedTopicsCount(completed.length);
       
       if (courses.length > 0) {
-        const tasks = [];
-        // Look through enrolled courses in the master JSON
-        courses.forEach(enr => {
-          const courseRef = coursesData.find(c => c.course_name === enr.course_title || c.subject_code === enr.category);
-          if (courseRef && courseRef.modules) {
-            let found = false;
-            for (let mod of courseRef.modules) {
-              if (found) break;
-              if (mod.topics) {
-                for (let topic of mod.topics) {
-                  const taskId = `task-${courseRef.subject_code}-${topic}`;
-                  if (!completed.includes(taskId)) {
-                    tasks.push({ course: courseRef.course_name, subject: courseRef.subject_code, module: mod.title, topic });
-                    found = true;
-                    break;
-                  }
-                }
-              }
-            }
+        const todayStr = toDateStr(new Date());
+        const savedStart = localStorage.getItem('planner_start_date') || todayStr;
+        const savedPace = localStorage.getItem('planner_study_pace') || 'Moderate';
+        const savedHistory = JSON.parse(localStorage.getItem('planner_history') || '{}');
+        
+        // Use the exact same engine as the planner
+        const dynamicMap = generateDynamicSchedule(courses, savedPace, savedStart, completed);
+        const mergedMap = { ...dynamicMap };
+        Object.keys(savedHistory).forEach(date => {
+          mergedMap[date] = savedHistory[date];
+        });
+        
+        let pending = [];
+        const seenIds = new Set();
+        // Extract overdue (past) and today's tasks
+        Object.keys(mergedMap).sort().forEach(date => {
+          if (date <= todayStr) {
+             (mergedMap[date] || []).forEach(t => {
+               if (!completed.includes(t.id) && !seenIds.has(t.id)) {
+                 pending.push(t);
+                 seenIds.add(t.id);
+               }
+             });
           }
         });
-        setUpcomingTasks(tasks.slice(0, 4)); // Grab top 4 to fill grid
+        
+        // Map to Dashboard's expected format
+        const tasks = pending.map(t => ({
+           subject: t.subject_code,
+           topic: t.topic,
+           module: t.module_name,
+           course: t.course_title
+        }));
+        setUpcomingTasks(tasks.slice(0, 4));
       }
     } catch (e) {}
   }, [courses]);

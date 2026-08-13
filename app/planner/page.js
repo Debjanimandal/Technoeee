@@ -8,41 +8,29 @@ import { supabase } from '@/lib/supabase/client';
 import PomodoroTimer from '@/components/shared/PomodoroTimer';
 import Link from 'next/link';
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const MONTHS = ['January','February','March','April','May','June',
-                'July','August','September','October','November','December'];
-const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+import { TIME_SLOTS, TAG_COLORS, toDateStr, generateDynamicSchedule } from '@/lib/utils/scheduler';
 
-// Colors for tags
-const TAG_COLORS = {
-  Lecture: '#3a8aff',
-  Quiz: '#f57c00',
-  Revision: '#ab47bc',
-  Assignment: '#43a047'
-};
+// Helper: Check if a task's scheduled end time has passed
+function isTaskTimeCompleted(dateStr, timeSlot, todayStr) {
+  if (dateStr < todayStr) return true;
+  if (dateStr > todayStr) return false;
+  
+  const endTimeStr = timeSlot.split(' - ')[1];
+  if (!endTimeStr) return true;
 
-// Fixed time slots for spacing
-const TIME_SLOTS = {
-  Casual: ['10:00 AM - 11:30 AM', '03:00 PM - 04:30 PM'],
-  Moderate: ['09:30 AM - 11:00 AM', '01:30 PM - 03:00 PM', '05:00 PM - 06:30 PM', '08:00 PM - 09:30 PM'],
-  Intensive: ['09:00 AM - 10:00 AM', '11:00 AM - 12:00 PM', '02:00 PM - 03:00 PM', '04:00 PM - 05:00 PM', '07:00 PM - 08:00 PM', '09:00 PM - 10:00 PM']
-};
+  const [time, period] = endTimeStr.split(' ');
+  let [hours, minutes] = time.split(':').map(Number);
+  
+  if (period === 'PM' && hours !== 12) hours += 12;
+  if (period === 'AM' && hours === 12) hours = 0;
+  
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
 
-// Helper: Format date
-function toDateStr(dateObj) {
-  const yr = dateObj.getFullYear();
-  const mo = dateObj.getMonth() + 1;
-  const day = dateObj.getDate();
-  return `${yr}-${String(mo).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-}
-
-// Helper: Hash string to color
-function getCourseColor(subjectCode) {
-  if (!subjectCode) return '#3a8aff';
-  const colors = ['#e53935', '#d81b60', '#8e24aa', '#5e35b1', '#3949ab', '#1e88e5', '#039be5', '#00acc1', '#00897b', '#43a047', '#f4511e'];
-  let hash = 0;
-  for (let i = 0; i < subjectCode.length; i++) hash = subjectCode.charCodeAt(i) + ((hash << 5) - hash);
-  return colors[Math.abs(hash) % colors.length];
+  if (currentHour > hours) return true;
+  if (currentHour === hours && currentMinute >= minutes) return true;
+  return false;
 }
 
 // ─── AI Assistant Component (Animated & Behavioral) ──────────────────────────
@@ -169,122 +157,10 @@ function ContextualAIAssistant({ dateStr, todayStr, tasks, completedTasks, overd
   );
 }
 
-// ─── Dynamic Scheduling Engine (v2) ──────────────────────────────────────────
-function generateDynamicSchedule(enrollments, pace, startDateStr, completedTasksList) {
-  const scheduleMap = {};
-  const coursesQueues = [];
-
-  // 1. Build Progressive Queues for each course
-  enrollments.forEach(enrollment => {
-    const course = coursesData.find(
-      c => c.course_name === enrollment.course_title || c.subject_code === enrollment.category
-    );
-    if (!course || !course.modules) return;
-
-    let activeModuleIdx = 0;
-    
-    // Find the first module that isn't fully completed
-    for (let i = 0; i < course.modules.length; i++) {
-      const mod = course.modules[i];
-      const allTopicsCompleted = mod.topics?.every(t => completedTasksList.includes(`task-${course.subject_code}-${t}`));
-      if (!allTopicsCompleted) {
-        activeModuleIdx = i;
-        break;
-      }
-    }
-
-    // Only load topics from Active Module and Active + 1 (Progressive Unlocking)
-    const allowedModules = course.modules.slice(activeModuleIdx, activeModuleIdx + 2);
-    const courseQueue = [];
-
-    allowedModules.forEach((mod, modOffset) => {
-      if (mod.topics) {
-        mod.topics.forEach(topic => {
-          const taskId = `task-${course.subject_code}-${topic}`;
-          if (!completedTasksList.includes(taskId)) {
-            courseQueue.push({
-              id: taskId,
-              course_title: course.course_name,
-              subject_code: course.subject_code,
-              module_name: mod.title,
-              topic: topic,
-              type: 'Lecture',
-              course_color: getCourseColor(course.subject_code)
-            });
-          }
-        });
-        
-        // Inject a Module Quiz after the module topics
-        const quizId = `quiz-${course.subject_code}-${mod.title}`;
-        if (!completedTasksList.includes(quizId)) {
-          courseQueue.push({
-            id: quizId,
-            course_title: course.course_name,
-            subject_code: course.subject_code,
-            module_name: mod.title,
-            topic: `Module ${activeModuleIdx + modOffset + 1} Assessment`,
-            type: 'Quiz',
-            course_color: getCourseColor(course.subject_code)
-          });
-        }
-      }
-    });
-
-    if (courseQueue.length > 0) coursesQueues.push(courseQueue);
-  });
-
-  const tasksPerDay = TIME_SLOTS[pace].length;
-  let currentDate = new Date(startDateStr);
-  currentDate.setHours(0,0,0,0);
-  
-  // 2. Interleaved Round-Robin Scheduling
-  let safety = 0;
-  while (coursesQueues.some(q => q.length > 0) && safety < 365) {
-    safety++;
-    const dateStr = toDateStr(currentDate);
-    scheduleMap[dateStr] = [];
-    
-    const dayOfWeek = currentDate.getDay(); // 0 = Sun, 6 = Sat
-    
-    // Weekend Revision Logic
-    if (dayOfWeek === 0 || dayOfWeek === 6) {
-      scheduleMap[dateStr].push({
-        id: `rev-${dateStr}`,
-        course_title: 'Weekly Consolidation',
-        subject_code: 'REV',
-        module_name: 'Spaced Repetition',
-        topic: 'Review concepts learned this week',
-        type: 'Revision',
-        time_slot: '10:00 AM - 12:00 PM',
-        is_completed: completedTasksList.includes(`rev-${dateStr}`),
-        course_color: TAG_COLORS.Revision
-      });
-      currentDate.setDate(currentDate.getDate() + 1);
-      continue;
-    }
-
-    // Weekday Interleaved Logic
-    let slotsUsed = 0;
-    for (let i = 0; i < coursesQueues.length; i++) {
-      if (slotsUsed >= tasksPerDay) break;
-      
-      const queue = coursesQueues[i];
-      if (queue.length > 0) {
-        const task = queue.shift(); // pop from front
-        scheduleMap[dateStr].push({
-          ...task,
-          time_slot: TIME_SLOTS[pace][slotsUsed],
-          is_completed: false
-        });
-        slotsUsed++;
-      }
-    }
-    
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-
-  return scheduleMap;
-}
+// ─── Constants ────────────────────────────────────────────────────────────────
+const MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+const WEEKDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function PlannerPage() {
@@ -304,6 +180,7 @@ export default function PlannerPage() {
   // Data state
   const [enrollments, setEnrollments] = useState([]);
   const [scheduleMap, setScheduleMap] = useState({});
+  const [plannerHistory, setPlannerHistory] = useState({});
   const [loading, setLoading] = useState(true);
   const [completedTasks, setCompletedTasks] = useState([]);
   
@@ -330,6 +207,10 @@ export default function PlannerPage() {
         const savedStart = localStorage.getItem('planner_start_date');
         if (savedStart) setPlannerStartDate(savedStart);
         else localStorage.setItem('planner_start_date', todayStr);
+        const savedPace = localStorage.getItem('planner_study_pace');
+        if (savedPace) setStudyPace(savedPace);
+        const savedHistory = JSON.parse(localStorage.getItem('planner_history') || '{}');
+        setPlannerHistory(savedHistory);
       } catch(e) {}
     })();
   }, [user]);
@@ -338,26 +219,37 @@ export default function PlannerPage() {
   useEffect(() => {
     if (enrollments.length > 0) {
       setLoading(true);
-      const newSchedule = generateDynamicSchedule(enrollments, studyPace, plannerStartDate, completedTasks);
-      setScheduleMap(newSchedule);
+      const dynamicMap = generateDynamicSchedule(enrollments, studyPace, plannerStartDate, completedTasks);
+      
+      // Merge with history
+      const mergedMap = { ...dynamicMap };
+      Object.keys(plannerHistory).forEach(date => {
+        // Overlay history on top of dynamic for past dates
+        mergedMap[date] = plannerHistory[date];
+      });
+      
+      setScheduleMap(mergedMap);
       setLoading(false);
     } else if (enrollments.length === 0) {
       setLoading(false);
     }
-  }, [enrollments, studyPace, plannerStartDate, completedTasks]);
+  }, [enrollments, studyPace, plannerStartDate, completedTasks, plannerHistory]);
 
   // 3. Compute Overdue Tasks
   const overdueTasksCount = useMemo(() => {
+    // If the planner is already anchored to today (or future), it means we just rebalanced.
+    // The backlog is already shifted forward, so we don't need to rebalance again today.
+    if (plannerStartDate >= todayStr) return 0;
+    
     let count = 0;
     Object.keys(scheduleMap).forEach(date => {
       if (date < todayStr) {
-        scheduleMap[date].forEach(task => {
-          if (!task.is_completed) count++;
-        });
+        const tasks = scheduleMap[date] || [];
+        count += tasks.filter(t => !completedTasks.includes(t.id)).length;
       }
     });
     return count;
-  }, [scheduleMap, todayStr]);
+  }, [scheduleMap, todayStr, completedTasks, plannerStartDate]);
 
   // Mark task complete (locally)
   const handleComplete = (dateStr, taskId) => {
@@ -371,10 +263,27 @@ export default function PlannerPage() {
     localStorage.setItem('planner_completed', JSON.stringify(newCompleted));
   };
 
-  // Rebalance Schedule
+  // Rebalance Schedule (Snapshot history)
   const handleRebalance = () => {
+    // Save all uncompleted tasks from before today into the history snapshot
+    const newHistory = { ...plannerHistory };
+    Object.keys(scheduleMap).forEach(date => {
+      if (date < todayStr && scheduleMap[date]) {
+        newHistory[date] = scheduleMap[date];
+      }
+    });
+    
+    setPlannerHistory(newHistory);
+    localStorage.setItem('planner_history', JSON.stringify(newHistory));
+    
+    // Shift planner anchor to today so backlogged tasks generate starting today
     setPlannerStartDate(todayStr);
     localStorage.setItem('planner_start_date', todayStr);
+  };
+  
+  const handlePaceChange = (p) => {
+    setStudyPace(p);
+    localStorage.setItem('planner_study_pace', p);
   };
 
   // Month navigation
@@ -419,7 +328,7 @@ export default function PlannerPage() {
     // Determine dots (max 3)
     const pendingTasks = dayTasks.filter(t => !t.is_completed);
     const allDone = hasTasks && pendingTasks.length === 0;
-    const dots = pendingTasks.slice(0, 3).map(t => TAG_COLORS[t.type] || '#333');
+    const dots = pendingTasks.slice(0, 3).map(t => isPast ? '#ef4444' : (TAG_COLORS[t.type] || '#333'));
 
     calendarCells.push(
       <div
@@ -501,7 +410,7 @@ export default function PlannerPage() {
                   {['Casual', 'Moderate', 'Intensive'].map(p => (
                     <button
                       key={p}
-                      onClick={() => setStudyPace(p)}
+                      onClick={() => handlePaceChange(p)}
                       style={{
                         background: studyPace === p ? '#fff' : 'transparent',
                         color: studyPace === p ? '#2b5876' : '#fff',
@@ -542,12 +451,17 @@ export default function PlannerPage() {
                 </div>
 
                 {/* Tag Legend */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '20px', fontSize: '11px', color: '#888', borderTop: '1px solid #f0f0f0', paddingTop: '15px' }}>
+                <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '10px' }}>
                   {Object.entries(TAG_COLORS).map(([tag, color]) => (
-                    <span key={tag} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: color }} /> {tag}
-                    </span>
+                    <div key={tag} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#666' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: color }} />
+                      {tag}
+                    </div>
                   ))}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#666' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ef4444' }} />
+                    Missed
+                  </div>
                 </div>
               </div>
 
@@ -656,7 +570,7 @@ export default function PlannerPage() {
                           <div style={{
                             position: 'absolute', left: '-29px', top: '22px',
                             width: '12px', height: '12px', borderRadius: '50%',
-                            background: isDone ? '#4CAF50' : TAG_COLORS[task.type],
+                            background: isDone ? '#4CAF50' : ((selectedDateStr < todayStr) ? '#d32f2f' : TAG_COLORS[task.type]),
                             border: '3px solid #fff', zIndex: 2,
                             boxShadow: '0 0 0 1px #e0e0e0'
                           }} />
@@ -706,25 +620,34 @@ export default function PlannerPage() {
                             </div>
 
                             {/* Complete Checkbox */}
-                            <div 
-                              onClick={() => {
-                                if (selectedDateStr === todayStr && !isDone) {
-                                  handleComplete(selectedDateStr, task.id);
-                                }
-                              }}
-                              style={{
-                                position: 'absolute', right: '24px', top: '24px',
-                                width: '32px', height: '32px', borderRadius: '10px',
-                                border: `2px solid ${isDone ? '#4CAF50' : '#e0e0e0'}`,
-                                background: isDone ? '#4CAF50' : '#fff',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                cursor: (isDone || selectedDateStr !== todayStr) ? 'not-allowed' : 'pointer', transition: 'all 0.2s',
-                                boxShadow: isDone ? '0 4px 12px rgba(76,175,80,0.2)' : 'none',
-                                opacity: isDone ? 0.8 : 1
-                              }}
-                            >
-                              {isDone && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
-                            </div>
+                            {(() => {
+                              const isTimePassed = isTaskTimeCompleted(selectedDateStr, task.time_slot, todayStr);
+                              const isPastMissed = selectedDateStr < todayStr && !isDone;
+                              return (
+                                <div 
+                                  onClick={() => {
+                                    if (!isPastMissed && isTimePassed && !isDone) {
+                                      handleComplete(selectedDateStr, task.id);
+                                    }
+                                  }}
+                                  title={!isTimePassed ? "Session not yet completed" : (isPastMissed ? "Missed session" : "Mark completed")}
+                                  style={{
+                                    position: 'absolute', right: '24px', top: '24px',
+                                    width: '32px', height: '32px', borderRadius: '10px',
+                                    border: `2px solid ${isDone ? '#4CAF50' : (isPastMissed ? '#ef4444' : '#e0e0e0')}`,
+                                    background: isDone ? '#4CAF50' : (isPastMissed ? '#fef2f2' : (isTimePassed ? '#fff' : '#f5f5f5')),
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    cursor: (isDone || isPastMissed || !isTimePassed) ? 'not-allowed' : 'pointer', transition: 'all 0.2s',
+                                    boxShadow: isDone ? '0 4px 12px rgba(76,175,80,0.2)' : 'none',
+                                    opacity: (isDone || isPastMissed || !isTimePassed) ? 0.8 : 1
+                                  }}
+                                >
+                                  {isDone && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                                  {isPastMissed && !isDone && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>}
+                                  {!isTimePassed && !isDone && !isPastMissed && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a3a3a3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>}
+                                </div>
+                              );
+                            })()}
                           </div>
                         </div>
                       );
