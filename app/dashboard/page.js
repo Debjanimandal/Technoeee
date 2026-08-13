@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import {
   Chart, LineController, LineElement, PointElement,
   LinearScale, CategoryScale, Tooltip, Filler
@@ -9,6 +9,7 @@ import Sidebar from '@/components/layout/Sidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import Link from 'next/link';
 import { useAuth } from '@/lib/context/auth-context';
+import { useAnalytics } from '@/lib/context/analytics-context';
 import { supabase } from '@/lib/supabase/client';
 import coursesData from '../../public/data/real_courses_data.json';
 import {
@@ -98,13 +99,14 @@ function Skeleton({ w = '100%', h = 20, radius = 6 }) {
 }
 
 // ─── Stat Card Component ─────────────────────────────────────────────────────
-function StatCard({ label, value, icon: Icon, color, bgLight, loading }) {
+function StatCard({ label, value, icon: Icon, color, bgLight, loading, onClick }) {
   return (
-    <div className="hover-lift" style={{
+    <div className="hover-lift" onClick={onClick} style={{
       flex: '1 1 200px', background: '#fff', borderRadius: '20px', padding: '24px',
       boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)',
       display: 'flex', alignItems: 'center', gap: '16px',
-      transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      cursor: onClick ? 'pointer' : 'default'
     }}>
       <div style={{
         width: '48px', height: '48px', borderRadius: '14px', background: bgLight, color: color,
@@ -126,6 +128,14 @@ function StatCard({ label, value, icon: Icon, color, bgLight, loading }) {
 // ─── Main Dashboard Page ──────────────────────────────────────────────────────
 export default function DashboardPage() {
   const { user, profile } = useAuth();
+  const router = useRouter();
+  const { seriousnessScore, productiveTime, idleTime, quizScores } = useAnalytics();
+  
+  const [showFocusModal, setShowFocusModal] = useState(false);
+  const [showTopicsModal, setShowTopicsModal] = useState(false);
+  const [showHoursModal, setShowHoursModal] = useState(false);
+  const [showStreakModal, setShowStreakModal] = useState(false);
+  const [showWeeklyModal, setShowWeeklyModal] = useState(false);
 
   // Data state
   const [courses, setCourses] = useState([]);
@@ -142,6 +152,7 @@ export default function DashboardPage() {
   // Dynamic Planner Data
   const [upcomingTasks, setUpcomingTasks] = useState([]);
   const [completedTopicsCount, setCompletedTopicsCount] = useState(0);
+  const [completedTopicsList, setCompletedTopicsList] = useState([]);
   
   // AI Insights State
   const [aiInsight, setAiInsight] = useState("Analyzing your learning patterns...");
@@ -198,6 +209,7 @@ export default function DashboardPage() {
   useEffect(() => {
     try {
       const completed = JSON.parse(localStorage.getItem('planner_completed') || '[]');
+      setCompletedTopicsList(completed);
       setCompletedTopicsCount(completed.length);
       
       if (courses.length > 0) {
@@ -222,7 +234,7 @@ export default function DashboardPage() {
             }
           }
         });
-        setUpcomingTasks(tasks.slice(0, 3)); // Grab top 3
+        setUpcomingTasks(tasks.slice(0, 4)); // Grab top 4 to fill grid
       }
     } catch (e) {}
   }, [courses]);
@@ -415,11 +427,137 @@ export default function DashboardPage() {
 
             {/* ─── Stat Cards Row ───────────────────────────────────────────────── */}
             <div style={{ display: 'flex', gap: '20px', marginBottom: '32px', flexWrap: 'wrap' }}>
-              <StatCard label="Courses in Progress" value={courses.length} icon={Icons.Book} color="#3b82f6" bgLight="#eff6ff" loading={coursesLoading} />
-              <StatCard label="Completed Topics" value={completedTopicsCount} icon={Icons.CheckCircle} color="#8b5cf6" bgLight="#f5f3ff" loading={analyticsLoading} />
-              <StatCard label="Total Hours Spent" value={`${stats?.total_hours || 0}h`} icon={Icons.Clock} color="#f59e0b" bgLight="#fffbeb" loading={analyticsLoading} />
-              <StatCard label="Current Streak" value={`${streak} Days`} icon={Icons.Flame} color="#ef4444" bgLight="#fef2f2" loading={analyticsLoading} />
+              <StatCard 
+                label="Focus Score" 
+                value={seriousnessScore === null ? 'N/A' : `${seriousnessScore}%`} 
+                icon={Icons.Flame} 
+                color={seriousnessScore === null || seriousnessScore > 80 ? '#166534' : seriousnessScore > 50 ? '#b45309' : '#991b1b'} 
+                bgLight={seriousnessScore === null || seriousnessScore > 80 ? '#f0fdf4' : seriousnessScore > 50 ? '#fffbeb' : '#fef2f2'} 
+                loading={false} 
+                onClick={() => setShowFocusModal(true)} 
+              />
+              <StatCard label="Courses in Progress" value={courses.length} icon={Icons.Book} color="#3b82f6" bgLight="#eff6ff" loading={coursesLoading} onClick={() => router.push('/my-courses')} />
+              <StatCard label="Completed Topics" value={completedTopicsCount} icon={Icons.CheckCircle} color="#8b5cf6" bgLight="#f5f3ff" loading={analyticsLoading} onClick={() => setShowTopicsModal(true)} />
+              <StatCard label="Total Hours Spent" value={`${Math.round(productiveTime / 3600 * 10) / 10}h`} icon={Icons.Clock} color="#f59e0b" bgLight="#fffbeb" loading={analyticsLoading} onClick={() => setShowHoursModal(true)} />
+              <StatCard label="Current Streak" value={`${streak} Days`} icon={Icons.Flame} color="#ef4444" bgLight="#fef2f2" loading={analyticsLoading} onClick={() => setShowStreakModal(true)} />
             </div>
+
+            {/* ─── Modals ───────────────────────────────────────────── */}
+            {showFocusModal && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', width: '100%', maxWidth: '450px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+                  <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '8px' }}>How is Focus Score Calculated?</h2>
+                  <p style={{ color: '#64748b', marginBottom: '24px' }}>This metric evaluates your active engagement. It starts at 100% and drops if you have too much idle time or low quiz scores. It requires at least 1 minute of data or 1 quiz taken to compute.</p>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f8fafc', borderRadius: '12px' }}>
+                      <span style={{ fontWeight: '600' }}>Productive Time:</span>
+                      <span style={{ color: '#0f172a', fontWeight: 'bold' }}>{Math.round(productiveTime / 60)} mins</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f8fafc', borderRadius: '12px' }}>
+                      <span style={{ fontWeight: '600' }}>Idle Time:</span>
+                      <span style={{ color: '#0f172a', fontWeight: 'bold' }}>{Math.round(idleTime / 60)} mins</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f8fafc', borderRadius: '12px' }}>
+                      <span style={{ fontWeight: '600' }}>Total Quizzes Taken:</span>
+                      <span style={{ color: '#0f172a', fontWeight: 'bold' }}>{Object.keys(quizScores).length}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f8fafc', borderRadius: '12px' }}>
+                      <span style={{ fontWeight: '600' }}>Final Focus Score:</span>
+                      <span style={{ color: seriousnessScore === null ? '#64748b' : seriousnessScore > 80 ? '#166534' : '#b45309', fontWeight: 'bold', fontSize: '18px' }}>
+                        {seriousnessScore === null ? 'N/A' : `${seriousnessScore}%`}
+                      </span>
+                    </div>
+                  </div>
+                  <button onClick={() => setShowFocusModal(false)} style={{ width: '100%', padding: '14px', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Got it</button>
+                </div>
+              </div>
+            )}
+
+            {showTopicsModal && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', width: '100%', maxWidth: '450px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+                  <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '8px' }}>Completed Topics</h2>
+                  <p style={{ color: '#64748b', marginBottom: '24px' }}>Topics are marked as complete when you finish watching all their videos.</p>
+                  
+                  <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', marginBottom: '32px', maxHeight: '250px', overflowY: 'auto' }}>
+                    {completedTopicsList.length === 0 ? <div style={{textAlign: 'center', color: '#64748b', padding: '20px 0'}}>No topics completed yet.</div> : (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        {completedTopicsList.map(t => (
+                          <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', background: '#fff', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+                            <div style={{ color: '#10b981', display: 'flex', alignItems: 'center' }}>
+                              <Icons.CheckCircle />
+                            </div>
+                            <span style={{ fontWeight: '600', fontSize: '14px', color: '#0f172a', lineHeight: '1.4' }}>
+                              {t.replace('task-', '').replace(/-/g, ' ')}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <button onClick={() => setShowTopicsModal(false)} style={{ width: '100%', padding: '14px', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Close</button>
+                </div>
+              </div>
+            )}
+
+            {showHoursModal && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', width: '100%', maxWidth: '450px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+                  <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '8px' }}>Active Study Hours</h2>
+                  <p style={{ color: '#64748b', marginBottom: '24px' }}>This represents time spent actively engaged in a course. Keeping the tab open in the background counts as Idle Time.</p>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f0fdf4', borderRadius: '12px', border: '1px solid #bbf7d0' }}>
+                      <span style={{ fontWeight: '600', color: '#166534' }}>Active Study Time:</span>
+                      <span style={{ color: '#166534', fontWeight: 'bold' }}>{Math.round(productiveTime / 3600 * 10) / 10} hrs</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#fef2f2', borderRadius: '12px', border: '1px solid #fecaca' }}>
+                      <span style={{ fontWeight: '600', color: '#991b1b' }}>Idle Time (Tab Open):</span>
+                      <span style={{ color: '#991b1b', fontWeight: 'bold' }}>{Math.round(idleTime / 3600 * 10) / 10} hrs</span>
+                    </div>
+                  </div>
+                  <button onClick={() => setShowHoursModal(false)} style={{ width: '100%', padding: '14px', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Close</button>
+                </div>
+              </div>
+            )}
+
+            {showStreakModal && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', width: '100%', maxWidth: '450px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+                  <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '8px' }}>Current Streak</h2>
+                  <p style={{ color: '#64748b', marginBottom: '24px' }}>Streaks are calculated based on consecutive daily logins. Missing a full 24-hour window will reset your streak to 0.</p>
+                  
+                  <div style={{ padding: '16px', background: '#fef2f2', borderRadius: '12px', marginBottom: '32px' }}>
+                    <div style={{ fontWeight: 'bold', fontSize: '24px', color: '#ef4444', textAlign: 'center' }}>
+                      {streak} Day Streak! 🔥
+                    </div>
+                  </div>
+                  <button onClick={() => setShowStreakModal(false)} style={{ width: '100%', padding: '14px', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Close</button>
+                </div>
+              </div>
+            )}
+
+            {showWeeklyModal && (
+              <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', width: '100%', maxWidth: '450px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+                  <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '8px' }}>Weekly Goal Progress</h2>
+                  <p style={{ color: '#64748b', marginBottom: '24px' }}>This metric compares your active study hours over the past 7 days to your preset goal of 10 hours per week.</p>
+                  
+                  <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', marginBottom: '32px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <span style={{ fontWeight: '600' }}>Goal:</span>
+                      <span style={{ color: '#0f172a', fontWeight: 'bold' }}>10 hours</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span style={{ fontWeight: '600' }}>Current Progress:</span>
+                      <span style={{ color: '#8b5cf6', fontWeight: 'bold' }}>{stats?.weekly_hours || 0} hours</span>
+                    </div>
+                  </div>
+                  <button onClick={() => setShowWeeklyModal(false)} style={{ width: '100%', padding: '14px', background: '#0f172a', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Close</button>
+                </div>
+              </div>
+            )}
 
             {/* ─── Main Grid Layout ─────────────────────────────────────────────── */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '32px', alignItems: 'start' }}>
@@ -427,52 +565,29 @@ export default function DashboardPage() {
               {/* Left Column */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', height: '100%' }}>
                 
-                {/* Active Courses */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                    <h2 style={{ fontSize: '20px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Active Courses</h2>
+                {/* Up Next Widget (Dynamic from Planner) */}
+                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                    <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Up Next</h2>
+                    <Link href="/planner" style={{ color: '#4f46e5', fontSize: '13px', fontWeight: '700', textDecoration: 'none' }}>View All</Link>
                   </div>
-
-                  {coursesLoading ? (
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                      {[1,2].map(i => <div key={i} style={{ flex: 1, height: '160px', background: '#fff', borderRadius: '20px', padding: '20px' }}><Skeleton h={20} w="70%" /><div style={{marginTop:20}}><Skeleton h={10} /></div></div>)}
-                    </div>
-                  ) : courses.length === 0 ? (
-                    <div style={{ background: '#fff', borderRadius: '20px', padding: '40px', textAlign: 'center', border: '2px dashed #cbd5e1' }}>
-                      <p style={{ color: '#64748b', fontSize: '15px' }}>You haven't enrolled in any courses yet.</p>
+                  
+                  {upcomingTasks.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '20px 0', color: '#94a3b8' }}>
+                      <Icons.Calendar />
+                      <p style={{ fontSize: '14px', marginTop: '12px' }}>Your schedule is clear! Enjoy your break.</p>
                     </div>
                   ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-                      {courses.map((c) => (
-                        <div key={c.id} className="hover-lift" style={{ background: '#fff', borderRadius: '20px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)', overflow: 'hidden' }}>
-                          {/* Banner thumbnail */}
-                          <div style={{ position: 'relative', height: '130px', overflow: 'hidden', flexShrink: 0 }}>
-                            <img
-                              src={COURSE_BANNER_MAP[c.category] || '/course-banners/cpp.png'}
-                              alt={c.course_title}
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            />
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.45) 100%)' }} />
-                            <span style={{ position: 'absolute', bottom: '10px', left: '12px', fontSize: '10px', fontWeight: '700', color: '#fff', background: 'rgba(79,70,229,0.85)', padding: '3px 9px', borderRadius: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', backdropFilter: 'blur(4px)' }}>
-                              {c.category || 'General'}
-                            </span>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+                      {upcomingTasks.map((t, idx) => (
+                        <div key={idx} className="hover-lift" style={{ flex: '1 1 250px', maxWidth: '380px', display: 'flex', gap: '16px', padding: '16px', borderRadius: '16px', background: '#f8fafc', border: '1px solid #f1f5f9' }}>
+                          <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#e0e7ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                            <Icons.Book />
                           </div>
-                          {/* Card body */}
-                          <div style={{ padding: '20px' }}>
-                            <Link href="/my-courses" style={{ textDecoration: 'none' }}>
-                              <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#1e293b', marginBottom: '16px', lineHeight: '1.4', transition: 'color 0.2s' }} onMouseEnter={e => e.target.style.color = '#4f46e5'} onMouseLeave={e => e.target.style.color = '#1e293b'}>
-                                {c.course_title}
-                              </h3>
-                            </Link>
-                            <div>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', fontWeight: '600', color: '#64748b', marginBottom: '8px' }}>
-                                <span>Progress</span>
-                                <span style={{ color: '#0f172a' }}>{c.progress}%</span>
-                              </div>
-                              <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
-                                <div style={{ width: `${c.progress}%`, height: '100%', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', borderRadius: '4px' }} />
-                              </div>
-                            </div>
+                          <div>
+                            <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>{t.subject}</div>
+                            <div style={{ fontSize: '14px', fontWeight: '700', color: '#0f172a', marginBottom: '4px', lineHeight: '1.3' }}>{t.topic}</div>
+                            <div style={{ fontSize: '12px', color: '#64748b' }}>{t.module}</div>
                           </div>
                         </div>
                       ))}
@@ -501,7 +616,7 @@ export default function DashboardPage() {
                       ))}
                     </div>
                   </div>
-                  <div style={{ flex: 1, width: '100%', minHeight: '220px', position: 'relative' }}>
+                  <div style={{ flex: 1, width: '100%', minHeight: '250px', position: 'relative' }}>
                     {chartLoading ? (
                       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'flex-end', gap: '20px', paddingBottom: '20px' }}>
                         {[80, 140, 100, 180, 120, 200, 160].map((h, i) => <Skeleton key={i} h={h} w="10%" radius={8} />)}
@@ -517,7 +632,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Right Column / Sidebar */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', height: '100%' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 
                 {/* Continue Learning Widget */}
                 {continueCourse && (
@@ -546,36 +661,6 @@ export default function DashboardPage() {
                   </div>
                 )}
 
-                {/* Up Next Widget (Dynamic from Planner) */}
-                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                    <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Up Next</h2>
-                    <Link href="/planner" style={{ color: '#4f46e5', fontSize: '13px', fontWeight: '700', textDecoration: 'none' }}>View All</Link>
-                  </div>
-                  
-                  {upcomingTasks.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '20px 0', color: '#94a3b8' }}>
-                      <Icons.Calendar />
-                      <p style={{ fontSize: '14px', marginTop: '12px' }}>Your schedule is clear! Enjoy your break.</p>
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                      {upcomingTasks.map((t, idx) => (
-                        <div key={idx} className="hover-lift" style={{ display: 'flex', gap: '16px', padding: '16px', borderRadius: '16px', background: '#f8fafc', border: '1px solid #f1f5f9' }}>
-                          <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#e0e7ff', color: '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                            <Icons.Book />
-                          </div>
-                          <div>
-                            <div style={{ fontSize: '11px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>{t.subject}</div>
-                            <div style={{ fontSize: '14px', fontWeight: '700', color: '#0f172a', marginBottom: '4px', lineHeight: '1.3' }}>{t.topic}</div>
-                            <div style={{ fontSize: '12px', color: '#64748b' }}>{t.module}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
                 {/* AI Learning Insights Widget */}
                 <div style={{ flex: 1, background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <div>
@@ -589,7 +674,11 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Weekly Goal Widget */}
-                <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
+                <div 
+                  className="hover-lift"
+                  onClick={() => setShowWeeklyModal(true)}
+                  style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)', cursor: 'pointer' }}
+                >
                   <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: '0 0 24px 0' }}>Weekly Goal</h2>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
                     <div style={{ position: 'relative', width: '80px', height: '80px' }}>

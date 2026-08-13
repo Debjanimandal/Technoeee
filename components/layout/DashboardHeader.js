@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { Menu, UserCircle } from 'lucide-react';
 import { useAuth } from '@/lib/context/auth-context';
+import { useAnalytics } from '@/lib/context/analytics-context';
 import NotificationDropdown from '../shared/NotificationDropdown';
 import ProfileDropdown from '../shared/ProfileDropdown';
 import AuthModal from '../auth/AuthModal';
@@ -13,6 +14,7 @@ import { BADGES } from '@/lib/data/badges';
 
 export default function DashboardHeader() {
   const { user, profile, signOut } = useAuth();
+  const { seriousnessScore } = useAnalytics();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -113,9 +115,10 @@ export default function DashboardHeader() {
           <Image src="/image/logo.png" alt="TechnoEEE Logo" width={120} height={60} style={{ objectFit: 'contain' }} unoptimized />
         </div>
       </div>
-      <div className="header-right" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-
-        {/* Notification Bell */}
+      {/* Right Side Icons */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+        
+        {/* Notifications */}
         <div ref={notifRef} style={{ position: 'relative' }}>
           <button
             onClick={() => setShowNotifications(!showNotifications)}

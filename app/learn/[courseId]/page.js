@@ -15,6 +15,7 @@ import { supabase } from '@/lib/supabase/client';
 
 import SecureNotesViewer from '@/components/shared/SecureNotesViewer';
 import QuizViewer from '@/components/shared/QuizViewer';
+import { useAnalytics } from '@/lib/context/analytics-context';
 
 export default function CourseLearningPage() {
   const { courseId } = useParams();
@@ -31,6 +32,23 @@ export default function CourseLearningPage() {
   
   const { claimedBadges, claimBadge } = useBadges();
   const [progressPercent, setProgressPercent] = useState(0);
+  
+  const { logTime, logQuizResult } = useAnalytics();
+
+  // Activity timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      // Basic heuristic: if they have a topic selected, they are being productive
+      if (document.visibilityState === 'visible') {
+        if (selectedTopic) {
+          logTime('productive', 1);
+        } else {
+          logTime('idle', 1);
+        }
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [selectedTopic, logTime]);
 
   useEffect(() => {
     if (courseId) {
@@ -758,7 +776,7 @@ export default function CourseLearningPage() {
           onClose={() => setActiveQuiz(null)}
           onSubmitQuiz={(score, total) => {
             console.log(`Quiz Submitted: ${score}/${total}`);
-            // In the future, send this to analytics backend
+            logQuizResult(activeQuiz.title, score, total);
           }}
         />
       )}
