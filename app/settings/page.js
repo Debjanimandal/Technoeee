@@ -1,7 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronDown, ChevronUp, ArrowLeft } from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowLeft, X, Check } from 'lucide-react';
 import DashboardHeader from '@/components/layout/DashboardHeader';
 import Sidebar from '@/components/layout/Sidebar';
 
@@ -9,6 +9,15 @@ export default function SettingsPage() {
   const router = useRouter();
   const [openSection, setOpenSection] = useState(null);
   const [emailPreference, setEmailPreference] = useState(true);
+  const [mfaEnabled, setMfaEnabled] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -29,8 +38,6 @@ export default function SettingsPage() {
     { id: 'notifications', title: 'Notifications', content: 'Notification preferences will go here.' },
     { id: 'password', title: 'Password', content: 'Password change options will go here.' },
     { id: 'security', title: 'Security', content: 'Two-factor authentication and security settings.' },
-    { id: 'manage-account', title: 'Manage Account', content: 'Account deletion and data export options.' },
-    { id: 'manage-devices', title: 'Manage Devices', content: 'Active sessions and logged-in devices.' },
   ];
 
   const toggleSection = (id) => {
@@ -38,16 +45,78 @@ export default function SettingsPage() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f8fafc', overflow: 'hidden' }}>
+    <div className="app-layout">
       <Sidebar />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+      <div className="page-content" style={{ backgroundColor: '#fff', overflowY: 'auto', height: '100vh', paddingBottom: '60px' }}>
         
         <DashboardHeader />
 
-        <main style={{ flex: 1, overflowY: 'auto', padding: '32px', backgroundColor: '#fff' }}>
-          <div style={{ maxWidth: '800px', margin: '0 auto', width: '100%' }}>
-            
-            {/* Back Button */}
+        {/* Toast Notification */}
+        {toast && (
+          <div style={{
+            position: 'fixed',
+            top: '80px',
+            right: '24px',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'stretch',
+            backgroundColor: '#ffffff',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            minWidth: '300px',
+            animation: 'slideIn 0.3s ease-out'
+          }}>
+            <div style={{
+              backgroundColor: toast.type === 'success' ? '#22c55e' : '#64748b',
+              padding: '12px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <div style={{
+                width: '24px',
+                height: '24px',
+                backgroundColor: '#ffffff',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <Check size={16} color={toast.type === 'success' ? '#22c55e' : '#64748b'} strokeWidth={3} />
+              </div>
+            </div>
+            <div style={{
+              flex: 1,
+              padding: '0 16px',
+              display: 'flex',
+              alignItems: 'center',
+              color: toast.type === 'success' ? '#22c55e' : '#64748b',
+              fontWeight: '600',
+              fontSize: '15px',
+              fontFamily: 'system-ui, -apple-system, sans-serif'
+            }}>
+              {toast.message}
+            </div>
+            <button 
+              onClick={() => setToast(null)}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                padding: '0 16px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <X color={toast.type === 'success' ? '#22c55e' : '#64748b'} size={20} strokeWidth={2.5} />
+            </button>
+          </div>
+        )}
+
+        <div style={{ maxWidth: '800px', margin: '0 auto', width: '100%', paddingTop: '20px' }}>
+
             <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '24px' }}>
               <button 
                 onClick={() => {
@@ -208,6 +277,53 @@ export default function SettingsPage() {
                             </form>
                           </div>
                         </div>
+                      ) : section.id === 'security' ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', paddingTop: '8px' }}>
+                          <div>
+                            <h3 style={{ fontSize: '16px', fontWeight: '500', color: '#333', marginBottom: '8px', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+                              Multi-Factor Authentication (MFA)
+                            </h3>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingRight: '16px' }}>
+                              <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#64748b', margin: 0 }}>
+                                Turn on MFA to make sure only you can access your account.
+                              </p>
+                              
+                              {/* Toggle Switch */}
+                              <button
+                                onClick={() => {
+                                  const newValue = !mfaEnabled;
+                                  setMfaEnabled(newValue);
+                                  setToast({
+                                    message: newValue ? 'MFA enabled.' : 'MFA disabled.',
+                                    type: newValue ? 'success' : 'error'
+                                  });
+                                }}
+                                style={{
+                                  position: 'relative',
+                                  width: '44px',
+                                  height: '24px',
+                                  borderRadius: '9999px',
+                                  backgroundColor: mfaEnabled ? '#2563eb' : '#cbd5e1',
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  transition: 'background-color 0.3s'
+                                }}
+                              >
+                                <div style={{
+                                  position: 'absolute',
+                                  top: '2px',
+                                  left: mfaEnabled ? '22px' : '2px',
+                                  width: '20px',
+                                  height: '20px',
+                                  borderRadius: '50%',
+                                  backgroundColor: '#fff',
+                                  transition: 'left 0.3s ease',
+                                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                }} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       ) : (
                         section.content
                       )}
@@ -217,8 +333,7 @@ export default function SettingsPage() {
               ))}
             </div>
           </div>
-        </main>
+        </div>
       </div>
-    </div>
   );
 }
