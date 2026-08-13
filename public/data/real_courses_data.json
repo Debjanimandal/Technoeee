@@ -101,7 +101,7 @@
     "icon": "/image/ca-banner.png",
     "subject_code": "TIU-PC-UCS-T22101",
     "outcomes": [
-      "Explain computer architectures, Von Neumann/Harvard models, Flynn's taxonomy, and RISCâ€“CISC processors.",
+      "Explain computer architectures, Von Neumann/Harvard models, Flynn's taxonomy, and RISC\u00e2\u20ac\u201cCISC processors.",
       "Apply data representation methods and perform arithmetic operations using adders, multipliers, and dividers.",
       "Analyze instruction sets, addressing modes, instruction cycles, and control unit organization.",
       "Evaluate memory hierarchy, cache/virtual memory techniques, and I/O systems including DMA.",
@@ -111,6 +111,8 @@
     "modules": [
       {
         "title": "MODULE 1: - Introduction to Computer Systems",
+        "time": "6 Hours",
+        "intro": "Welcome to MODULE 1: - Introduction to Computer Systems! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey.",
         "topics": [
           "Evolution of Computer Architectures",
           "Von Neumann and Harvard Models",
@@ -120,33 +122,76 @@
           "MIMD; CISC and RISC Processors",
           "Performance metrics: measuring and reporting performance"
         ],
-        "videos": [],
-        "time": "6 Hours",
-        "intro": "Welcome to MODULE 1: - Introduction to Computer Systems! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
+        "videos": []
       },
       {
         "title": "MODULE 2: - Data Representation and Arithmetic",
+        "time": "6 Hours",
+        "intro": "Welcome to MODULE 2: - Data Representation and Arithmetic! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey.",
         "topics": [
           "Number systems and data representation; Signed numbers",
-          "data",
-          "control; Techniques to handle hazards; Instruction-level parallelism (ILP); Vector and array processors"
+          "fixed- and floating-point formats",
+          "Integer arithmetic: addition, subtraction (ripple carry, carry look-ahead adders)",
+          "Multiplication: Booth's algorithm",
+          "Division: restoring and non-restoring techniques"
         ],
-        "videos": [],
+        "videos": []
+      },
+      {
+        "title": "MODULE 3: - Instruction Set Architecture and CPU Organization",
+        "time": "7 Hours",
+        "intro": "Welcome to MODULE 3: - Instruction Set Architecture and CPU Organization! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey.",
+        "topics": [
+          "Instruction set architecture (ISA): instruction formats and types",
+          "Addressing modes: immediate, direct, indirect, register, etc.",
+          "Zero/One/Two/Three-address instructions",
+          "Instruction cycle and micro-operations",
+          "RISC vs CISC instruction sets (case study of a common CPU)",
+          "Control Unit: hardwired vs microprogrammed",
+          "ALU and datapath organization"
+        ],
+        "videos": []
+      },
+      {
+        "title": "MODULE 4: - Memory and I/O Organization",
+        "time": "8 Hours",
+        "intro": "Welcome to MODULE 4: - Memory and I/O Organization! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey.",
+        "topics": [
+          "Hierarchical memory organization: registers, cache, main, secondary",
+          "Cache memory: mapping, replacement, and optimization techniques",
+          "Virtual memory: organization, mapping, and replacement policies",
+          "Memory interleaving and coherence; Semiconductor memory technologies",
+          "I/O Systems: I/O subsystems, characteristics of peripheral devices",
+          "I/O techniques: program-controlled, interrupt-driven, and Direct Memory Access (DMA)"
+        ],
+        "videos": []
+      },
+      {
+        "title": "MODULE 5: - Pipelining and Instruction-Level Parallelism",
         "time": "9 Hours",
-        "intro": "Welcome to MODULE 5: - Pipelining and Instruction-Level Parallelism! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
+        "intro": "Welcome to MODULE 5: - Pipelining and Instruction-Level Parallelism! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey.",
+        "topics": [
+          "Basic concepts of pipelining: throughput and speedup",
+          "Pipeline hazards: structural, data, control",
+          "Techniques to handle hazards",
+          "Instruction-level parallelism (ILP)",
+          "Vector and array processors"
+        ],
+        "videos": []
       },
       {
         "title": "MODULE 6: - Multiprocessors and Advanced Architectures",
-        "topics": [
-          "Parallel processor and pipeline architectures; Multiprocessor systems: Centralized shared-memory models; Distributed shared-memory models; Synchronization",
-          "consistency",
-          "and interconnection networks; Cluster computers; Nonâ€“Von Neumann architectures: dataflow",
-          "reduction",
-          "systolic architectures"
-        ],
-        "videos": [],
         "time": "9 Hours",
-        "intro": "Welcome to MODULE 6: - Multiprocessors and Advanced Architectures! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey."
+        "intro": "Welcome to MODULE 6: - Multiprocessors and Advanced Architectures! This module will introduce you to the core concepts and fundamental principles necessary for mastering this subject. Please proceed through the topics in the roadmap on the left to begin your learning journey.",
+        "topics": [
+          "Parallel processor and pipeline architectures",
+          "Multiprocessor systems: Centralized shared-memory models",
+          "Distributed shared-memory models",
+          "Synchronization, consistency, and interconnection networks",
+          "Cluster computers",
+          "Non-Von Neumann architectures: dataflow, reduction, systolic architectures"
+        ],
+        "videos": []
       }
     ],
     "video_link": "",
@@ -160,7 +205,7 @@
           "summary": "This video traces the evolution of computer architectures from early vacuum tube machines through transistors, integrated circuits, and modern multi-core processors. Understand how Moore's Law has driven architectural changes.",
           "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Evolution%20of%20Computer%20Architectures.mp4",
           "thumbnail": "/image/thumbnails/computer_architecture.png",
-          "notes": "##  \n\n### **1.1 Introduction to the Evolution** \n\nThe evolution of computer architecture is a fascinating journey that spans over seven decades. It is a story of continuous miniaturization, increasing computational power, and shifting paradigms in how hardware components interact to execute instructions. To truly understand modern multi-core processors, one must first explore the technological eras—often referred to as \"generations\"—that laid the foundation for today's computing. \n\n### **1.2 The First Generation: Vacuum Tubes (1940s - Mid 1950s)** \n\nThe earliest electronic general-purpose computers, such as the ENIAC (Electronic Numerical Integrator and Computer) and the UNIVAC, were built using vacuum tubes. These glass tubes, which controlled the flow of electrons in a vacuum, served as the primary logic and memory components. \n\n**Characteristics and Challenges:** Vacuum tubes were massive, fragile, and consumed enormous amounts of electricity. The ENIAC, for instance, contained over 18,000 vacuum tubes, occupied an entire room, and consumed roughly 150 kilowatts of power. Because vacuum tubes generated immense heat, these computers required highly specialized, industrial-scale cooling systems. Furthermore, the mean time between failures (MTBF) was incredibly short; tubes would burn out daily, requiring constant maintenance and replacement. Programming these machines did not involve writing code in a modern sense; rather, it required physically rewiring the machine by plugging and unplugging cables on massive patch panels. \n\n2 \n\n### **1.3 The Second Generation: Transistors (Late 1950s - Mid 1960s)** \n\nThe invention of the transistor at Bell Labs in 1947 by John Bardeen, Walter Brattain, and William Shockley catalyzed the second generation of computing. Transistors were solid-state semiconductor devices that could amplify or switch electrical signals and power. \n\n**Impact on Architecture:** Replacing vacuum tubes with transistors revolutionized computer design. Transistors were a fraction of the size, generated significantly less heat, consumed drastically less power, and were far more reliable. This era saw the introduction of early supercomputers like the IBM 7030 Stretch and the DEC PDP-1. Assembly languages began to replace pure machine code, and early high-level languages like FORTRAN and COBOL were developed. Memory architectures also shifted from acoustic delay lines to magnetic core memory, vastly improving data retrieval speeds. \n\n### **1.4 The Third Generation: Integrated Circuits (Mid 1960s - Early 1970s)** \n\nWhile transistors shrank the computer, individual components still had to be manually wired together on printed circuit boards. The breakthrough came with the Integrated Circuit (IC), developed independently by Jack Kilby and Robert Noyce. An IC allows dozens, then hundreds, and eventually millions of transistors, resistors, and capacitors to be fabricated onto a single chip of semiconductor material (silicon). \n\n**The IBM System/360:** This era is defined by the IBM System/360 family of computers. For the first time, an entire line of computers shared a single instruction set architecture (ISA). Customers could buy a cheap, slow model and later upgrade to a fast, expensive model without rewriting their software. This introduced the critical concept of decoupling the architecture (the logical design and instruction set) from the microarchitecture (the physical implementation). \n\n3 \n\n### **1.5 The Fourth Generation: Microprocessors and VLSI (1970s -** \n\n### **2000s)** \n\nVery Large Scale Integration (VLSI) allowed hundreds of thousands of transistors to be packed onto a single chip. This density made it possible to place an entire Central Processing Unit (CPU) on a single silicon die, birthing the \"Microprocessor.\" \n\nThe Intel 4004, released in 1971, was the world's first commercial microprocessor. As VLSI technology improved, processors grew from 4-bit to 8-bit, 16-bit, 32-bit, and eventually 64-bit architectures. This era democratized computing, leading to the personal computer (PC) revolution spearheaded by machines like the Apple II and the IBM PC. Performance during this era was primarily driven by increasing the clock frequency (clock speed) of single-core processors and introducing complex instruction pipelines. \n\n### **1.6 Moore's Law and Its Implications** \n\nIn 1965, Gordon Moore (co-founder of Intel) observed that the number of transistors on a microchip doubles approximately every two years, while the cost of computers is halved. This empirical observation, known as **Moore's Law** , became a selffulfilling prophecy and the guiding roadmap for the semiconductor industry for over fifty years. \n\n**Dennard Scaling:** Alongside Moore's Law was Dennard Scaling, which stated that as transistors shrink, their power density stays constant. This meant engineers could run smaller transistors at higher clock speeds without increasing the overall power consumption of the chip. This was the primary driver of performance gains from the 1980s through the early 2000s. \n\n4 \n\n### **1.7 The Shift to Multi-Core Architectures** \n\nBy the mid-2000s, CPU clock speeds hit a \"power wall.\" Physics dictated that pushing single-core processors past the 3-4 GHz range required exponentially more power and generated unmanageable heat. Dennard Scaling broke down due to quantum effects like current leakage. \n\nTo continue delivering performance improvements in accordance with Moore's Law, the industry shifted entirely to **multi-core architectures** . Instead of making a single processor core faster, engineers placed multiple, slightly slower, and more power-efficient cores onto a single chip. This required a paradigm shift in computer science, as software now had to be written to execute tasks in parallel (multithreading) across multiple cores to see performance gains, fundamentally altering modern operating system and application design. \n\nToday, processors with 8, 16, or even 64 cores are standard, managing workloads across complex parallel architectures to circumvent the physical limitations of raw clock speed. \n\n5"
+          "notes": "##  \n\n### **1.1 Introduction to the Evolution** \n\nThe evolution of computer architecture is a fascinating journey that spans over seven decades. It is a story of continuous miniaturization, increasing computational power, and shifting paradigms in how hardware components interact to execute instructions. To truly understand modern multi-core processors, one must first explore the technological eras\u2014often referred to as \"generations\"\u2014that laid the foundation for today's computing. \n\n### **1.2 The First Generation: Vacuum Tubes (1940s - Mid 1950s)** \n\nThe earliest electronic general-purpose computers, such as the ENIAC (Electronic Numerical Integrator and Computer) and the UNIVAC, were built using vacuum tubes. These glass tubes, which controlled the flow of electrons in a vacuum, served as the primary logic and memory components. \n\n**Characteristics and Challenges:** Vacuum tubes were massive, fragile, and consumed enormous amounts of electricity. The ENIAC, for instance, contained over 18,000 vacuum tubes, occupied an entire room, and consumed roughly 150 kilowatts of power. Because vacuum tubes generated immense heat, these computers required highly specialized, industrial-scale cooling systems. Furthermore, the mean time between failures (MTBF) was incredibly short; tubes would burn out daily, requiring constant maintenance and replacement. Programming these machines did not involve writing code in a modern sense; rather, it required physically rewiring the machine by plugging and unplugging cables on massive patch panels. \n\n2 \n\n### **1.3 The Second Generation: Transistors (Late 1950s - Mid 1960s)** \n\nThe invention of the transistor at Bell Labs in 1947 by John Bardeen, Walter Brattain, and William Shockley catalyzed the second generation of computing. Transistors were solid-state semiconductor devices that could amplify or switch electrical signals and power. \n\n**Impact on Architecture:** Replacing vacuum tubes with transistors revolutionized computer design. Transistors were a fraction of the size, generated significantly less heat, consumed drastically less power, and were far more reliable. This era saw the introduction of early supercomputers like the IBM 7030 Stretch and the DEC PDP-1. Assembly languages began to replace pure machine code, and early high-level languages like FORTRAN and COBOL were developed. Memory architectures also shifted from acoustic delay lines to magnetic core memory, vastly improving data retrieval speeds. \n\n### **1.4 The Third Generation: Integrated Circuits (Mid 1960s - Early 1970s)** \n\nWhile transistors shrank the computer, individual components still had to be manually wired together on printed circuit boards. The breakthrough came with the Integrated Circuit (IC), developed independently by Jack Kilby and Robert Noyce. An IC allows dozens, then hundreds, and eventually millions of transistors, resistors, and capacitors to be fabricated onto a single chip of semiconductor material (silicon). \n\n**The IBM System/360:** This era is defined by the IBM System/360 family of computers. For the first time, an entire line of computers shared a single instruction set architecture (ISA). Customers could buy a cheap, slow model and later upgrade to a fast, expensive model without rewriting their software. This introduced the critical concept of decoupling the architecture (the logical design and instruction set) from the microarchitecture (the physical implementation). \n\n3 \n\n### **1.5 The Fourth Generation: Microprocessors and VLSI (1970s -** \n\n### **2000s)** \n\nVery Large Scale Integration (VLSI) allowed hundreds of thousands of transistors to be packed onto a single chip. This density made it possible to place an entire Central Processing Unit (CPU) on a single silicon die, birthing the \"Microprocessor.\" \n\nThe Intel 4004, released in 1971, was the world's first commercial microprocessor. As VLSI technology improved, processors grew from 4-bit to 8-bit, 16-bit, 32-bit, and eventually 64-bit architectures. This era democratized computing, leading to the personal computer (PC) revolution spearheaded by machines like the Apple II and the IBM PC. Performance during this era was primarily driven by increasing the clock frequency (clock speed) of single-core processors and introducing complex instruction pipelines. \n\n### **1.6 Moore's Law and Its Implications** \n\nIn 1965, Gordon Moore (co-founder of Intel) observed that the number of transistors on a microchip doubles approximately every two years, while the cost of computers is halved. This empirical observation, known as **Moore's Law** , became a selffulfilling prophecy and the guiding roadmap for the semiconductor industry for over fifty years. \n\n**Dennard Scaling:** Alongside Moore's Law was Dennard Scaling, which stated that as transistors shrink, their power density stays constant. This meant engineers could run smaller transistors at higher clock speeds without increasing the overall power consumption of the chip. This was the primary driver of performance gains from the 1980s through the early 2000s. \n\n4 \n\n### **1.7 The Shift to Multi-Core Architectures** \n\nBy the mid-2000s, CPU clock speeds hit a \"power wall.\" Physics dictated that pushing single-core processors past the 3-4 GHz range required exponentially more power and generated unmanageable heat. Dennard Scaling broke down due to quantum effects like current leakage. \n\nTo continue delivering performance improvements in accordance with Moore's Law, the industry shifted entirely to **multi-core architectures** . Instead of making a single processor core faster, engineers placed multiple, slightly slower, and more power-efficient cores onto a single chip. This required a paradigm shift in computer science, as software now had to be written to execute tasks in parallel (multithreading) across multiple cores to see performance gains, fundamentally altering modern operating system and application design. \n\nToday, processors with 8, 16, or even 64 cores are standard, managing workloads across complex parallel architectures to circumvent the physical limitations of raw clock speed. \n\n5"
         },
         {
           "title": "Video 2",
@@ -201,7 +246,7 @@
           "summary": "This video explains Single Instruction, Multiple Data (SIMD) architecture within Flynn's Taxonomy. Discover how a single instruction is applied across multiple data sets simultaneously, enabling efficient parallel processing in systems like the ILLIAC IV.",
           "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
           "thumbnail": "/image/thumbnails/computer_architecture.png",
-          "notes": "##  \n\n### **4.1 Introduction to SIMD (Single Instruction, Multiple Data)** \n\nWithin Flynn's Taxonomy, the SIMD architecture represents a massive leap forward for specialized parallel processing. SIMD stands for **Single Instruction stream, Multiple Data streams** . In this architecture, a single central control unit fetches and decodes a single instruction, but then broadcasts that exact same instruction to multiple processing elements (ALUs) concurrently. Each of these processing elements applies the instruction to its own distinct piece of data simultaneously. \n\nSIMD is the manifestation of _Data-Level Parallelism_ . It is designed to rapidly process large blocks of structured data where the exact same mathematical operation needs to be performed on every element in a dataset. \n\n### **4.2 Historical Context: The ILLIAC IV** \n\nTo truly understand SIMD, one must look at its historical roots. The most famous early implementation of a SIMD architecture was the **ILLIAC IV** supercomputer, designed in the late 1960s and operational in the 1970s at NASA's Ames Research Center. \n\nThe ILLIAC IV was designed with a single overarching Control Unit and an array of 64 independent Processing Elements (PEs). Each PE had its own local memory. When the Control Unit issued an instruction—for example, \"Add 5\"—all 64 PEs would simultaneously add 5 to whatever distinct number was residing in their local memory. While the ILLIAC IV faced significant engineering and reliability challenges, it successfully demonstrated that SIMD could achieve unprecedented computational speeds for specific scientific simulations, such as fluid dynamics and weather forecasting. \n\n13 \n\n### **4.3 Array Processors vs. Vector Processors** \n\nSIMD architectures generally fall into two subcategories based on how they handle memory and execution: \n\n- **Array Processors:** Like the ILLIAC IV, these systems have multiple physical ALUs spread out in an array. They operate synchronously on disparate blocks of memory. They are highly efficient but expensive and complex to build due to the intricate wiring required to route data between the ALUs. \n\n- **Vector Processors:** Popularized by the legendary Cray supercomputers in the 1970s and 1980s, vector processors utilize deeply pipelined ALUs rather than massively wide arrays of ALUs. They process one-dimensional arrays of data (vectors) by pulling them through the pipeline in a continuous stream. A single vector instruction might dictate an operation on an array of 64 numbers, and the hardware optimally streams these numbers through the computational units. \n\n### **4.4 Modern SIMD Implementations** \n\nWhile massive dedicated array processors are largely relegated to history, SIMD architecture is more prevalent today than ever before, tightly integrated into our everyday devices through two main avenues: \n\n#### **4.4.1 SIMD Extensions in Modern CPUs** \n\nModern general-purpose SISD processors have incorporated SIMD modules directly onto the chip to handle multimedia, encryption, and mathematical workloads. These are known as SIMD Instruction Set Extensions. Examples include: \n\n- **Intel/AMD (x86):** MMX, SSE (Streaming SIMD Extensions), and AVX (Advanced Vector Extensions). AVX-512, for example, utilizes massive 512-bit registers. A single instruction can operate on sixteen 32-bit floating-point numbers \n\n14 \n\nsimultaneously in one clock cycle, drastically speeding up video encoding and scientific computing. \n\n- **ARM:** NEON architecture, utilized heavily in smartphones and Apple Silicon (M1/M2 chips) to accelerate image processing, audio, and machine learning tasks locally on the device without draining the battery. \n\n#### **4.4.2 Graphics Processing Units (GPUs)** \n\nThe purest modern realization of SIMD principles is the GPU. Rendering 3D graphics involves calculating the position, lighting, and color of millions of independent pixels or vertices on a screen 60 times a second. The operations are largely identical; only the data (coordinates) differ. \n\nCompanies like NVIDIA and AMD build GPUs with thousands of simple processing cores. NVIDIA refers to their architecture as SIMT (Single Instruction, Multiple Threads), which is essentially an evolution of SIMD. When a programmer writes a shader or a compute kernel (via CUDA or OpenCL), the GPU broadcasts this single program to thousands of cores, which execute it concurrently across massive matrices of data. This architectural advantage is why GPUs are not only used for gaming but are the backbone of modern Artificial Intelligence and Deep Learning, where training neural networks requires millions of parallel matrix multiplications. \n\n### **4.5 Advantages and Limitations** \n\n**Advantages:** Unmatched efficiency for highly structured, predictable data workloads. Low control overhead (since only one instruction needs to be decoded for multiple operations), leading to massive throughput and power efficiency. \n\n**Limitations:** SIMD is highly inflexible. It performs poorly on code with complex branching logic (many `if/else` statements). If one processing element takes a different branch path than the others, the parallel execution breaks down, resulting in a phenomenon known as \"branch divergence,\" where parts of the processor must sit idle while waiting for the divergent path to complete. \n\n15"
+          "notes": "##  \n\n### **4.1 Introduction to SIMD (Single Instruction, Multiple Data)** \n\nWithin Flynn's Taxonomy, the SIMD architecture represents a massive leap forward for specialized parallel processing. SIMD stands for **Single Instruction stream, Multiple Data streams** . In this architecture, a single central control unit fetches and decodes a single instruction, but then broadcasts that exact same instruction to multiple processing elements (ALUs) concurrently. Each of these processing elements applies the instruction to its own distinct piece of data simultaneously. \n\nSIMD is the manifestation of _Data-Level Parallelism_ . It is designed to rapidly process large blocks of structured data where the exact same mathematical operation needs to be performed on every element in a dataset. \n\n### **4.2 Historical Context: The ILLIAC IV** \n\nTo truly understand SIMD, one must look at its historical roots. The most famous early implementation of a SIMD architecture was the **ILLIAC IV** supercomputer, designed in the late 1960s and operational in the 1970s at NASA's Ames Research Center. \n\nThe ILLIAC IV was designed with a single overarching Control Unit and an array of 64 independent Processing Elements (PEs). Each PE had its own local memory. When the Control Unit issued an instruction\u2014for example, \"Add 5\"\u2014all 64 PEs would simultaneously add 5 to whatever distinct number was residing in their local memory. While the ILLIAC IV faced significant engineering and reliability challenges, it successfully demonstrated that SIMD could achieve unprecedented computational speeds for specific scientific simulations, such as fluid dynamics and weather forecasting. \n\n13 \n\n### **4.3 Array Processors vs. Vector Processors** \n\nSIMD architectures generally fall into two subcategories based on how they handle memory and execution: \n\n- **Array Processors:** Like the ILLIAC IV, these systems have multiple physical ALUs spread out in an array. They operate synchronously on disparate blocks of memory. They are highly efficient but expensive and complex to build due to the intricate wiring required to route data between the ALUs. \n\n- **Vector Processors:** Popularized by the legendary Cray supercomputers in the 1970s and 1980s, vector processors utilize deeply pipelined ALUs rather than massively wide arrays of ALUs. They process one-dimensional arrays of data (vectors) by pulling them through the pipeline in a continuous stream. A single vector instruction might dictate an operation on an array of 64 numbers, and the hardware optimally streams these numbers through the computational units. \n\n### **4.4 Modern SIMD Implementations** \n\nWhile massive dedicated array processors are largely relegated to history, SIMD architecture is more prevalent today than ever before, tightly integrated into our everyday devices through two main avenues: \n\n#### **4.4.1 SIMD Extensions in Modern CPUs** \n\nModern general-purpose SISD processors have incorporated SIMD modules directly onto the chip to handle multimedia, encryption, and mathematical workloads. These are known as SIMD Instruction Set Extensions. Examples include: \n\n- **Intel/AMD (x86):** MMX, SSE (Streaming SIMD Extensions), and AVX (Advanced Vector Extensions). AVX-512, for example, utilizes massive 512-bit registers. A single instruction can operate on sixteen 32-bit floating-point numbers \n\n14 \n\nsimultaneously in one clock cycle, drastically speeding up video encoding and scientific computing. \n\n- **ARM:** NEON architecture, utilized heavily in smartphones and Apple Silicon (M1/M2 chips) to accelerate image processing, audio, and machine learning tasks locally on the device without draining the battery. \n\n#### **4.4.2 Graphics Processing Units (GPUs)** \n\nThe purest modern realization of SIMD principles is the GPU. Rendering 3D graphics involves calculating the position, lighting, and color of millions of independent pixels or vertices on a screen 60 times a second. The operations are largely identical; only the data (coordinates) differ. \n\nCompanies like NVIDIA and AMD build GPUs with thousands of simple processing cores. NVIDIA refers to their architecture as SIMT (Single Instruction, Multiple Threads), which is essentially an evolution of SIMD. When a programmer writes a shader or a compute kernel (via CUDA or OpenCL), the GPU broadcasts this single program to thousands of cores, which execute it concurrently across massive matrices of data. This architectural advantage is why GPUs are not only used for gaming but are the backbone of modern Artificial Intelligence and Deep Learning, where training neural networks requires millions of parallel matrix multiplications. \n\n### **4.5 Advantages and Limitations** \n\n**Advantages:** Unmatched efficiency for highly structured, predictable data workloads. Low control overhead (since only one instruction needs to be decoded for multiple operations), leading to massive throughput and power efficiency. \n\n**Limitations:** SIMD is highly inflexible. It performs poorly on code with complex branching logic (many `if/else` statements). If one processing element takes a different branch path than the others, the parallel execution breaks down, resulting in a phenomenon known as \"branch divergence,\" where parts of the processor must sit idle while waiting for the divergent path to complete. \n\n15"
         }
       ],
       "MISD": [
@@ -210,7 +255,7 @@
           "summary": "Explore the Multiple Instruction, Single Data (MISD) architecture in this video. Understand why this theoretical model, where multiple instructions are applied to a single data set, is rarely implemented in practical, real-life systems.",
           "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
           "thumbnail": "/image/thumbnails/computer_architecture.png",
-          "notes": "##  \n\n### **5.1 Introduction to MISD (Multiple Instruction, Single Data)** \n\nIn Flynn's Taxonomy, the MISD architecture stands out as the most eccentric and theoretical. MISD stands for **Multiple Instruction streams, Single Data stream** . In an MISD system, there are multiple independent processors (or processing elements), each executing a completely different set of instructions, but all of them are operating on the exact same stream of data simultaneously. \n\nIf SIMD is applying one rule to a massive group of objects, MISD is applying a dozen different, independent rules to a single object as it passes by. \n\n### **5.2 The Theoretical Nature of MISD** \n\nUnlike SISD (traditional computers), SIMD (GPUs and vector extensions), and MIMD (multi-core and cloud computing), MISD is rarely implemented in commercial, general-purpose computing. The reason is rooted in practicality: there are very few everyday computational problems that naturally map to a scenario where multiple diverse operations must be applied to the exact same piece of data at the same time. \n\nUsually, when multiple operations are needed on a piece of data, they are dependent on one another (e.g., add A and B, then multiply the result by C). This requires sequential processing (SISD) or pipelining, rather than true simultaneous multiple-instruction execution. \n\n### **5.3 Practical Niche Implementations** \n\nWhile rare, MISD is not entirely fictitious. It finds extreme value in highly specialized, mission-critical niches where reliability, security, or continuous throughput is paramount. \n\n16 \n\n#### **5.3.1 Fault-Tolerant Computing** \n\nThe most prominent real-world application of the MISD concept is in massive faulttolerant systems, specifically in aerospace and industrial control. In these environments, an incorrect calculation can lead to catastrophic loss of life or property. \n\n- **Space Shuttle Flight Computers:** The Space Shuttle utilized an architecture heavily reminiscent of MISD. A single data stream—sensor readings from gyroscopes, altimeters, and speedometers—was fed simultaneously to multiple independent computers. These computers often ran software written by completely different teams (to prevent a single logic bug from crashing all systems). They executed different instruction streams on the single data stream. Their outputs were then compared by a voting system. If four computers agreed and one disagreed, the outlier was ignored. \n\n- **Aviation (Boeing 777):** Modern fly-by-wire aircraft use Triple Modular Redundancy (TMR). Single data inputs (pilot joystick movements) are sent to multiple disparate processors, acting as an MISD system to guarantee that hardware failure or single-event upsets (like cosmic rays flipping a bit) do not crash the plane. \n\n#### **5.3.2 Pipelined Cryptography and Signal Processing** \n\nCertain types of cryptographic cracking or advanced signal filtering can be modeled as MISD. A single stream of encrypted text (Single Data) is fed through a massive array of processors. Each processor is running a completely different decryption algorithm or attempting a different algorithmic key (Multiple Instructions) simultaneously to see which one successfully cracks the code. Similarly, in radar systems, a single incoming analog signal might be fed to different digital filters concurrently to detect various anomalies. \n\n17 \n\n#### **5.3.3 Systolic Arrays (Pseudo-MISD)** \n\nSystolic arrays, specialized hardware architectures used heavily in modern AI processing (such as Google’s Tensor Processing Unit, or TPU), exhibit traits of MISD. In a systolic array, data flows rhythmically (like blood through a heart) through a network of processing elements. As a single piece of data moves through the grid, it encounters different processing nodes that perform different operations (instructions) on it in a tightly orchestrated sequence. While often categorized under SIMD or specific pipeline architectures, the flow of a single data element through multiple distinct operational nodes aligns closely with the MISD philosophy. \n\n### **5.4 Conclusion on MISD** \n\nMISD remains the odd-one-out in Flynn's Taxonomy. It is not designed for speed, throughput, or general computation. Instead, its architectural philosophy is leveraged for ultra-reliability, redundancy, and specialized sequential data transformation, proving that even theoretical models have critical value in specific engineering domains. \n\n18"
+          "notes": "##  \n\n### **5.1 Introduction to MISD (Multiple Instruction, Single Data)** \n\nIn Flynn's Taxonomy, the MISD architecture stands out as the most eccentric and theoretical. MISD stands for **Multiple Instruction streams, Single Data stream** . In an MISD system, there are multiple independent processors (or processing elements), each executing a completely different set of instructions, but all of them are operating on the exact same stream of data simultaneously. \n\nIf SIMD is applying one rule to a massive group of objects, MISD is applying a dozen different, independent rules to a single object as it passes by. \n\n### **5.2 The Theoretical Nature of MISD** \n\nUnlike SISD (traditional computers), SIMD (GPUs and vector extensions), and MIMD (multi-core and cloud computing), MISD is rarely implemented in commercial, general-purpose computing. The reason is rooted in practicality: there are very few everyday computational problems that naturally map to a scenario where multiple diverse operations must be applied to the exact same piece of data at the same time. \n\nUsually, when multiple operations are needed on a piece of data, they are dependent on one another (e.g., add A and B, then multiply the result by C). This requires sequential processing (SISD) or pipelining, rather than true simultaneous multiple-instruction execution. \n\n### **5.3 Practical Niche Implementations** \n\nWhile rare, MISD is not entirely fictitious. It finds extreme value in highly specialized, mission-critical niches where reliability, security, or continuous throughput is paramount. \n\n16 \n\n#### **5.3.1 Fault-Tolerant Computing** \n\nThe most prominent real-world application of the MISD concept is in massive faulttolerant systems, specifically in aerospace and industrial control. In these environments, an incorrect calculation can lead to catastrophic loss of life or property. \n\n- **Space Shuttle Flight Computers:** The Space Shuttle utilized an architecture heavily reminiscent of MISD. A single data stream\u2014sensor readings from gyroscopes, altimeters, and speedometers\u2014was fed simultaneously to multiple independent computers. These computers often ran software written by completely different teams (to prevent a single logic bug from crashing all systems). They executed different instruction streams on the single data stream. Their outputs were then compared by a voting system. If four computers agreed and one disagreed, the outlier was ignored. \n\n- **Aviation (Boeing 777):** Modern fly-by-wire aircraft use Triple Modular Redundancy (TMR). Single data inputs (pilot joystick movements) are sent to multiple disparate processors, acting as an MISD system to guarantee that hardware failure or single-event upsets (like cosmic rays flipping a bit) do not crash the plane. \n\n#### **5.3.2 Pipelined Cryptography and Signal Processing** \n\nCertain types of cryptographic cracking or advanced signal filtering can be modeled as MISD. A single stream of encrypted text (Single Data) is fed through a massive array of processors. Each processor is running a completely different decryption algorithm or attempting a different algorithmic key (Multiple Instructions) simultaneously to see which one successfully cracks the code. Similarly, in radar systems, a single incoming analog signal might be fed to different digital filters concurrently to detect various anomalies. \n\n17 \n\n#### **5.3.3 Systolic Arrays (Pseudo-MISD)** \n\nSystolic arrays, specialized hardware architectures used heavily in modern AI processing (such as Google\u2019s Tensor Processing Unit, or TPU), exhibit traits of MISD. In a systolic array, data flows rhythmically (like blood through a heart) through a network of processing elements. As a single piece of data moves through the grid, it encounters different processing nodes that perform different operations (instructions) on it in a tightly orchestrated sequence. While often categorized under SIMD or specific pipeline architectures, the flow of a single data element through multiple distinct operational nodes aligns closely with the MISD philosophy. \n\n### **5.4 Conclusion on MISD** \n\nMISD remains the odd-one-out in Flynn's Taxonomy. It is not designed for speed, throughput, or general computation. Instead, its architectural philosophy is leveraged for ultra-reliability, redundancy, and specialized sequential data transformation, proving that even theoretical models have critical value in specific engineering domains. \n\n18"
         }
       ],
       "MIMD; CISC and RISC Processors": [
@@ -228,7 +273,7 @@
           "summary": "This video discusses core system components and processing techniques that impact computer performance. Understand the roles of the Processor, Memory Unit, Sequential vs. Parallel Processing, and how pipelining decomposes tasks to significantly reduce total processing time.",
           "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
           "thumbnail": "/image/thumbnails/computer_architecture.png",
-          "notes": "##  \n\n## **REPORTING PERFORMANCE** \n\n### **7.1 The Complexity of Measuring Performance** \n\nDefining \"performance\" in computer architecture is inherently complex. For a desktop user, performance might mean how quickly a video game loads. For a data center manager, it means how many web requests a server can handle per second (throughput) relative to the electricity consumed. To objectively compare different computer architectures, engineers rely on standardized performance metrics and mathematical equations. \n\n### **7.2 The CPU Performance Equation** \n\nThe most fundamental metric in computer architecture is **Execution Time** (or CPU Time)—the actual time the CPU spends executing a specific program. It is independent of I/O wait times or operating system delays. The CPU Time can be mathematically broken down into three critical components: \n\n##### **CPU Time = Instruction Count (IC) × Cycles Per Instruction (CPI) × Clock Cycle Time** \n\n- **Instruction Count (IC):** The total number of machine language instructions required to complete the program. This is largely determined by the software compiler and the Instruction Set Architecture (CISC architectures generally have lower IC than RISC architectures). \n\n- **Cycles Per Instruction (CPI):** The average number of clock cycles required to execute an instruction. This is heavily influenced by the microarchitecture (the physical design of the CPU). Deep pipelining, out-of-order execution, and efficient branch prediction all work to lower the CPI. \n\n23 \n\n- **Clock Cycle Time:** The inverse of the clock rate (e.g., a 4 GHz processor has a cycle time of 0.25 nanoseconds). This is dictated by the physical hardware fabrication and transistor switching speed. \n\nImproving performance requires reducing one of these three variables. However, they are highly interdependent; improving one (like increasing clock speed) often negatively impacts another (like increasing CPI due to memory stalls). \n\n### **7.3 Common Performance Metrics (and Their Flaws)** \n\nHistorically, the industry used several single-number metrics to boast about performance, many of which are now considered misleading: \n\n- **Clock Speed (GHz):** While popular in marketing, comparing clock speeds is only valid between identical CPU microarchitectures. A 3 GHz RISC processor might process more instructions in a given time than a 4 GHz CISC processor because of pipeline efficiency. This fallacy is known as the \"Megahertz Myth.\" \n\n- **MIPS (Millions of Instructions Per Second):** This measures execution speed, but fails to account for the fact that a CISC instruction does significantly more work than a RISC instruction. Thus, a computer with lower MIPS might actually finish a program faster. \n\n- **FLOPS (Floating-Point Operations Per Second):** Highly relevant in scientific computing, supercomputing, and GPU benchmarks. It measures the raw mathematical crunching power of the ALU, but doesn't reflect general-purpose integer performance or memory bottlenecks. \n\n### **7.4 Benchmarks** \n\nBecause theoretical metrics are flawed, the industry standard for measuring performance is **Benchmarking** . Benchmarks are standardized suites of real-world programs designed to stress test different components of a computer. \n\n24 \n\nThe most respected suite is from SPEC (Standard Performance Evaluation Corporation). **SPEC CPU** benchmarks consist of complex C, C++, and Fortran programs representing real engineering, compilation, and physics tasks. By running these standardized programs on different machines and comparing the execution times, reviewers can definitively say which architecture performs better in realworld scenarios. \n\n### **7.5 Amdahl’s Law and Parallel Performance** \n\nWhen measuring the performance of multi-core (MIMD) or parallel architectures, engineers use **Speedup** . However, adding more processors does not yield a linear **Amdahl's Law** . increase in performance. This limitation is defined by \n\nGene Amdahl observed that every program has a strictly sequential component (code that must run one step at a time, like setting up memory) and a parallel component (code that can be distributed across cores). Amdahl's Law states that the maximum theoretical speedup of a system is severely bottlenecked by the sequential portion. If 25% of a program is strictly sequential, the maximum speedup you can achieve—even with infinite processors—is only 4x. Therefore, optimizing the sequential bottlenecks of an architecture is just as critical as adding more cores. \n\nConversely, **Gustafson's Law** offers a more optimistic view, suggesting that as computing power increases, developers simply solve larger, more complex parallel problems in the same amount of time, shifting the focus from execution speed to total workload capacity. \n\n25 \n\n### **7.6 Energy and Power Metrics** \n\nIn modern computer architecture, raw speed is no longer the sole goal; **Energy Efficiency** is paramount. Mobile devices require long battery life, and data centers face physical limits on power grids and cooling systems. Modern metrics include: \n\n- **Performance per Watt:** Measuring how many computations (e.g., FLOPS) are achieved per joule of energy consumed. This is the primary metric for modern supercomputer rankings (like the Green500 list). \n\n- **TDP (Thermal Design Power):** The maximum amount of heat a system's cooling must dissipate. Managing TDP dynamically (e.g., thermal throttling, where the CPU slows itself down to prevent melting) directly impacts real-world sustained performance. \n\n26"
+          "notes": "##  \n\n## **REPORTING PERFORMANCE** \n\n### **7.1 The Complexity of Measuring Performance** \n\nDefining \"performance\" in computer architecture is inherently complex. For a desktop user, performance might mean how quickly a video game loads. For a data center manager, it means how many web requests a server can handle per second (throughput) relative to the electricity consumed. To objectively compare different computer architectures, engineers rely on standardized performance metrics and mathematical equations. \n\n### **7.2 The CPU Performance Equation** \n\nThe most fundamental metric in computer architecture is **Execution Time** (or CPU Time)\u2014the actual time the CPU spends executing a specific program. It is independent of I/O wait times or operating system delays. The CPU Time can be mathematically broken down into three critical components: \n\n##### **CPU Time = Instruction Count (IC) \u00d7 Cycles Per Instruction (CPI) \u00d7 Clock Cycle Time** \n\n- **Instruction Count (IC):** The total number of machine language instructions required to complete the program. This is largely determined by the software compiler and the Instruction Set Architecture (CISC architectures generally have lower IC than RISC architectures). \n\n- **Cycles Per Instruction (CPI):** The average number of clock cycles required to execute an instruction. This is heavily influenced by the microarchitecture (the physical design of the CPU). Deep pipelining, out-of-order execution, and efficient branch prediction all work to lower the CPI. \n\n23 \n\n- **Clock Cycle Time:** The inverse of the clock rate (e.g., a 4 GHz processor has a cycle time of 0.25 nanoseconds). This is dictated by the physical hardware fabrication and transistor switching speed. \n\nImproving performance requires reducing one of these three variables. However, they are highly interdependent; improving one (like increasing clock speed) often negatively impacts another (like increasing CPI due to memory stalls). \n\n### **7.3 Common Performance Metrics (and Their Flaws)** \n\nHistorically, the industry used several single-number metrics to boast about performance, many of which are now considered misleading: \n\n- **Clock Speed (GHz):** While popular in marketing, comparing clock speeds is only valid between identical CPU microarchitectures. A 3 GHz RISC processor might process more instructions in a given time than a 4 GHz CISC processor because of pipeline efficiency. This fallacy is known as the \"Megahertz Myth.\" \n\n- **MIPS (Millions of Instructions Per Second):** This measures execution speed, but fails to account for the fact that a CISC instruction does significantly more work than a RISC instruction. Thus, a computer with lower MIPS might actually finish a program faster. \n\n- **FLOPS (Floating-Point Operations Per Second):** Highly relevant in scientific computing, supercomputing, and GPU benchmarks. It measures the raw mathematical crunching power of the ALU, but doesn't reflect general-purpose integer performance or memory bottlenecks. \n\n### **7.4 Benchmarks** \n\nBecause theoretical metrics are flawed, the industry standard for measuring performance is **Benchmarking** . Benchmarks are standardized suites of real-world programs designed to stress test different components of a computer. \n\n24 \n\nThe most respected suite is from SPEC (Standard Performance Evaluation Corporation). **SPEC CPU** benchmarks consist of complex C, C++, and Fortran programs representing real engineering, compilation, and physics tasks. By running these standardized programs on different machines and comparing the execution times, reviewers can definitively say which architecture performs better in realworld scenarios. \n\n### **7.5 Amdahl\u2019s Law and Parallel Performance** \n\nWhen measuring the performance of multi-core (MIMD) or parallel architectures, engineers use **Speedup** . However, adding more processors does not yield a linear **Amdahl's Law** . increase in performance. This limitation is defined by \n\nGene Amdahl observed that every program has a strictly sequential component (code that must run one step at a time, like setting up memory) and a parallel component (code that can be distributed across cores). Amdahl's Law states that the maximum theoretical speedup of a system is severely bottlenecked by the sequential portion. If 25% of a program is strictly sequential, the maximum speedup you can achieve\u2014even with infinite processors\u2014is only 4x. Therefore, optimizing the sequential bottlenecks of an architecture is just as critical as adding more cores. \n\nConversely, **Gustafson's Law** offers a more optimistic view, suggesting that as computing power increases, developers simply solve larger, more complex parallel problems in the same amount of time, shifting the focus from execution speed to total workload capacity. \n\n25 \n\n### **7.6 Energy and Power Metrics** \n\nIn modern computer architecture, raw speed is no longer the sole goal; **Energy Efficiency** is paramount. Mobile devices require long battery life, and data centers face physical limits on power grids and cooling systems. Modern metrics include: \n\n- **Performance per Watt:** Measuring how many computations (e.g., FLOPS) are achieved per joule of energy consumed. This is the primary metric for modern supercomputer rankings (like the Green500 list). \n\n- **TDP (Thermal Design Power):** The maximum amount of heat a system's cooling must dissipate. Managing TDP dynamically (e.g., thermal throttling, where the CPU slows itself down to prevent melting) directly impacts real-world sustained performance. \n\n26"
         }
       ],
       "secondary; Cache memory: mapping": [
@@ -271,7 +316,2035 @@
           "thumbnail": "/image/thumbnails/memory_management.png"
         }
       ]
-    }
+    },
+    "topicQuizzes": {
+      "Evolution of Computer Architectures": [
+        {
+          "question": "Which of the following hardware components characterized the first generation of computers?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Transistors"
+            },
+            {
+              "id": "B",
+              "text": "Integrated Circuits"
+            },
+            {
+              "id": "C",
+              "text": "Vacuum Tubes"
+            },
+            {
+              "id": "D",
+              "text": "Microprocessors"
+            }
+          ],
+          "correct_answers": [
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Transistors characterized the second generation."
+            },
+            {
+              "option": "B",
+              "reason": "Integrated circuits were the hallmark of the third generation."
+            },
+            {
+              "option": "D",
+              "reason": "Microprocessors emerged in the fourth generation."
+            }
+          ]
+        },
+        {
+          "question": "What were the major impacts of replacing vacuum tubes with transistors? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "Drastic reduction in physical size"
+            },
+            {
+              "id": "B",
+              "text": "Increased heat generation"
+            },
+            {
+              "id": "C",
+              "text": "Significant improvement in reliability"
+            },
+            {
+              "id": "D",
+              "text": "Higher manufacturing cost"
+            }
+          ],
+          "correct_answers": [
+            "A",
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "B",
+              "reason": "Transistors generated significantly LESS heat than vacuum tubes."
+            },
+            {
+              "option": "D",
+              "reason": "Transistors were much cheaper to produce, not more expensive."
+            }
+          ]
+        },
+        {
+          "question": "Moore's Law originally observed that the number of transistors on a microchip doubles approximately every:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Six months"
+            },
+            {
+              "id": "B",
+              "text": "One year"
+            },
+            {
+              "id": "C",
+              "text": "Two years"
+            },
+            {
+              "id": "D",
+              "text": "Five years"
+            }
+          ],
+          "correct_answers": [
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Six months is too short; Moore's observation was a longer cycle."
+            },
+            {
+              "option": "B",
+              "reason": "One year was an early estimate, but it was revised to two years."
+            },
+            {
+              "option": "D",
+              "reason": "Five years is too slow compared to the historical scaling rate."
+            }
+          ]
+        },
+        {
+          "question": "What physical limitations forced the industry's shift from single-core to multi-core architectures? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "Power consumption and the 'power wall'"
+            },
+            {
+              "id": "B",
+              "text": "Inability to manufacture smaller transistors"
+            },
+            {
+              "id": "C",
+              "text": "Unmanageable heat dissipation at high clock speeds"
+            },
+            {
+              "id": "D",
+              "text": "The breakdown of Dennard Scaling"
+            }
+          ],
+          "correct_answers": [
+            "A",
+            "C",
+            "D"
+          ],
+          "explanations": [
+            {
+              "option": "B",
+              "reason": "Manufacturing smaller transistors continued; the issue was power and heat per transistor."
+            }
+          ]
+        },
+        {
+          "question": "What was the critical breakthrough introduced by the IBM System/360?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The first use of a mouse and GUI"
+            },
+            {
+              "id": "B",
+              "text": "Decoupling the instruction set architecture from the physical microarchitecture"
+            },
+            {
+              "id": "C",
+              "text": "The invention of the transistor"
+            },
+            {
+              "id": "D",
+              "text": "The first multi-core processor"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "GUIs and mice were developed much later."
+            },
+            {
+              "option": "C",
+              "reason": "The transistor was invented earlier at Bell Labs."
+            },
+            {
+              "option": "D",
+              "reason": "Multi-core processors were introduced decades later."
+            }
+          ]
+        }
+      ],
+      "Von Neumann and Harvard Models": [
+        {
+          "question": "What is the primary cause of the Von Neumann bottleneck?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Extremely slow RAM modules"
+            },
+            {
+              "id": "B",
+              "text": "A single shared bus for fetching both data and instructions"
+            },
+            {
+              "id": "C",
+              "text": "CPU overheating"
+            },
+            {
+              "id": "D",
+              "text": "Lack of L3 Cache"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "While RAM latency exists, the shared bus is the architectural limit."
+            },
+            {
+              "option": "C",
+              "reason": "Heat limits clock speed, not the memory fetch model."
+            },
+            {
+              "option": "D",
+              "reason": "Cache mitigates it, but the shared bus is the root architectural cause."
+            }
+          ]
+        },
+        {
+          "question": "What is a key advantage of the Harvard architecture?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It utilizes vacuum tubes for speed"
+            },
+            {
+              "id": "B",
+              "text": "It is cheaper to build than Von Neumann"
+            },
+            {
+              "id": "C",
+              "text": "Simultaneous fetching of instruction and data"
+            },
+            {
+              "id": "D",
+              "text": "It uses a unified memory space"
+            }
+          ],
+          "correct_answers": [
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "It is an architecture model, independent of hardware components like tubes."
+            },
+            {
+              "option": "B",
+              "reason": "It is typically more complex and expensive due to dual memory modules."
+            },
+            {
+              "option": "D",
+              "reason": "Unified memory is the defining trait of Von Neumann, not Harvard."
+            }
+          ]
+        },
+        {
+          "question": "Which types of computing systems heavily utilize pure or modified Harvard architecture? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "General-purpose PC main memory"
+            },
+            {
+              "id": "B",
+              "text": "Digital Signal Processors (DSPs)"
+            },
+            {
+              "id": "C",
+              "text": "Microcontrollers"
+            },
+            {
+              "id": "D",
+              "text": "Mainframe hard drives"
+            }
+          ],
+          "correct_answers": [
+            "B",
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "General PCs use a Von Neumann main memory model."
+            },
+            {
+              "option": "D",
+              "reason": "Hard drives are storage, not processor memory architectures."
+            }
+          ]
+        },
+        {
+          "question": "What does a 'Modified Harvard Architecture' look like in modern CPUs?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Splitting main RAM into two separate sticks"
+            },
+            {
+              "id": "B",
+              "text": "Using separate L1 caches for instructions and data internally"
+            },
+            {
+              "id": "C",
+              "text": "A CPU with two distinct ALUs"
+            },
+            {
+              "id": "D",
+              "text": "Storing instructions locally and data in the cloud"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Main RAM remains unified in a modified setup."
+            },
+            {
+              "option": "C",
+              "reason": "Having two ALUs makes a processor superscalar, not Harvard."
+            },
+            {
+              "option": "D",
+              "reason": "Cloud storage is entirely unrelated to CPU cache architecture."
+            }
+          ]
+        },
+        {
+          "question": "In a pure Von Neumann machine, what happens if an instruction execution requires reading data from memory?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It fetches both the next instruction and data simultaneously"
+            },
+            {
+              "id": "B",
+              "text": "It must multiplex the shared bus, fetching them sequentially"
+            },
+            {
+              "id": "C",
+              "text": "It crashes the operating system"
+            },
+            {
+              "id": "D",
+              "text": "It retrieves data from a secondary CPU"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Simultaneous fetch requires dual buses (Harvard)."
+            },
+            {
+              "option": "C",
+              "reason": "It doesn't crash; the processor simply waits (stalls)."
+            },
+            {
+              "option": "D",
+              "reason": "It uses the same CPU, not a secondary one."
+            }
+          ]
+        }
+      ],
+      "Flynn's Taxonomy: SISD": [
+        {
+          "question": "What does SISD stand for?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Single Instruction, Single Data"
+            },
+            {
+              "id": "B",
+              "text": "Simultaneous Instruction, Single Data"
+            },
+            {
+              "id": "C",
+              "text": "Single Instruction, Shared Data"
+            },
+            {
+              "id": "D",
+              "text": "Serial Instruction, Serial Data"
+            }
+          ],
+          "correct_answers": [
+            "A"
+          ],
+          "explanations": [
+            {
+              "option": "B",
+              "reason": "Incorrect acronym expansion."
+            },
+            {
+              "option": "C",
+              "reason": "Incorrect acronym expansion."
+            },
+            {
+              "option": "D",
+              "reason": "Incorrect acronym expansion."
+            }
+          ]
+        },
+        {
+          "question": "SISD is the physical, practical implementation of which classical computing model?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Harvard Architecture"
+            },
+            {
+              "id": "B",
+              "text": "Von Neumann Architecture"
+            },
+            {
+              "id": "C",
+              "text": "SIMT Architecture"
+            },
+            {
+              "id": "D",
+              "text": "Quantum Computing"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Harvard typically implies separate data/instruction pathways."
+            },
+            {
+              "option": "C",
+              "reason": "SIMT is an architecture used by modern GPUs."
+            },
+            {
+              "option": "D",
+              "reason": "Quantum computing is a completely different physical paradigm."
+            }
+          ]
+        },
+        {
+          "question": "Which technique is used in SISD processors to overlap the execution stages of multiple instructions and improve throughput?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Pipelining"
+            },
+            {
+              "id": "B",
+              "text": "Multi-threading"
+            },
+            {
+              "id": "C",
+              "text": "Hyper-threading"
+            },
+            {
+              "id": "D",
+              "text": "Vector processing"
+            }
+          ],
+          "correct_answers": [
+            "A"
+          ],
+          "explanations": [
+            {
+              "option": "B",
+              "reason": "Multi-threading requires multiple thread contexts, often implies MIMD."
+            },
+            {
+              "option": "C",
+              "reason": "Hyper-threading is Intel's specific multi-threading implementation."
+            },
+            {
+              "option": "D",
+              "reason": "Vector processing is a SIMD concept."
+            }
+          ]
+        },
+        {
+          "question": "What are the fundamental limitations of an SISD system? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "Performance is strictly bound by the CPU clock rate"
+            },
+            {
+              "id": "B",
+              "text": "Inefficient at processing massive arrays of data simultaneously"
+            },
+            {
+              "id": "C",
+              "text": "Cannot execute independent computations in true parallel"
+            },
+            {
+              "id": "D",
+              "text": "Incapable of performing basic arithmetic operations"
+            }
+          ],
+          "correct_answers": [
+            "A",
+            "B",
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "D",
+              "reason": "SISD systems are perfectly capable of arithmetic via their ALU."
+            }
+          ]
+        },
+        {
+          "question": "Which of these are core components of an SISD architecture? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "Central Processing Unit (CPU)"
+            },
+            {
+              "id": "B",
+              "text": "Array of hundreds of ALUs"
+            },
+            {
+              "id": "C",
+              "text": "Unified Memory Unit"
+            },
+            {
+              "id": "D",
+              "text": "Single Control Unit"
+            }
+          ],
+          "correct_answers": [
+            "A",
+            "C",
+            "D"
+          ],
+          "explanations": [
+            {
+              "option": "B",
+              "reason": "Massive arrays of ALUs are a defining feature of SIMD or MIMD, not SISD."
+            }
+          ]
+        }
+      ],
+      "SIMD": [
+        {
+          "question": "SIMD architectures are exceptionally efficient for which types of workloads? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "Sequential text parsing"
+            },
+            {
+              "id": "B",
+              "text": "Image and video processing"
+            },
+            {
+              "id": "C",
+              "text": "Scientific fluid simulations"
+            },
+            {
+              "id": "D",
+              "text": "Code with complex branching logic (if/else)"
+            }
+          ],
+          "correct_answers": [
+            "B",
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Text parsing often requires sequential, unpredictable logic."
+            },
+            {
+              "option": "D",
+              "reason": "Branching logic causes pipeline divergence, making SIMD highly inefficient."
+            }
+          ]
+        },
+        {
+          "question": "How does a SIMD processor handle a single instruction?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It executes it on a single, isolated data point"
+            },
+            {
+              "id": "B",
+              "text": "It broadcasts the instruction to multiple ALUs to operate on distinct data points simultaneously"
+            },
+            {
+              "id": "C",
+              "text": "It splits the instruction into micro-ops"
+            },
+            {
+              "id": "D",
+              "text": "It sends it to the cloud for processing"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "That describes an SISD processor."
+            },
+            {
+              "option": "C",
+              "reason": "That is a characteristic of modern CISC instruction decoders."
+            },
+            {
+              "option": "D",
+              "reason": "Irrelevant to local architectural execution."
+            }
+          ]
+        },
+        {
+          "question": "Which historic supercomputer is a famous early example of a SIMD architecture?",
+          "options": [
+            {
+              "id": "A",
+              "text": "ENIAC"
+            },
+            {
+              "id": "B",
+              "text": "UNIVAC"
+            },
+            {
+              "id": "C",
+              "text": "ILLIAC IV"
+            },
+            {
+              "id": "D",
+              "text": "IBM Stretch"
+            }
+          ],
+          "correct_answers": [
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "The ENIAC was an early SISD machine."
+            },
+            {
+              "option": "B",
+              "reason": "The UNIVAC was an early commercial SISD machine."
+            },
+            {
+              "option": "D",
+              "reason": "Stretch was an early pipelined SISD supercomputer."
+            }
+          ]
+        },
+        {
+          "question": "What is the most ubiquitous modern example of SIMD architectural principles?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Graphics Processing Units (GPUs)"
+            },
+            {
+              "id": "B",
+              "text": "USB Flash Drives"
+            },
+            {
+              "id": "C",
+              "text": "Mechanical Hard Drives"
+            },
+            {
+              "id": "D",
+              "text": "Ethernet Cables"
+            }
+          ],
+          "correct_answers": [
+            "A"
+          ],
+          "explanations": [
+            {
+              "option": "B",
+              "reason": "Flash drives are storage components."
+            },
+            {
+              "option": "C",
+              "reason": "Hard drives are storage components."
+            },
+            {
+              "option": "D",
+              "reason": "Ethernet cables are networking components."
+            }
+          ]
+        },
+        {
+          "question": "Which instruction set extensions bring SIMD capabilities to modern general-purpose CPUs? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "MMX"
+            },
+            {
+              "id": "B",
+              "text": "SSE"
+            },
+            {
+              "id": "C",
+              "text": "AVX"
+            },
+            {
+              "id": "D",
+              "text": "ASCII"
+            }
+          ],
+          "correct_answers": [
+            "A",
+            "B",
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "D",
+              "reason": "ASCII is a character encoding standard, not an instruction set extension."
+            }
+          ]
+        }
+      ],
+      "MISD": [
+        {
+          "question": "MISD stands for:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Multiple Instruction, Single Data"
+            },
+            {
+              "id": "B",
+              "text": "Massive Instruction, Shared Data"
+            },
+            {
+              "id": "C",
+              "text": "Micro Instruction, Serial Data"
+            },
+            {
+              "id": "D",
+              "text": "Multiple Integer, Single Double"
+            }
+          ],
+          "correct_answers": [
+            "A"
+          ],
+          "explanations": [
+            {
+              "option": "B",
+              "reason": "Incorrect acronym expansion."
+            },
+            {
+              "option": "C",
+              "reason": "Incorrect acronym expansion."
+            },
+            {
+              "option": "D",
+              "reason": "Incorrect acronym expansion."
+            }
+          ]
+        },
+        {
+          "question": "Why is MISD considered a theoretical or highly niche model?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It violates the laws of physics"
+            },
+            {
+              "id": "B",
+              "text": "Very few computational problems require applying multiple distinct operations to the exact same datum simultaneously"
+            },
+            {
+              "id": "C",
+              "text": "It generates too much heat to cool practically"
+            },
+            {
+              "id": "D",
+              "text": "RAM cannot handle single data streams"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "It is physically possible and is built in specialized niches."
+            },
+            {
+              "option": "C",
+              "reason": "Heat generation is independent of the Flynn classification."
+            },
+            {
+              "option": "D",
+              "reason": "Memory easily handles single streams."
+            }
+          ]
+        },
+        {
+          "question": "Which scenarios are practical implementations of MISD concepts? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "Space Shuttle Flight Computers"
+            },
+            {
+              "id": "B",
+              "text": "Modern 3D Video Gaming"
+            },
+            {
+              "id": "C",
+              "text": "Triple Modular Redundancy systems in aviation"
+            },
+            {
+              "id": "D",
+              "text": "Cryptographic pipeline filtering"
+            }
+          ],
+          "correct_answers": [
+            "A",
+            "C",
+            "D"
+          ],
+          "explanations": [
+            {
+              "option": "B",
+              "reason": "3D gaming relies heavily on parallel SIMD (GPUs), not MISD."
+            }
+          ]
+        },
+        {
+          "question": "How do flight control systems utilize MISD concepts for safety?",
+          "options": [
+            {
+              "id": "A",
+              "text": "By running the plane 100x faster than normal"
+            },
+            {
+              "id": "B",
+              "text": "Redundant processors run different code on the same sensor data to catch errors via a voting system"
+            },
+            {
+              "id": "C",
+              "text": "They don't; they only use standard SISD"
+            },
+            {
+              "id": "D",
+              "text": "By encrypting the radar data"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Safety and accuracy, not raw computation speed, are the goals."
+            },
+            {
+              "option": "C",
+              "reason": "Redundancy is strictly required for aerospace safety."
+            },
+            {
+              "option": "D",
+              "reason": "Encryption is separate from control logic redundancy."
+            }
+          ]
+        },
+        {
+          "question": "Systolic arrays, specialized hardware used heavily in modern AI accelerators, exhibit traits most closely related to which architecture?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Pure SISD"
+            },
+            {
+              "id": "B",
+              "text": "MISD / Pipeline architectures"
+            },
+            {
+              "id": "C",
+              "text": "Harvard exclusively"
+            },
+            {
+              "id": "D",
+              "text": "Quantum Computing"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "They process in parallel grids, not strictly sequentially."
+            },
+            {
+              "option": "C",
+              "reason": "They focus on data flow and operation, not just memory separation."
+            },
+            {
+              "option": "D",
+              "reason": "They are classical hardware, not quantum."
+            }
+          ]
+        }
+      ],
+      "MIMD; CISC and RISC Processors": [
+        {
+          "question": "What defines a MIMD system?",
+          "options": [
+            {
+              "id": "A",
+              "text": "One single instruction broadcast to many data points"
+            },
+            {
+              "id": "B",
+              "text": "Multiple independent processors executing different instructions on different data asynchronously"
+            },
+            {
+              "id": "C",
+              "text": "A single sequential processor executing one instruction at a time"
+            },
+            {
+              "id": "D",
+              "text": "Multiple data streams processed with no instructions"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "This describes SIMD."
+            },
+            {
+              "option": "C",
+              "reason": "This describes SISD."
+            },
+            {
+              "option": "D",
+              "reason": "Processing intrinsically requires instructions."
+            }
+          ]
+        },
+        {
+          "question": "In a Shared Memory Multiprocessor (SMP) system:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Each core has its own private RAM that others cannot access"
+            },
+            {
+              "id": "B",
+              "text": "All processors share access to a single, global, centralized memory space"
+            },
+            {
+              "id": "C",
+              "text": "Processors communicate only via an external Ethernet connection"
+            },
+            {
+              "id": "D",
+              "text": "There is no system memory at all"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "This describes a Distributed Memory (Message Passing) system."
+            },
+            {
+              "option": "C",
+              "reason": "External Ethernet is for networking; SMP uses an internal bus."
+            },
+            {
+              "option": "D",
+              "reason": "A computer requires memory to function."
+            }
+          ]
+        },
+        {
+          "question": "What are the defining traits of a CISC architecture? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "Variable instruction lengths"
+            },
+            {
+              "id": "B",
+              "text": "Complex instructions that perform multi-step operations"
+            },
+            {
+              "id": "C",
+              "text": "Fixed 32-bit instruction length"
+            },
+            {
+              "id": "D",
+              "text": "Heavy reliance on microcode translation"
+            }
+          ],
+          "correct_answers": [
+            "A",
+            "B",
+            "D"
+          ],
+          "explanations": [
+            {
+              "option": "C",
+              "reason": "Fixed instruction length is a defining trait of RISC, not CISC."
+            }
+          ]
+        },
+        {
+          "question": "What are the defining traits of a RISC architecture? (Select all that apply)",
+          "options": [
+            {
+              "id": "A",
+              "text": "Simplified, highly optimized instruction set"
+            },
+            {
+              "id": "B",
+              "text": "Instructions execute in a uniform time (usually one clock cycle)"
+            },
+            {
+              "id": "C",
+              "text": "Load/store architecture"
+            },
+            {
+              "id": "D",
+              "text": "Dominated primarily by the Intel x86 lineage"
+            }
+          ],
+          "correct_answers": [
+            "A",
+            "B",
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "D",
+              "reason": "Intel x86 is the quintessential CISC architecture; ARM dominates RISC."
+            }
+          ]
+        },
+        {
+          "question": "How do modern high-end x86 processors bridge the CISC/RISC gap?",
+          "options": [
+            {
+              "id": "A",
+              "text": "They abandoned CISC completely and only use RISC"
+            },
+            {
+              "id": "B",
+              "text": "They decode complex CISC instructions into simple RISC-like micro-ops internally"
+            },
+            {
+              "id": "C",
+              "text": "They have a physical hardware switch on the motherboard"
+            },
+            {
+              "id": "D",
+              "text": "They run software emulators for everything"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "They maintain the CISC frontend for backward software compatibility."
+            },
+            {
+              "option": "C",
+              "reason": "There is no physical switch; it is handled seamlessly by the architecture."
+            },
+            {
+              "option": "D",
+              "reason": "Hardware decoders are used, which is much faster than software emulation."
+            }
+          ]
+        }
+      ],
+      "Performance metrics: measuring and reporting performance": [
+        {
+          "question": "According to the CPU Performance Equation, Execution Time is the product of:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Instruction Count, Cycles Per Instruction (CPI), and Clock Cycle Time"
+            },
+            {
+              "id": "B",
+              "text": "RAM size, Hard Drive Speed, and Monitor Refresh Rate"
+            },
+            {
+              "id": "C",
+              "text": "Core count and bus width"
+            },
+            {
+              "id": "D",
+              "text": "Cache size and Thermal Design Power (TDP)"
+            }
+          ],
+          "correct_answers": [
+            "A"
+          ],
+          "explanations": [
+            {
+              "option": "B",
+              "reason": "These affect overall system feel, not the mathematical CPU execution time."
+            },
+            {
+              "option": "C",
+              "reason": "These relate to throughput, but are not the fundamental CPU equation."
+            },
+            {
+              "option": "D",
+              "reason": "These relate to thermals and memory, not the core equation variables."
+            }
+          ]
+        },
+        {
+          "question": "What is the 'Megahertz Myth'?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The idea that clock speed cannot be accurately measured"
+            },
+            {
+              "id": "B",
+              "text": "The false belief that clock speed alone dictates performance across different microarchitectures"
+            },
+            {
+              "id": "C",
+              "text": "The idea that GHz is a measure of power, not speed"
+            },
+            {
+              "id": "D",
+              "text": "The belief that clock speed only applies to GPUs"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Clock speed is easily and accurately measured."
+            },
+            {
+              "option": "C",
+              "reason": "GHz is a measure of frequency (cycles/sec), not power (Watts)."
+            },
+            {
+              "option": "D",
+              "reason": "It applies to CPUs and GPUs alike."
+            }
+          ]
+        },
+        {
+          "question": "Amdahl's Law dictates that:",
+          "options": [
+            {
+              "id": "A",
+              "text": "Performance scales linearly with core count indefinitely"
+            },
+            {
+              "id": "B",
+              "text": "The maximum speedup of a parallelized program is bottlenecked by its strictly sequential portion"
+            },
+            {
+              "id": "C",
+              "text": "Memory speed must double every two years"
+            },
+            {
+              "id": "D",
+              "text": "CPUs must use RISC to be fast"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Amdahl's Law proves the exact opposite; scaling has a mathematical limit."
+            },
+            {
+              "option": "C",
+              "reason": "This sounds like a variation of Moore's Law."
+            },
+            {
+              "option": "D",
+              "reason": "Amdahl's law applies to parallel computation regardless of the ISA."
+            }
+          ]
+        },
+        {
+          "question": "Which organization provides the industry-standard benchmark suites for comparing real-world CPU performance?",
+          "options": [
+            {
+              "id": "C",
+              "text": "SPEC (Standard Performance Evaluation Corporation)"
+            },
+            {
+              "id": "D",
+              "text": "W3C"
+            }
+          ],
+          "correct_answers": [
+            "C"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "NASA is an aerospace agency."
+            },
+            {
+              "option": "B",
+              "reason": "IEEE sets engineering standards, but SPEC specializes in CPU benchmarks."
+            },
+            {
+              "option": "D",
+              "reason": "W3C develops web standards."
+            }
+          ]
+        },
+        {
+          "question": "In modern data centers and mobile devices, what metric is often as critical as raw execution speed?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Monitor resolution"
+            },
+            {
+              "id": "B",
+              "text": "Performance per Watt (Energy Efficiency)"
+            },
+            {
+              "id": "C",
+              "text": "The color of the server racks"
+            },
+            {
+              "id": "D",
+              "text": "Proximity to a cooling window"
+            }
+          ],
+          "correct_answers": [
+            "B"
+          ],
+          "explanations": [
+            {
+              "option": "A",
+              "reason": "Irrelevant to computational efficiency."
+            },
+            {
+              "option": "C",
+              "reason": "Cosmetic detail with no technical impact."
+            },
+            {
+              "option": "D",
+              "reason": "Data centers use active cooling; windows are irrelevant."
+            }
+          ]
+        }
+      ]
+    },
+    "module_quiz": [
+      {
+        "question": "Which of the following hardware components characterized the first generation of computers?",
+        "options": [
+          {
+            "id": "A",
+            "text": "Transistors"
+          },
+          {
+            "id": "B",
+            "text": "Integrated Circuits"
+          },
+          {
+            "id": "C",
+            "text": "Vacuum Tubes"
+          },
+          {
+            "id": "D",
+            "text": "Microprocessors"
+          }
+        ],
+        "correct_answers": [
+          "C"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "Transistors characterized the second generation."
+          },
+          {
+            "option": "B",
+            "reason": "Integrated circuits were the hallmark of the third generation."
+          },
+          {
+            "option": "D",
+            "reason": "Microprocessors emerged in the fourth generation."
+          }
+        ]
+      },
+      {
+        "question": "What were the major impacts of replacing vacuum tubes with transistors? (Select all that apply)",
+        "options": [
+          {
+            "id": "A",
+            "text": "Drastic reduction in physical size"
+          },
+          {
+            "id": "B",
+            "text": "Increased heat generation"
+          },
+          {
+            "id": "C",
+            "text": "Significant improvement in reliability"
+          },
+          {
+            "id": "D",
+            "text": "Higher manufacturing cost"
+          }
+        ],
+        "correct_answers": [
+          "A",
+          "C"
+        ],
+        "explanations": [
+          {
+            "option": "B",
+            "reason": "Transistors generated significantly LESS heat than vacuum tubes."
+          },
+          {
+            "option": "D",
+            "reason": "Transistors were much cheaper to produce, not more expensive."
+          }
+        ]
+      },
+      {
+        "question": "Moore's Law originally observed that the number of transistors on a microchip doubles approximately every:",
+        "options": [
+          {
+            "id": "A",
+            "text": "Six months"
+          },
+          {
+            "id": "B",
+            "text": "One year"
+          },
+          {
+            "id": "C",
+            "text": "Two years"
+          },
+          {
+            "id": "D",
+            "text": "Five years"
+          }
+        ],
+        "correct_answers": [
+          "C"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "Six months is too short; Moore's observation was a longer cycle."
+          },
+          {
+            "option": "B",
+            "reason": "One year was an early estimate, but it was revised to two years."
+          },
+          {
+            "option": "D",
+            "reason": "Five years is too slow compared to the historical scaling rate."
+          }
+        ]
+      },
+      {
+        "question": "What is the primary cause of the Von Neumann bottleneck?",
+        "options": [
+          {
+            "id": "A",
+            "text": "Extremely slow RAM modules"
+          },
+          {
+            "id": "B",
+            "text": "A single shared bus for fetching both data and instructions"
+          },
+          {
+            "id": "C",
+            "text": "CPU overheating"
+          },
+          {
+            "id": "D",
+            "text": "Lack of L3 Cache"
+          }
+        ],
+        "correct_answers": [
+          "B"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "While RAM latency exists, the shared bus is the architectural limit."
+          },
+          {
+            "option": "C",
+            "reason": "Heat limits clock speed, not the memory fetch model."
+          },
+          {
+            "option": "D",
+            "reason": "Cache mitigates it, but the shared bus is the root architectural cause."
+          }
+        ]
+      },
+      {
+        "question": "What is a key advantage of the Harvard architecture?",
+        "options": [
+          {
+            "id": "A",
+            "text": "It utilizes vacuum tubes for speed"
+          },
+          {
+            "id": "B",
+            "text": "It is cheaper to build than Von Neumann"
+          },
+          {
+            "id": "C",
+            "text": "Simultaneous fetching of instruction and data"
+          },
+          {
+            "id": "D",
+            "text": "It uses a unified memory space"
+          }
+        ],
+        "correct_answers": [
+          "C"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "It is an architecture model, independent of hardware components like tubes."
+          },
+          {
+            "option": "B",
+            "reason": "It is typically more complex and expensive due to dual memory modules."
+          },
+          {
+            "option": "D",
+            "reason": "Unified memory is the defining trait of Von Neumann, not Harvard."
+          }
+        ]
+      },
+      {
+        "question": "Which types of computing systems heavily utilize pure or modified Harvard architecture? (Select all that apply)",
+        "options": [
+          {
+            "id": "A",
+            "text": "General-purpose PC main memory"
+          },
+          {
+            "id": "B",
+            "text": "Digital Signal Processors (DSPs)"
+          },
+          {
+            "id": "C",
+            "text": "Microcontrollers"
+          },
+          {
+            "id": "D",
+            "text": "Mainframe hard drives"
+          }
+        ],
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "General PCs use a Von Neumann main memory model."
+          },
+          {
+            "option": "D",
+            "reason": "Hard drives are storage, not processor memory architectures."
+          }
+        ]
+      },
+      {
+        "question": "What does SISD stand for?",
+        "options": [
+          {
+            "id": "A",
+            "text": "Single Instruction, Single Data"
+          },
+          {
+            "id": "B",
+            "text": "Simultaneous Instruction, Single Data"
+          },
+          {
+            "id": "C",
+            "text": "Single Instruction, Shared Data"
+          },
+          {
+            "id": "D",
+            "text": "Serial Instruction, Serial Data"
+          }
+        ],
+        "correct_answers": [
+          "A"
+        ],
+        "explanations": [
+          {
+            "option": "B",
+            "reason": "Incorrect acronym expansion."
+          },
+          {
+            "option": "C",
+            "reason": "Incorrect acronym expansion."
+          },
+          {
+            "option": "D",
+            "reason": "Incorrect acronym expansion."
+          }
+        ]
+      },
+      {
+        "question": "SISD is the physical, practical implementation of which classical computing model?",
+        "options": [
+          {
+            "id": "A",
+            "text": "Harvard Architecture"
+          },
+          {
+            "id": "B",
+            "text": "Von Neumann Architecture"
+          },
+          {
+            "id": "C",
+            "text": "SIMT Architecture"
+          },
+          {
+            "id": "D",
+            "text": "Quantum Computing"
+          }
+        ],
+        "correct_answers": [
+          "B"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "Harvard typically implies separate data/instruction pathways."
+          },
+          {
+            "option": "C",
+            "reason": "SIMT is an architecture used by modern GPUs."
+          },
+          {
+            "option": "D",
+            "reason": "Quantum computing is a completely different physical paradigm."
+          }
+        ]
+      },
+      {
+        "question": "Which technique is used in SISD processors to overlap the execution stages of multiple instructions and improve throughput?",
+        "options": [
+          {
+            "id": "A",
+            "text": "Pipelining"
+          },
+          {
+            "id": "B",
+            "text": "Multi-threading"
+          },
+          {
+            "id": "C",
+            "text": "Hyper-threading"
+          },
+          {
+            "id": "D",
+            "text": "Vector processing"
+          }
+        ],
+        "correct_answers": [
+          "A"
+        ],
+        "explanations": [
+          {
+            "option": "B",
+            "reason": "Multi-threading requires multiple thread contexts, often implies MIMD."
+          },
+          {
+            "option": "C",
+            "reason": "Hyper-threading is Intel's specific multi-threading implementation."
+          },
+          {
+            "option": "D",
+            "reason": "Vector processing is a SIMD concept."
+          }
+        ]
+      },
+      {
+        "question": "SIMD architectures are exceptionally efficient for which types of workloads? (Select all that apply)",
+        "options": [
+          {
+            "id": "A",
+            "text": "Sequential text parsing"
+          },
+          {
+            "id": "B",
+            "text": "Image and video processing"
+          },
+          {
+            "id": "C",
+            "text": "Scientific fluid simulations"
+          },
+          {
+            "id": "D",
+            "text": "Code with complex branching logic (if/else)"
+          }
+        ],
+        "correct_answers": [
+          "B",
+          "C"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "Text parsing often requires sequential, unpredictable logic."
+          },
+          {
+            "option": "D",
+            "reason": "Branching logic causes pipeline divergence, making SIMD highly inefficient."
+          }
+        ]
+      },
+      {
+        "question": "How does a SIMD processor handle a single instruction?",
+        "options": [
+          {
+            "id": "A",
+            "text": "It executes it on a single, isolated data point"
+          },
+          {
+            "id": "B",
+            "text": "It broadcasts the instruction to multiple ALUs to operate on distinct data points simultaneously"
+          },
+          {
+            "id": "C",
+            "text": "It splits the instruction into micro-ops"
+          },
+          {
+            "id": "D",
+            "text": "It sends it to the cloud for processing"
+          }
+        ],
+        "correct_answers": [
+          "B"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "That describes an SISD processor."
+          },
+          {
+            "option": "C",
+            "reason": "That is a characteristic of modern CISC instruction decoders."
+          },
+          {
+            "option": "D",
+            "reason": "Irrelevant to local architectural execution."
+          }
+        ]
+      },
+      {
+        "question": "Which historic supercomputer is a famous early example of a SIMD architecture?",
+        "options": [
+          {
+            "id": "A",
+            "text": "ENIAC"
+          },
+          {
+            "id": "B",
+            "text": "UNIVAC"
+          },
+          {
+            "id": "C",
+            "text": "ILLIAC IV"
+          },
+          {
+            "id": "D",
+            "text": "IBM Stretch"
+          }
+        ],
+        "correct_answers": [
+          "C"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "The ENIAC was an early SISD machine."
+          },
+          {
+            "option": "B",
+            "reason": "The UNIVAC was an early commercial SISD machine."
+          },
+          {
+            "option": "D",
+            "reason": "Stretch was an early pipelined SISD supercomputer."
+          }
+        ]
+      },
+      {
+        "question": "MISD stands for:",
+        "options": [
+          {
+            "id": "A",
+            "text": "Multiple Instruction, Single Data"
+          },
+          {
+            "id": "B",
+            "text": "Massive Instruction, Shared Data"
+          },
+          {
+            "id": "C",
+            "text": "Micro Instruction, Serial Data"
+          },
+          {
+            "id": "D",
+            "text": "Multiple Integer, Single Double"
+          }
+        ],
+        "correct_answers": [
+          "A"
+        ],
+        "explanations": [
+          {
+            "option": "B",
+            "reason": "Incorrect acronym expansion."
+          },
+          {
+            "option": "C",
+            "reason": "Incorrect acronym expansion."
+          },
+          {
+            "option": "D",
+            "reason": "Incorrect acronym expansion."
+          }
+        ]
+      },
+      {
+        "question": "Why is MISD considered a theoretical or highly niche model?",
+        "options": [
+          {
+            "id": "A",
+            "text": "It violates the laws of physics"
+          },
+          {
+            "id": "B",
+            "text": "Very few computational problems require applying multiple distinct operations to the exact same datum simultaneously"
+          },
+          {
+            "id": "C",
+            "text": "It generates too much heat to cool practically"
+          },
+          {
+            "id": "D",
+            "text": "RAM cannot handle single data streams"
+          }
+        ],
+        "correct_answers": [
+          "B"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "It is physically possible and is built in specialized niches."
+          },
+          {
+            "option": "C",
+            "reason": "Heat generation is independent of the Flynn classification."
+          },
+          {
+            "option": "D",
+            "reason": "Memory easily handles single streams."
+          }
+        ]
+      },
+      {
+        "question": "Which scenarios are practical implementations of MISD concepts? (Select all that apply)",
+        "options": [
+          {
+            "id": "A",
+            "text": "Space Shuttle Flight Computers"
+          },
+          {
+            "id": "B",
+            "text": "Modern 3D Video Gaming"
+          },
+          {
+            "id": "C",
+            "text": "Triple Modular Redundancy systems in aviation"
+          },
+          {
+            "id": "D",
+            "text": "Cryptographic pipeline filtering"
+          }
+        ],
+        "correct_answers": [
+          "A",
+          "C",
+          "D"
+        ],
+        "explanations": [
+          {
+            "option": "B",
+            "reason": "3D gaming relies heavily on parallel SIMD (GPUs), not MISD."
+          }
+        ]
+      },
+      {
+        "question": "What defines a MIMD system?",
+        "options": [
+          {
+            "id": "A",
+            "text": "One single instruction broadcast to many data points"
+          },
+          {
+            "id": "B",
+            "text": "Multiple independent processors executing different instructions on different data asynchronously"
+          },
+          {
+            "id": "C",
+            "text": "A single sequential processor executing one instruction at a time"
+          },
+          {
+            "id": "D",
+            "text": "Multiple data streams processed with no instructions"
+          }
+        ],
+        "correct_answers": [
+          "B"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "This describes SIMD."
+          },
+          {
+            "option": "C",
+            "reason": "This describes SISD."
+          },
+          {
+            "option": "D",
+            "reason": "Processing intrinsically requires instructions."
+          }
+        ]
+      },
+      {
+        "question": "In a Shared Memory Multiprocessor (SMP) system:",
+        "options": [
+          {
+            "id": "A",
+            "text": "Each core has its own private RAM that others cannot access"
+          },
+          {
+            "id": "B",
+            "text": "All processors share access to a single, global, centralized memory space"
+          },
+          {
+            "id": "C",
+            "text": "Processors communicate only via an external Ethernet connection"
+          },
+          {
+            "id": "D",
+            "text": "There is no system memory at all"
+          }
+        ],
+        "correct_answers": [
+          "B"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "This describes a Distributed Memory (Message Passing) system."
+          },
+          {
+            "option": "C",
+            "reason": "External Ethernet is for networking; SMP uses an internal bus."
+          },
+          {
+            "option": "D",
+            "reason": "A computer requires memory to function."
+          }
+        ]
+      },
+      {
+        "question": "What are the defining traits of a CISC architecture? (Select all that apply)",
+        "options": [
+          {
+            "id": "A",
+            "text": "Variable instruction lengths"
+          },
+          {
+            "id": "B",
+            "text": "Complex instructions that perform multi-step operations"
+          },
+          {
+            "id": "C",
+            "text": "Fixed 32-bit instruction length"
+          },
+          {
+            "id": "D",
+            "text": "Heavy reliance on microcode translation"
+          }
+        ],
+        "correct_answers": [
+          "A",
+          "B",
+          "D"
+        ],
+        "explanations": [
+          {
+            "option": "C",
+            "reason": "Fixed instruction length is a defining trait of RISC, not CISC."
+          }
+        ]
+      },
+      {
+        "question": "According to the CPU Performance Equation, Execution Time is the product of:",
+        "options": [
+          {
+            "id": "A",
+            "text": "Instruction Count, Cycles Per Instruction (CPI), and Clock Cycle Time"
+          },
+          {
+            "id": "B",
+            "text": "RAM size, Hard Drive Speed, and Monitor Refresh Rate"
+          },
+          {
+            "id": "C",
+            "text": "Core count and bus width"
+          },
+          {
+            "id": "D",
+            "text": "Cache size and Thermal Design Power (TDP)"
+          }
+        ],
+        "correct_answers": [
+          "A"
+        ],
+        "explanations": [
+          {
+            "option": "B",
+            "reason": "These affect overall system feel, not the mathematical CPU execution time."
+          },
+          {
+            "option": "C",
+            "reason": "These relate to throughput, but are not the fundamental CPU equation."
+          },
+          {
+            "option": "D",
+            "reason": "These relate to thermals and memory, not the core equation variables."
+          }
+        ]
+      },
+      {
+        "question": "What is the 'Megahertz Myth'?",
+        "options": [
+          {
+            "id": "A",
+            "text": "The idea that clock speed cannot be accurately measured"
+          },
+          {
+            "id": "B",
+            "text": "The false belief that clock speed alone dictates performance across different microarchitectures"
+          },
+          {
+            "id": "C",
+            "text": "The idea that GHz is a measure of power, not speed"
+          },
+          {
+            "id": "D",
+            "text": "The belief that clock speed only applies to GPUs"
+          }
+        ],
+        "correct_answers": [
+          "B"
+        ],
+        "explanations": [
+          {
+            "option": "A",
+            "reason": "Clock speed is easily and accurately measured."
+          },
+          {
+            "option": "C",
+            "reason": "GHz is a measure of frequency (cycles/sec), not power (Watts)."
+          },
+          {
+            "option": "D",
+            "reason": "It applies to CPUs and GPUs alike."
+          }
+        ]
+      }
+    ]
   },
   {
     "course_name": "Artificial Intelligence",
@@ -448,12 +2521,12 @@
         "topics": [
           "Introduction to algorithm design and importance of its analysis",
           "Asymptotic notations and their significance",
-          "Complexity analysis of algorithms â€“ best case",
+          "Complexity analysis of algorithms \u00e2\u20ac\u201c best case",
           "worst case and average case with example of Insertion sort",
           "Quick sort and Heap sort",
           "Time & space trade-offs",
-          "Analysis of recursive algorithms â€“ Substitution method",
-          "Recursion tree method and Mastersâ€™ theorem",
+          "Analysis of recursive algorithms \u00e2\u20ac\u201c Substitution method",
+          "Recursion tree method and Masters\u00e2\u20ac\u2122 theorem",
           "Lower bound for comparison-based sort"
         ],
         "videos": [],
@@ -487,11 +2560,11 @@
           "Traversal algorithms: DFS",
           "BFS - concept",
           "complexity analysis and applications",
-          "Minimum Spanning Tree finding algorithm: Primâ€™s",
+          "Minimum Spanning Tree finding algorithm: Prim\u00e2\u20ac\u2122s",
           "Kruskal - concept",
           "complexity analysis",
           "Disjoint set operations",
-          "shortest path finding algorithm: single source and all pairs â€“Bellman-Ford",
+          "shortest path finding algorithm: single source and all pairs \u00e2\u20ac\u201cBellman-Ford",
           "Dijkstra and Floyd-Warshall",
           "Topological sort",
           "Network flow algorithm: Ford-Fulkerson",
@@ -507,10 +2580,10 @@
           "Problem classification on Computability: P",
           "NP",
           "NP-complete and NP-hard",
-          "Reducibility of NP-complete problems with example â€“ Satisfiability",
+          "Reducibility of NP-complete problems with example \u00e2\u20ac\u201c Satisfiability",
           "Vertex cover",
           "Traveling Salesman problem",
-          "Cookâ€™s theorem"
+          "Cook\u00e2\u20ac\u2122s theorem"
         ],
         "videos": [],
         "time": "8 Hours",
@@ -542,7 +2615,7 @@
         "summary": "Highlighting asymptotic notations: An introduction to algorithm design, covering key problem-solving steps, characteristics of good algorithms, and asymptotic analysis (Big O, Omega, Theta). Also introduces the divide-and-conquer strategy used in sorting algorithms and outlines future course topics.",
         "thumbnail": "/image/thumbnails/algorithm_intro.png"
       },
-      "Complexity analysis of algorithms â€“ best case": {
+      "Complexity analysis of algorithms \u00e2\u20ac\u201c best case": {
         "videoUrl": "https://drive.google.com/file/d/1AG8xO8JQOqAZBDrZyprQq1PLzVDui4Cf/view?usp=sharing",
         "summary": "Delving into complexity analysis (best case): An introduction to algorithm design, covering key problem-solving steps, characteristics of good algorithms, and asymptotic analysis (Big O, Omega, Theta). Also introduces the divide-and-conquer strategy used in sorting algorithms and outlines future course topics.",
         "thumbnail": "/image/thumbnails/algorithm_intro.png"
@@ -640,7 +2713,7 @@
           "Importance of a good schema design",
           "Problems encountered with bad schema designs",
           "Motivation for normal forms",
-          "dependency theory â€“ functional dependencies",
+          "dependency theory \u00e2\u20ac\u201c functional dependencies",
           "Armstrong's axioms for FD's",
           "Closure of a set of FDs",
           "Minimal covers",
@@ -862,7 +2935,7 @@
         "title": "MODULE 3: - LINEAR AND PROBABILISTIC MODELS",
         "topics": [
           "Least Squares method - Multivariate Linear Regression - Perceptron",
-          "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data â€“ NaÃ¯ve Bayes Classifier"
+          "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data \u00e2\u20ac\u201c Na\u00c3\u00afve Bayes Classifier"
         ],
         "videos": [],
         "time": "7 Hours",
@@ -871,7 +2944,7 @@
       {
         "title": "MODULE 4: - DISTANCE BASED MODELS",
         "topics": [
-          "Distance Based Models: Neighbors and Examples - Nearest Neighbors Classification - Distance based clustering â€“ K-Means Algorithm - K-Medoids Algorithm - Hierarchical clustering - Vector Quantization",
+          "Distance Based Models: Neighbors and Examples - Nearest Neighbors Classification - Distance based clustering \u00e2\u20ac\u201c K-Means Algorithm - K-Medoids Algorithm - Hierarchical clustering - Vector Quantization",
           "Self-Organizing Feature Map - Principal Component Analysis"
         ],
         "videos": [],
@@ -891,7 +2964,7 @@
         "title": "MODULE 6: - TRENDS IN MACHINE LEARNING",
         "topics": [
           "Ensemble Learning",
-          "- Bagging and Boosting - Random Forest - Meta learning - Deep Learning - Reinforcement Learning â€“ Applications"
+          "- Bagging and Boosting - Random Forest - Meta learning - Deep Learning - Reinforcement Learning \u00e2\u20ac\u201c Applications"
         ],
         "videos": [],
         "time": "8 Hours",
@@ -908,9 +2981,9 @@
         "summary": "This video introduces foundational concepts including the Least Squares method, Multivariate Linear Regression, and the Perceptron algorithm, establishing the groundwork for predictive and descriptive linear models.",
         "thumbnail": "/image/thumbnails/ml_svm.png"
       },
-      "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data â€“ NaÃ¯ve Bayes Classifier": {
+      "Multiple Layer Perceptron - Support Vector Machines - Obtaining probabilities from Linear classifiers - Kernel methods for non-Linearity - Probabilistic models for categorical data \u00e2\u20ac\u201c Na\u00c3\u00afve Bayes Classifier": {
         "videoUrl": "https://drive.google.com/file/d/1QEQofkwztK7r-RucQi2huE_AEkRMhxPz/view?usp=sharing",
-        "summary": "This lecture covers Support Vector Machines (SVM) for maximizing hyperplane margins, alongside Multiple Layer Perceptrons, kernel methods for non-linearity, and probabilistic categorical models such as the NaÃ¯ve Bayes Classifier.",
+        "summary": "This lecture covers Support Vector Machines (SVM) for maximizing hyperplane margins, alongside Multiple Layer Perceptrons, kernel methods for non-linearity, and probabilistic categorical models such as the Na\u00c3\u00afve Bayes Classifier.",
         "videoUrl2": "https://drive.google.com/file/d/1W5v5CqyaTOf6iyjdzUvgw-Njgd1y43Be/view?usp=sharing",
         "summary2": "Explains the application of Support Vector Machines to non-linearly separable datasets by transforming data into higher-dimensional spaces using Kernel functions, ensuring linear classification.",
         "videoUrl3": "https://drive.google.com/file/d/1ObZDzhjtSEVfbyMZoDBkgM_e-PxEyJmM/view?usp=sharing",
@@ -1025,7 +3098,7 @@
       {
         "title": "MODULE 5: - 5 Hours",
         "topics": [
-          "Application Layer â€“Domain name system",
+          "Application Layer \u00e2\u20ac\u201cDomain name system",
           "SNMP",
           "Electronic Mail; the World WEB",
           "HTTP",
@@ -1129,7 +3202,7 @@
           "Church-Turing Thesis",
           "Universal Turing Machine",
           "The Universal and Diagonalization Languages",
-          "Reduction between Languages and Riceâ€™s Theorem",
+          "Reduction between Languages and Rice\u00e2\u20ac\u2122s Theorem",
           "Undecidable Problems about Languages"
         ],
         "videos": [],

@@ -14,6 +14,7 @@ import { Lock } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 
 import SecureNotesViewer from '@/components/shared/SecureNotesViewer';
+import QuizViewer from '@/components/shared/QuizViewer';
 
 export default function CourseLearningPage() {
   const { courseId } = useParams();
@@ -26,6 +27,7 @@ export default function CourseLearningPage() {
   const [selectedContentIdx, setSelectedContentIdx] = useState(0);
   const [completedItems, setCompletedItems] = useState([]);
   const [isNotesViewerOpen, setIsNotesViewerOpen] = useState(false);
+  const [activeQuiz, setActiveQuiz] = useState(null);
   
   const { claimedBadges, claimBadge } = useBadges();
   const [progressPercent, setProgressPercent] = useState(0);
@@ -159,10 +161,12 @@ export default function CourseLearningPage() {
                   Estimated Total Time: {course.estimated_time} • Remaining: <strong>~{estRemaining} Hours</strong>
                 </p>
               </div>
-              <div style={{ width: '300px', background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '15px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '8px', fontWeight: 'bold' }}>
-                  <span>Course Progress</span>
-                  <span>{progressPercent}%</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ width: '300px', background: 'rgba(255,255,255,0.1)', padding: '15px', borderRadius: '15px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginBottom: '8px', fontWeight: 'bold' }}>
+                    <span>Course Progress</span>
+                    <span>{progressPercent}%</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -373,20 +377,81 @@ export default function CourseLearningPage() {
                   )}
                 </div>
               ) : selectedTopic === 'GRAND_QUIZ' || selectedTopic.startsWith('MANDATORY_QUIZ_') ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                  <div style={{ width: '80px', height: '80px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff7ed', borderRadius: '20px', border: '2px solid #fed7aa' }}>
-                    <Icons.FileQuestion size={40} color="#ea580c" />
-                  </div>
-                  <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '12px' }}>
-                    {selectedTopic === 'GRAND_QUIZ' ? 'Grand Final Quiz' : 'Mandatory Module Quiz'}
-                  </h2>
-                  <p style={{ fontSize: '15px', color: '#888', textAlign: 'center', maxWidth: '380px' }}>
-                    Quizzes are coming soon! This section will be unlocked once you complete the relevant topics.
-                  </p>
-                  <div style={{ marginTop: '24px', padding: '12px 28px', borderRadius: '30px', background: 'linear-gradient(135deg, #ff9800, #f44336)', color: '#fff', fontSize: '14px', fontWeight: 'bold', opacity: 0.5 }}>
-                    Coming Soon
-                  </div>
-                </div>
+                (() => {
+                  const isModuleQuiz = selectedTopic.startsWith('MANDATORY_QUIZ_');
+                  const quizTitle = isModuleQuiz ? 'Mandatory Module Quiz' : 'Grand Final Quiz';
+                  const questions = isModuleQuiz ? course?.module_quiz || [] : []; // We'd load grand quiz questions here
+                  
+                  // Unlock logic: For Module Quiz, check if last video of the module is done.
+                  let isLocked = true;
+                  if (isModuleQuiz && moduleVideosFlattened.length > 0) {
+                     const lastModVideo = moduleVideosFlattened[moduleVideosFlattened.length - 1];
+                     const lastModVideoId = lastModVideo.idx === 0 ? lastModVideo.topic : `${lastModVideo.topic}_${lastModVideo.idx + 1}`;
+                     isLocked = !completedItems.includes(lastModVideoId);
+                  } else if (selectedTopic === 'GRAND_QUIZ') {
+                     // For Grand Quiz, lock until 100% progress
+                     isLocked = progressPercent < 100;
+                  }
+
+                  if (isLocked) {
+                    return (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                        <div style={{ width: '80px', height: '80px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', borderRadius: '50%', color: '#64748b' }}>
+                          <Lock size={40} />
+                        </div>
+                        <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '12px' }}>
+                          Quiz Locked
+                        </h2>
+                        <p style={{ fontSize: '15px', color: '#888', textAlign: 'center', maxWidth: '380px' }}>
+                          You must complete all {isModuleQuiz ? 'videos in this module' : 'course materials'} to unlock this quiz.
+                        </p>
+                      </div>
+                    );
+                  }
+
+                  if (questions.length === 0) {
+                    return (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                        <div style={{ width: '80px', height: '80px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff7ed', borderRadius: '20px', border: '2px solid #fed7aa' }}>
+                          <Icons.FileQuestion size={40} color="#ea580c" />
+                        </div>
+                        <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '12px' }}>
+                          {quizTitle}
+                        </h2>
+                        <p style={{ fontSize: '15px', color: '#888', textAlign: 'center', maxWidth: '380px' }}>
+                          Questions for this quiz have not been uploaded yet.
+                        </p>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                      <div style={{ width: '80px', height: '80px', marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fef2f2', borderRadius: '50%', color: '#ef4444' }}>
+                        <Icons.HelpCircle size={40} />
+                      </div>
+                      <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '12px' }}>
+                        {quizTitle}
+                      </h2>
+                      <p style={{ fontSize: '15px', color: '#888', textAlign: 'center', maxWidth: '380px', marginBottom: '30px' }}>
+                        Test your knowledge on this {isModuleQuiz ? 'module' : 'course'} with a timed quiz. Good luck!
+                      </p>
+                      <button 
+                        onClick={() => setActiveQuiz({ title: quizTitle, questions })}
+                        style={{
+                          padding: '14px 40px', backgroundColor: '#ef4444', color: 'white',
+                          border: 'none', borderRadius: '12px', cursor: 'pointer', fontSize: '18px',
+                          fontWeight: 'bold', transition: 'transform 0.2s',
+                          boxShadow: '0 8px 20px rgba(239, 68, 68, 0.3)'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        Start {isModuleQuiz ? 'Module' : 'Final'} Quiz
+                      </button>
+                    </div>
+                  );
+                })()
               ) : selectedTopic === 'BADGE' ? (
                 (() => {
                   const badge = BADGES.find(b => b.category === 'Course Completion' && b.check({ enrollments: [{ course_id: course.subject_code, progress: 100 }] }));
@@ -598,7 +663,64 @@ export default function CourseLearningPage() {
                         );
                       }
                       
-                      // Fallback for Quiz or upcoming content
+                      // Topic Quiz Tab Logic
+                      if (selectedContentIdx === videoCount + 1) {
+                        const questions = course?.topicQuizzes?.[selectedTopic] || [];
+                        const lastVideoIdx = videoCount - 1;
+                        const lastVideoId = lastVideoIdx <= 0 ? selectedTopic : `${selectedTopic}_${lastVideoIdx + 1}`;
+                        // To unlock topic quiz, the last video in this topic must be completed
+                        const isLocked = videoCount > 0 && !completedItems.includes(lastVideoId);
+
+                        if (isLocked) {
+                           return (
+                             <div style={{ textAlign: 'center', padding: '40px' }}>
+                               <div style={{ width: '80px', height: '80px', background: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#64748b' }}>
+                                 <Lock size={40} />
+                               </div>
+                               <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>Quiz Locked</h3>
+                               <p style={{ color: '#64748b', fontSize: '14px', maxWidth: '400px', margin: '0 auto' }}>
+                                 You must complete all preceding videos in this topic to unlock the quiz.
+                               </p>
+                             </div>
+                           );
+                        }
+
+                        if (questions.length === 0) {
+                           return (
+                             <div style={{ textAlign: 'center', padding: '40px' }}>
+                               <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>No Quiz Available</h3>
+                               <p style={{ color: '#64748b' }}>There are no quiz questions configured for this topic.</p>
+                             </div>
+                           );
+                        }
+
+                        return (
+                          <div style={{ textAlign: 'center', padding: '40px', width: '100%', maxWidth: '600px' }}>
+                            <div style={{ width: '80px', height: '80px', background: '#fef2f2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#ef4444' }}>
+                              <Icons.HelpCircle size={40} />
+                            </div>
+                            <h3 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1e293b', marginBottom: '12px' }}>Topic Quiz: {selectedTopic}</h3>
+                            <p style={{ color: '#64748b', fontSize: '15px', marginBottom: '30px' }}>
+                              Test your understanding of this topic with a timed quiz. Your results will be saved.
+                            </p>
+                            <button 
+                              onClick={() => setActiveQuiz({ title: selectedTopic, questions })}
+                              style={{
+                                padding: '12px 32px', backgroundColor: '#ef4444', color: 'white',
+                                border: 'none', borderRadius: '12px', cursor: 'pointer', fontSize: '16px',
+                                fontWeight: 'bold', transition: 'all 0.2s',
+                                boxShadow: '0 4px 15px rgba(239, 68, 68, 0.3)'
+                              }}
+                              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.03)'}
+                              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                            >
+                              Start Topic Quiz
+                            </button>
+                          </div>
+                        );
+                      }
+                      
+                      // Fallback for anything else
                       return (
                         <>
                           <div style={{ width: '80px', height: '80px', background: '#e3f2fd', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: '#1565c0' }}>
@@ -606,7 +728,7 @@ export default function CourseLearningPage() {
                           </div>
                           <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#455a64', marginBottom: '10px' }}>Contents are coming soon</h3>
                           <p style={{ color: '#78909c', fontSize: '14px', maxWidth: '400px', textAlign: 'center' }}>
-                            The videos, study materials, and topic quizzes for this section will be unlocked shortly.
+                            The videos and study materials for this section will be unlocked shortly.
                           </p>
                         </>
                       );
@@ -626,6 +748,18 @@ export default function CourseLearningPage() {
           title={selectedTopic}
           markdownContent={Array.isArray(currentTopicData) ? currentTopicData[0]?.notes : currentTopicData?.notes}
           onClose={() => setIsNotesViewerOpen(false)}
+        />
+      )}
+
+      {activeQuiz && (
+        <QuizViewer
+          title={activeQuiz.title}
+          questions={activeQuiz.questions}
+          onClose={() => setActiveQuiz(null)}
+          onSubmitQuiz={(score, total) => {
+            console.log(`Quiz Submitted: ${score}/${total}`);
+            // In the future, send this to analytics backend
+          }}
         />
       )}
     </div>
