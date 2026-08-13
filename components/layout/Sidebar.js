@@ -9,7 +9,8 @@ import {
   Users,
   CalendarClock,
   BarChart3,
-  BotMessageSquare
+  BotMessageSquare,
+  Video
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -18,6 +19,7 @@ const NAV_ITEMS = [
   { label: 'My Courses', href: '/my-courses', Icon: GraduationCap, color: '#8b5cf6' },
   { label: 'Study Planner', href: '/planner', Icon: CalendarClock, color: '#ec4899' },
   { label: 'Chatbot', href: '/chatbot', Icon: BotMessageSquare, color: '#6366f1' },
+  { label: 'Mock Interview', href: '/mock-interview', Icon: Video, color: '#f59e0b' },
 ];
 
 export default function Sidebar() {
