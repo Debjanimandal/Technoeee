@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export default function VideoPlayer({ 
   videoUrl, 
@@ -7,9 +7,13 @@ export default function VideoPlayer({
   summary, 
   thumbnailUrl, 
   isCompleted, 
-  onComplete 
+  onComplete,
+  isLocked // Added isLocked prop
 }) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef(null);
+  const maxWatchedTime = useRef(0);
+  const [sessionStartTime, setSessionStartTime] = useState(Date.now());
 
   // Determine if it's a Google Drive link
   const isGoogleDrive = videoUrl?.includes('drive.google.com');
@@ -24,6 +28,52 @@ export default function VideoPlayer({
   };
 
   const embedUrl = getEmbedUrl(videoUrl);
+
+  const handleTimeUpdate = () => {
+    if (!videoRef.current || isCompleted) return;
+    
+    const currentTime = videoRef.current.currentTime;
+    
+    // If the user tries to jump forward by more than 2 seconds past their max watched time
+    if (currentTime > maxWatchedTime.current + 2) {
+      videoRef.current.currentTime = maxWatchedTime.current;
+    } else {
+      // Update max watched time
+      if (currentTime > maxWatchedTime.current) {
+        maxWatchedTime.current = currentTime;
+      }
+    }
+  };
+
+  // If locked, we don't allow play
+  if (isLocked) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+        {summary && (
+          <div style={{ 
+            marginBottom: '24px', padding: '20px', background: '#f8f9fa', 
+            borderRadius: '12px', borderLeft: '4px solid #94a3b8', opacity: 0.8
+          }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#555', marginBottom: '8px' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'text-bottom', marginRight: '6px' }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Locked: Complete previous video first
+            </h3>
+            <p style={{ fontSize: '14px', color: '#555', lineHeight: '1.6', margin: 0 }}>{summary}</p>
+          </div>
+        )}
+        <div style={{ 
+          position: 'relative', width: '100%', aspectRatio: '16/9', 
+          background: '#1e293b', borderRadius: '16px', overflow: 'hidden',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8'
+        }}>
+           <div style={{ textAlign: 'center' }}>
+             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '10px' }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+             <div>Video Locked</div>
+           </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -51,35 +101,7 @@ export default function VideoPlayer({
         overflow: 'hidden',
         boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
       }}>
-        {!isPlaying && thumbnailUrl ? (
-          <div 
-            onClick={() => setIsPlaying(true)}
-            style={{
-              position: 'absolute', inset: 0,
-              backgroundImage: `url(${thumbnailUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}
-          >
-            {/* Play Button Overlay */}
-            <div style={{
-              width: '80px', height: '80px', borderRadius: '50%',
-              background: 'rgba(255,255,255,0.9)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-              transition: 'transform 0.2s',
-            }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
-            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            >
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="#3a8aff" style={{ marginLeft: '6px' }}>
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </div>
-          </div>
-        ) : videoUrl ? (
+        {videoUrl ? (
           isGoogleDrive ? (
             <iframe 
               src={embedUrl}
@@ -91,13 +113,16 @@ export default function VideoPlayer({
             ></iframe>
           ) : (
             <video 
+              ref={videoRef}
               src={videoUrl} 
               width="100%" 
               height="100%" 
               controls 
-              autoPlay
               playsInline
               preload="metadata"
+              controlsList="nodownload"
+              onContextMenu={(e) => e.preventDefault()}
+              onTimeUpdate={handleTimeUpdate}
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
               onEnded={() => onComplete && onComplete()}
             />
@@ -108,38 +133,6 @@ export default function VideoPlayer({
           </div>
         )}
       </div>
-
-      {/* Completion Actions */}
-      {!isCompleted && (isPlaying || !thumbnailUrl) && (
-        <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>
-          <button 
-            onClick={() => onComplete && onComplete()}
-            style={{
-              padding: '12px 30px',
-              background: 'linear-gradient(135deg, #4caf50, #2e7d32)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '30px',
-              fontSize: '15px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              boxShadow: '0 4px 15px rgba(76, 175, 80, 0.3)',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              display: 'flex', alignItems: 'center', gap: '8px'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(76, 175, 80, 0.4)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 15px rgba(76, 175, 80, 0.3)';
-            }}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Mark Video as Complete
-          </button>
-        </div>
-      )}
 
       {isCompleted && (
         <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'center' }}>

@@ -77,6 +77,32 @@ export default function CourseLearningPage() {
 
   const currentTopicData = getTopicDetails(selectedTopic);
 
+  // --- Automation / Sequential Locking Logic ---
+  const isTestCourse = course?.subject_code === 'TIU-PC-UCS-T22101';
+  let moduleVideosFlattened = [];
+  if (isTestCourse && expandedModule !== null && course?.modules?.[expandedModule]?.topics) {
+    course.modules[expandedModule].topics.forEach((topicName) => {
+      const tData = getTopicDetails(topicName);
+      if (Array.isArray(tData)) {
+        tData.forEach((vid, i) => moduleVideosFlattened.push({ topic: topicName, idx: i, ...vid }));
+      } else if (tData) {
+        moduleVideosFlattened.push({ topic: topicName, idx: 0, ...tData });
+        if (tData.videoUrl2) moduleVideosFlattened.push({ topic: topicName, idx: 1, videoUrl: tData.videoUrl2, summary: tData.summary2 || tData.summary });
+        if (tData.videoUrl3) moduleVideosFlattened.push({ topic: topicName, idx: 2, videoUrl: tData.videoUrl3, summary: tData.summary3 || tData.summary });
+      }
+    });
+  }
+
+  const isVideoUnlocked = (topicName, vidIdx) => {
+    if (!isTestCourse) return true;
+    const flatIdx = moduleVideosFlattened.findIndex(v => v.topic === topicName && v.idx === vidIdx);
+    if (flatIdx <= 0) return true;
+    const prevVideo = moduleVideosFlattened[flatIdx - 1];
+    const prevCompletedId = prevVideo.idx === 0 ? prevVideo.topic : `${prevVideo.topic}_${prevVideo.idx + 1}`;
+    return completedItems.includes(prevCompletedId);
+  };
+  // ---------------------------------------------
+
   return (
     <div className="app-layout">
       <Sidebar />
@@ -422,114 +448,112 @@ export default function CourseLearningPage() {
                   
                   {/* Content Sub-Timeline (Video -> Notes -> Quiz) */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0', marginBottom: '60px', overflowX: 'visible', padding: '10px 10px' }}>
-                    {[
-                      { type: currentTopicData?.videoUrl2 ? 'Video 1' : 'Video', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#3b82f6', bg: '#eff6ff' },
-                      ...(currentTopicData?.videoUrl2 ? [{ type: 'Video 2', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#0ea5e9', bg: '#e0f2fe' }] : []),
-                      ...(currentTopicData?.videoUrl3 ? [{ type: 'Video 3', icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#06b6d4', bg: '#cffafe' }] : []),
-                      { type: 'Notes',   icon: <Icons.FileText size={22} strokeWidth={2.5} />, color: '#8b5cf6', bg: '#f5f3ff' },
-                      { type: 'Quiz',    icon: <Icons.HelpCircle size={24} strokeWidth={2.5} />, color: '#b91c1c', bg: '#fef2f2' },
-                    ].map((item, idx, arr) => {
-                      const isSelected = selectedContentIdx === idx;
-                      return (
-                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
-                          <div 
-                            onClick={() => setSelectedContentIdx(idx)}
-                            style={{ 
-                              position: 'relative',
-                              cursor: 'pointer', opacity: isSelected ? 1 : 0.6,
-                              transition: 'transform 0.2s, opacity 0.2s', zIndex: 2,
-                              transform: isSelected ? 'scale(1.05)' : 'scale(1)'
-                            }}
-                          >
-                            {/* The Icon Box */}
-                            <div style={{ 
-                              width: '50px', height: '50px', borderRadius: '12px', 
-                              background: isSelected ? item.color : '#fff',
-                              display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                              border: `2px solid ${item.color}`, flexShrink: 0,
-                              boxShadow: isSelected ? `0 0 15px ${item.color}66` : 'none',
-                              position: 'relative', zIndex: 2, color: isSelected ? '#fff' : item.color
-                            }}>
-                              {item.icon}
-                            </div>
-                            
-                            {/* Absolute Positioned Text (Doesn't affect flex centering) */}
-                            <span style={{ 
-                              position: 'absolute', top: '58px', left: '50%', transform: 'translateX(-50%)',
-                              fontSize: '12px', fontWeight: 'bold', color: isSelected ? item.color : '#888', whiteSpace: 'nowrap'
-                            }}>
-                              {item.type}
-                            </span>
+                    {(() => {
+                      const isTopicArray = Array.isArray(currentTopicData);
+                      const videoCount = isTopicArray ? currentTopicData.length : (currentTopicData?.videoUrl3 ? 3 : currentTopicData?.videoUrl2 ? 2 : 1);
+                      const timelineItems = [];
+                      
+                      for (let i = 0; i < videoCount; i++) {
+                         timelineItems.push({ type: `Video ${videoCount > 1 ? i + 1 : ''}`.trim(), icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#3b82f6', bg: '#eff6ff', isVideo: true, videoIdx: i });
+                      }
+                      timelineItems.push({ type: 'Notes',   icon: <Icons.FileText size={22} strokeWidth={2.5} />, color: '#8b5cf6', bg: '#f5f3ff', isVideo: false });
+                      timelineItems.push({ type: 'Quiz',    icon: <Icons.HelpCircle size={24} strokeWidth={2.5} />, color: '#b91c1c', bg: '#fef2f2', isVideo: false });
+                      
+                      return timelineItems.map((item, idx, arr) => {
+                        const isSelected = selectedContentIdx === idx;
+                        return (
+                          <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
+                             <div 
+                              onClick={() => setSelectedContentIdx(idx)}
+                              style={{ 
+                                position: 'relative',
+                                cursor: 'pointer', opacity: isSelected ? 1 : 0.6,
+                                transition: 'transform 0.2s, opacity 0.2s', zIndex: 2,
+                                transform: isSelected ? 'scale(1.05)' : 'scale(1)'
+                              }}
+                             >
+                              <div style={{ 
+                                width: '50px', height: '50px', borderRadius: '12px', 
+                                background: isSelected ? item.color : '#fff',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                border: `2px solid ${item.color}`, flexShrink: 0,
+                                boxShadow: isSelected ? `0 0 15px ${item.color}66` : 'none',
+                                position: 'relative', zIndex: 2, color: isSelected ? '#fff' : item.color
+                              }}>
+                                {item.icon}
+                              </div>
+                              <span style={{ 
+                                position: 'absolute', top: '58px', left: '50%', transform: 'translateX(-50%)',
+                                fontSize: '12px', fontWeight: 'bold', color: isSelected ? item.color : '#888', whiteSpace: 'nowrap'
+                              }}>
+                                {item.type}
+                              </span>
+                             </div>
+                             {idx < arr.length - 1 && (
+                               <div style={{ 
+                                 width: '40px', height: '3px', 
+                                 background: isSelected ? item.color : '#e0e0e0', 
+                                 opacity: isSelected ? 0.8 : 0.4, 
+                                 zIndex: 1, marginLeft: '-2px', marginRight: '-2px'
+                               }} />
+                             )}
                           </div>
-                          
-                          {/* Connector Line */}
-                          {idx < arr.length - 1 && (
-                            <div style={{ 
-                              width: '40px', height: '3px', 
-                              background: isSelected ? item.color : '#e0e0e0', 
-                              opacity: isSelected ? 0.8 : 0.4, 
-                              zIndex: 1, marginLeft: '-2px', marginRight: '-2px'
-                            }} />
-                          )}
-                        </div>
-                      );
-                    })}
+                        );
+                      });
+                    })()}
                   </div>
 
                   {/* Main Video/Content Player Area */}
                   <div style={{ flex: 1, background: '#f9fafb', borderRadius: '16px', border: '1px dashed #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
                     
-                    {/* Render VideoPlayer if Video is selected AND we have a topicDetails object for this topic */}
-                    {selectedContentIdx === 0 && currentTopicData ? (
-                      <VideoPlayer 
-                        videoUrl={currentTopicData.videoUrl}
-                        title={selectedTopic}
-                        summary={currentTopicData.summary}
-                        thumbnailUrl={currentTopicData.thumbnail}
-                        isCompleted={completedItems.includes(selectedTopic)}
-                        onComplete={() => {
-                          if (!completedItems.includes(selectedTopic)) {
-                            setCompletedItems(prev => [...prev, selectedTopic]);
-                          }
-                        }}
-                      />
-                    ) : selectedContentIdx === 1 && currentTopicData?.videoUrl2 ? (
-                      <VideoPlayer 
-                        videoUrl={currentTopicData.videoUrl2}
-                        title={selectedTopic + " (Part 2)"}
-                        summary={currentTopicData.summary2}
-                        thumbnailUrl={currentTopicData.thumbnail2}
-                        isCompleted={completedItems.includes(selectedTopic + "_2")}
-                        onComplete={() => {
-                          if (!completedItems.includes(selectedTopic + "_2")) {
-                            setCompletedItems(prev => [...prev, selectedTopic + "_2"]);
-                          }
-                        }}
-                      />
-                    ) : selectedContentIdx === 2 && currentTopicData?.videoUrl3 ? (
-                      <VideoPlayer 
-                        videoUrl={currentTopicData.videoUrl3}
-                        title={selectedTopic + " (Part 3)"}
-                        summary={currentTopicData.summary3}
-                        thumbnailUrl={currentTopicData.thumbnail3}
-                        isCompleted={completedItems.includes(selectedTopic + "_3")}
-                        onComplete={() => {
-                          if (!completedItems.includes(selectedTopic + "_3")) {
-                            setCompletedItems(prev => [...prev, selectedTopic + "_3"]);
-                          }
-                        }}
-                      />
-                    ) : (
-                      <>
-                        <div style={{ width: '80px', height: '80px', background: '#e3f2fd', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: '#1565c0' }}>
-                          <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#455a64', marginBottom: '10px' }}>Contents are coming soon</h3>
-                        <p style={{ color: '#78909c', fontSize: '14px', maxWidth: '400px', textAlign: 'center' }}>
-                          The videos, study materials, and topic quizzes for this section will be unlocked shortly.
-                        </p>
-                      </>
-                    )}
+                    {(() => {
+                      const isTopicArray = Array.isArray(currentTopicData);
+                      const videoCount = isTopicArray ? currentTopicData.length : (currentTopicData?.videoUrl3 ? 3 : currentTopicData?.videoUrl2 ? 2 : 1);
+                      
+                      if (selectedContentIdx < videoCount && currentTopicData) {
+                        let activeData = null;
+                        if (isTopicArray) {
+                          activeData = currentTopicData[selectedContentIdx];
+                        } else {
+                          activeData = currentTopicData;
+                          if (selectedContentIdx === 1) activeData = { ...currentTopicData, videoUrl: currentTopicData.videoUrl2, summary: currentTopicData.summary2 || currentTopicData.summary, thumbnail: currentTopicData.thumbnail2 || currentTopicData.thumbnail };
+                          if (selectedContentIdx === 2) activeData = { ...currentTopicData, videoUrl: currentTopicData.videoUrl3, summary: currentTopicData.summary3 || currentTopicData.summary, thumbnail: currentTopicData.thumbnail3 || currentTopicData.thumbnail };
+                        }
+                        
+                        const completedId = selectedContentIdx === 0 ? selectedTopic : `${selectedTopic}_${selectedContentIdx + 1}`;
+                        const locked = !isVideoUnlocked(selectedTopic, selectedContentIdx);
+
+                        if (activeData?.videoUrl) {
+                          return (
+                            <VideoPlayer 
+                              videoUrl={activeData.videoUrl}
+                              title={selectedTopic + (videoCount > 1 ? ` (Part ${selectedContentIdx + 1})` : '')}
+                              summary={activeData.summary}
+                              thumbnailUrl={activeData.thumbnail}
+                              isCompleted={completedItems.includes(completedId)}
+                              isLocked={locked}
+                              onComplete={() => {
+                                if (!completedItems.includes(completedId)) {
+                                  setCompletedItems(prev => [...prev, completedId]);
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      }
+                      
+                      return (
+                        <>
+                          <div style={{ width: '80px', height: '80px', background: '#e3f2fd', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', color: '#1565c0' }}>
+                            <svg width="40" height="40" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                          </div>
+                          <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#455a64', marginBottom: '10px' }}>Contents are coming soon</h3>
+                          <p style={{ color: '#78909c', fontSize: '14px', maxWidth: '400px', textAlign: 'center' }}>
+                            The videos, study materials, and topic quizzes for this section will be unlocked shortly.
+                          </p>
+                        </>
+                      );
+                    })()}
                   </div>
                 </>
               )}

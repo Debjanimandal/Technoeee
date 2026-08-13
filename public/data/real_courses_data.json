@@ -154,71 +154,116 @@
     "difficulty": "Intermediate",
     "relevance": "Core Hardware Concept",
     "topicDetails": {
-      "Evolution of Computer Architectures": {
-      "summary": "This video traces the evolution of computer architectures from early vacuum tube machines through transistors, integrated circuits, and modern multi-core processors. Understand how Moore's Law has driven architectural changes.",
-      "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Evolution%20of%20Computer%20Architectures.mp4",
-      "thumbnail": "/image/thumbnails/computer_architecture.png"
-    },
-    "Von Neumann and Harvard Models": {
-      "summary": "This video compares the Von Neumann and Harvard memory architectures. Understand why the Von Neumann bottleneck occurs and how the Harvard architecture separates instruction and data memory for improved performance.",
-      "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Von%20Neumann%20and%20Harvard%20Models.mp4",
-      "thumbnail": "/image/thumbnails/computer_architecture.png"
-    },
-    "Hierarchical memory organization: registers": {
-        "summary": "This video outlines the organization of computer memory, covering its hierarchy, types, and the concept of virtual memory. You will learn the difference between Primary Memory (volatile RAM and non-volatile ROM) and Secondary Memory (permanent storage like hard disks). The lecture details the memory hierarchy pyramid based on access speed and capacity: CPU Registers at the top, followed by Cache Memory, Main Memory (RAM), and Virtual Memory techniques.",
-        "videoUrl": "https://drive.google.com/file/d/1xbSXj1IqYXYVsBRjfvgMghliBl_C0t6W/view?usp=sharing",
-        "thumbnail": "/image/thumbnails/memory_hierarchy.png"
-      },
-      "Flynn's Taxonomy: SISD": {
-        "summary": "This video introduces Flynn's Taxonomy of parallel computers, focusing on Single Instruction, Single Data (SISD) architecture. Learn about the Von Neumann architecture, its limitations, and how sequential processing compares to modern parallel techniques. Core components like the CPU and Memory Units are also covered.",
-        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
-        "thumbnail": "/image/thumbnails/computer_architecture.png"
-      },
-      "SIMD": {
-        "summary": "This video explains Single Instruction, Multiple Data (SIMD) architecture within Flynn's Taxonomy. Discover how a single instruction is applied across multiple data sets simultaneously, enabling efficient parallel processing in systems like the ILLIAC IV.",
-        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
-        "thumbnail": "/image/thumbnails/computer_architecture.png"
-      },
-      "MISD": {
-        "summary": "Explore the Multiple Instruction, Single Data (MISD) architecture in this video. Understand why this theoretical model, where multiple instructions are applied to a single data set, is rarely implemented in practical, real-life systems.",
-        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
-        "thumbnail": "/image/thumbnails/computer_architecture.png"
-      },
-      "MIMD; CISC and RISC Processors": {
-        "summary": "This video covers Multiple Instruction, Multiple Data (MIMD) architectures, the foundation of modern multi-core systems. Learn about Shared Memory Multiprocessors, Message Passing Multi-computers, and the essential concept of Pipelining to improve processing efficiency.",
-        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
-        "thumbnail": "/image/thumbnails/computer_architecture.png"
-      },
-      "Performance metrics: measuring and reporting performance": {
-        "summary": "This video discusses core system components and processing techniques that impact computer performance. Understand the roles of the Processor, Memory Unit, Sequential vs. Parallel Processing, and how pipelining decomposes tasks to significantly reduce total processing time.",
-        "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
-        "thumbnail": "/image/thumbnails/computer_architecture.png"
-      },
-      "secondary; Cache memory: mapping": {
-        "summary": "This video explains Cache Memory, a high-speed storage layer near the CPU. Learn about multi-level caches (L1, L2, L3) and how mapping works, whether via physical or virtual addresses, to improve data retrieval speeds.",
-        "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
-        "thumbnail": "/image/thumbnails/memory_management.png"
-      },
-      "replacement": {
-        "summary": "Understand cache and virtual memory Replacement Algorithms in this video. Discover how policies like FIFO (first-in-first-out), LRU (least recently used), and LFU (least frequently used) decide which memory blocks to discard when space is full.",
-        "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
-        "thumbnail": "/image/thumbnails/memory_management.png"
-      },
-      "and optimization techniques; Virtual memory: organization": {
-        "summary": "Dive into Virtual Memory Organization and Optimization. This video covers how a computer maps virtual addresses to physical memory using page tables, creating the illusion of having a much larger storage capacity.",
-        "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
-        "thumbnail": "/image/thumbnails/memory_management.png"
-      },
-      "mapping": {
-        "summary": "This lecture details the mechanics of Virtual Memory Mapping. Learn how data is transferred in fixed-size blocks called 'pages', how the CPU handles page faults, and the performance penalties of cache misses.",
-        "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
-        "thumbnail": "/image/thumbnails/memory_management.png"
-      },
-      "and replacement policies; Memory interleaving and coherence; Semiconductor memory technologies; I/O Systems: I/O subsystems": {
-        "summary": "This comprehensive video explores Memory Coherence strategies like write-through and write-back. It also covers the concept of Locality of Reference (temporal, spatial, sequential) and how to calculate critical metrics like Effective Access Time (EAT) and Hit Ratios.",
-        "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
-        "thumbnail": "/image/thumbnails/memory_management.png"
-      }
+      "Evolution of Computer Architectures": [
+        {
+          "title": "Video 1",
+          "summary": "This video traces the evolution of computer architectures from early vacuum tube machines through transistors, integrated circuits, and modern multi-core processors. Understand how Moore's Law has driven architectural changes.",
+          "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Evolution%20of%20Computer%20Architectures.mp4",
+          "thumbnail": "/image/thumbnails/computer_architecture.png"
+        },
+        {
+          "title": "Video 2",
+          "summary": "Part 2 of the evolution series: diving deeper into how modern multi-core processors manage workloads across parallel architectures.",
+          "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Evolution%20of%20Computer%20Architectures.mp4",
+          "thumbnail": "/image/thumbnails/computer_architecture.png"
+        }
+      ],
+      "Von Neumann and Harvard Models": [
+        {
+          "title": "Video 1",
+          "summary": "This video compares the Von Neumann and Harvard memory architectures. Understand why the Von Neumann bottleneck occurs and how the Harvard architecture separates instruction and data memory for improved performance.",
+          "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Von%20Neumann%20and%20Harvard%20Models.mp4",
+          "thumbnail": "/image/thumbnails/computer_architecture.png"
+        }
+      ],
+      "Hierarchical memory organization: registers": [
+        {
+          "title": "Video 1",
+          "summary": "This video outlines the organization of computer memory, covering its hierarchy, types, and the concept of virtual memory. You will learn the difference between Primary Memory (volatile RAM and non-volatile ROM) and Secondary Memory (permanent storage like hard disks). The lecture details the memory hierarchy pyramid based on access speed and capacity: CPU Registers at the top, followed by Cache Memory, Main Memory (RAM), and Virtual Memory techniques.",
+          "videoUrl": "https://drive.google.com/file/d/1xbSXj1IqYXYVsBRjfvgMghliBl_C0t6W/view?usp=sharing",
+          "thumbnail": "/image/thumbnails/memory_hierarchy.png"
+        }
+      ],
+      "Flynn's Taxonomy: SISD": [
+        {
+          "title": "Video 1",
+          "summary": "This video introduces Flynn's Taxonomy of parallel computers, focusing on Single Instruction, Single Data (SISD) architecture. Learn about the Von Neumann architecture, its limitations, and how sequential processing compares to modern parallel techniques. Core components like the CPU and Memory Units are also covered.",
+          "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
+          "thumbnail": "/image/thumbnails/computer_architecture.png"
+        }
+      ],
+      "SIMD": [
+        {
+          "title": "Video 1",
+          "summary": "This video explains Single Instruction, Multiple Data (SIMD) architecture within Flynn's Taxonomy. Discover how a single instruction is applied across multiple data sets simultaneously, enabling efficient parallel processing in systems like the ILLIAC IV.",
+          "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
+          "thumbnail": "/image/thumbnails/computer_architecture.png"
+        }
+      ],
+      "MISD": [
+        {
+          "title": "Video 1",
+          "summary": "Explore the Multiple Instruction, Single Data (MISD) architecture in this video. Understand why this theoretical model, where multiple instructions are applied to a single data set, is rarely implemented in practical, real-life systems.",
+          "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
+          "thumbnail": "/image/thumbnails/computer_architecture.png"
+        }
+      ],
+      "MIMD; CISC and RISC Processors": [
+        {
+          "title": "Video 1",
+          "summary": "This video covers Multiple Instruction, Multiple Data (MIMD) architectures, the foundation of modern multi-core systems. Learn about Shared Memory Multiprocessors, Message Passing Multi-computers, and the essential concept of Pipelining to improve processing efficiency.",
+          "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
+          "thumbnail": "/image/thumbnails/computer_architecture.png"
+        }
+      ],
+      "Performance metrics: measuring and reporting performance": [
+        {
+          "title": "Video 1",
+          "summary": "This video discusses core system components and processing techniques that impact computer performance. Understand the roles of the Processor, Memory Unit, Sequential vs. Parallel Processing, and how pipelining decomposes tasks to significantly reduce total processing time.",
+          "videoUrl": "https://anvtsrzixziazdkvacrt.supabase.co/storage/v1/object/public/videos/Flynn's%20Architecture%20-%20SISD,%20SIMD,%20MISD%20&%20MIMD.mp4",
+          "thumbnail": "/image/thumbnails/computer_architecture.png"
+        }
+      ],
+      "secondary; Cache memory: mapping": [
+        {
+          "title": "Video 1",
+          "summary": "This video explains Cache Memory, a high-speed storage layer near the CPU. Learn about multi-level caches (L1, L2, L3) and how mapping works, whether via physical or virtual addresses, to improve data retrieval speeds.",
+          "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+          "thumbnail": "/image/thumbnails/memory_management.png"
+        }
+      ],
+      "replacement": [
+        {
+          "title": "Video 1",
+          "summary": "Understand cache and virtual memory Replacement Algorithms in this video. Discover how policies like FIFO (first-in-first-out), LRU (least recently used), and LFU (least frequently used) decide which memory blocks to discard when space is full.",
+          "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+          "thumbnail": "/image/thumbnails/memory_management.png"
+        }
+      ],
+      "and optimization techniques; Virtual memory: organization": [
+        {
+          "title": "Video 1",
+          "summary": "Dive into Virtual Memory Organization and Optimization. This video covers how a computer maps virtual addresses to physical memory using page tables, creating the illusion of having a much larger storage capacity.",
+          "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+          "thumbnail": "/image/thumbnails/memory_management.png"
+        }
+      ],
+      "mapping": [
+        {
+          "title": "Video 1",
+          "summary": "This lecture details the mechanics of Virtual Memory Mapping. Learn how data is transferred in fixed-size blocks called 'pages', how the CPU handles page faults, and the performance penalties of cache misses.",
+          "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+          "thumbnail": "/image/thumbnails/memory_management.png"
+        }
+      ],
+      "and replacement policies; Memory interleaving and coherence; Semiconductor memory technologies; I/O Systems: I/O subsystems": [
+        {
+          "title": "Video 1",
+          "summary": "This comprehensive video explores Memory Coherence strategies like write-through and write-back. It also covers the concept of Locality of Reference (temporal, spatial, sequential) and how to calculate critical metrics like Effective Access Time (EAT) and Hit Ratios.",
+          "videoUrl": "https://drive.google.com/file/d/107Nhewx-pMG7FH-oqQYtgb4VbYnLOMq4/view?usp=sharing",
+          "thumbnail": "/image/thumbnails/memory_management.png"
+        }
+      ]
     }
   },
   {
