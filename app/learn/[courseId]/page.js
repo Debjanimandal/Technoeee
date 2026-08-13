@@ -73,13 +73,14 @@ export default function CourseLearningPage() {
           
           {/* Header Section */}
           <div style={{
-            background: 'linear-gradient(135deg, #cce3f0 0%, #c8c4e4 60%, #d4cce8 100%)',
-            borderRadius: '24px', padding: '20px', color: '#1a2e3b', marginBottom: '16px',
-            boxShadow: '0 10px 40px rgba(43,88,118,0.18), 0 2px 8px rgba(0,0,0,0.06)', 
-            border: '1px solid rgba(43,88,118,0.15)', position: 'relative', overflow: 'hidden'
             background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-            borderRadius: '20px', padding: '30px', color: '#fff', marginBottom: '20px',
-            boxShadow: '0 15px 30px rgba(15, 23, 42, 0.3)', position: 'relative', overflow: 'hidden'
+            borderRadius: '20px',
+            padding: '30px',
+            color: '#fff',
+            marginBottom: '20px',
+            boxShadow: '0 15px 30px rgba(15, 23, 42, 0.3)',
+            position: 'relative',
+            overflow: 'hidden'
           }}>
             {/* Decorative circles */}
             <div style={{ position: 'absolute', top: '-40px', right: '180px', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(43,88,118,0.1)', pointerEvents: 'none' }} />
