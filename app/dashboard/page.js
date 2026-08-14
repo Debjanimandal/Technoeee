@@ -148,6 +148,7 @@ export default function DashboardPage() {
   
   const [stats, setStats] = useState(null);
   const [streak, setStreak] = useState(0);
+  const [activeDates, setActiveDates] = useState([]);
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
 
   // Dynamic Planner Data
@@ -202,6 +203,19 @@ export default function DashboardPage() {
       const realStreak = calcStreak(dates);
       setStats(noRealStats ? MOCK_STATS_DASHBOARD : statsData);
       setStreak(noRealStats ? MOCK_STREAK : realStreak);
+      // Store active dates (use mock dates spanning last 30 days when no real data)
+      if (noRealStats) {
+        const today = new Date();
+        const mockDates = [];
+        for (let i = 0; i < 30; i++) {
+          const d = new Date(today);
+          d.setDate(today.getDate() - i);
+          if (Math.random() > 0.3) mockDates.push(d.toISOString().split('T')[0]);
+        }
+        setActiveDates(mockDates);
+      } else {
+        setActiveDates(dates || []);
+      }
       setAnalyticsLoading(false);
     })();
   }, [user]);
@@ -688,32 +702,92 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
-                {/* Weekly Goal Widget */}
-                <div 
-                  className="hover-lift"
-                  onClick={() => setShowWeeklyModal(true)}
-                  style={{ background: '#fff', borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)', cursor: 'pointer' }}
-                >
-                  <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: '0 0 24px 0' }}>Weekly Goal</h2>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                    <div style={{ position: 'relative', width: '80px', height: '80px' }}>
-                      <svg viewBox="0 0 36 36" style={{ width: '100%', height: '100%' }}>
-                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#f1f5f9" strokeWidth="4" />
-                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#8b5cf6" strokeWidth="4" strokeDasharray={`${Math.min(((stats?.weekly_hours || 0) / 10) * 100, 100)}, 100`} />
-                      </svg>
-                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-                        <span style={{ fontSize: '16px', fontWeight: '800', color: '#0f172a' }}>{Math.min(Math.round(((stats?.weekly_hours || 0) / 10) * 100), 100)}%</span>
+                {/* Attendance Grid Widget */}
+                {(() => {
+                  const today = new Date();
+                  const year = today.getFullYear();
+                  const month = today.getMonth();
+                  const monthName = today.toLocaleString('default', { month: 'long', year: 'numeric' });
+                  const daysInMonth = new Date(year, month + 1, 0).getDate();
+                  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+                  const activeDateSet = new Set(activeDates);
+                  const todayStr = today.toISOString().split('T')[0];
+
+                  const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+                  // Build cells: leading blanks + days of month
+                  const cells = [];
+                  for (let i = 0; i < firstDay; i++) cells.push(null);
+                  for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    cells.push({ day: d, dateStr });
+                  }
+
+                  return (
+                    <div style={{ background: '#fff', borderRadius: '24px', padding: '28px', boxShadow: '0 10px 40px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                        <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Attendance</h2>
+                        <span style={{ fontSize: '12px', fontWeight: '700', color: '#6366f1', background: '#eef2ff', padding: '4px 10px', borderRadius: '99px' }}>{monthName}</span>
+                      </div>
+
+                      {/* Day headers */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', marginBottom: '4px' }}>
+                        {DAY_LABELS.map(d => (
+                          <div key={d} style={{ textAlign: 'center', fontSize: '10px', fontWeight: '700', color: '#94a3b8', paddingBottom: '2px' }}>{d}</div>
+                        ))}
+                      </div>
+
+                      {/* Day cells */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px' }}>
+                        {cells.map((cell, idx) => {
+                          if (!cell) return <div key={`blank-${idx}`} />;
+                          const isFuture = cell.dateStr > todayStr;
+                          const isPresent = activeDateSet.has(cell.dateStr);
+                          const isToday = cell.dateStr === todayStr;
+
+                          let bg, textColor, symbol;
+                          if (isFuture) {
+                            bg = '#f8fafc'; textColor = '#cbd5e1'; symbol = '·';
+                          } else if (isPresent) {
+                            bg = '#dcfce7'; textColor = '#16a34a'; symbol = '✓';
+                          } else {
+                            bg = '#fee2e2'; textColor = '#dc2626'; symbol = '✕';
+                          }
+
+                          return (
+                            <div key={cell.dateStr} style={{
+                              background: bg,
+                              borderRadius: '6px',
+                              aspectRatio: '1',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              outline: isToday ? '2px solid #6366f1' : 'none',
+                              outlineOffset: '-2px',
+                            }}>
+                              <span style={{ fontSize: '9px', fontWeight: '700', color: textColor, lineHeight: 1 }}>{symbol}</span>
+                              <span style={{ fontSize: '8px', color: textColor, opacity: 0.7, lineHeight: 1.2 }}>{cell.day}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Legend */}
+                      <div style={{ display: 'flex', gap: '12px', marginTop: '14px', justifyContent: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#64748b', fontWeight: '600' }}>
+                          <div style={{ width: '10px', height: '10px', borderRadius: '3px', background: '#dcfce7' }} />Present
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#64748b', fontWeight: '600' }}>
+                          <div style={{ width: '10px', height: '10px', borderRadius: '3px', background: '#fee2e2' }} />Absent
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', color: '#64748b', fontWeight: '600' }}>
+                          <div style={{ width: '10px', height: '10px', borderRadius: '3px', background: '#f8fafc', border: '1px solid #e2e8f0' }} />Upcoming
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <div style={{ fontSize: '20px', fontWeight: '800', color: '#0f172a', marginBottom: '4px' }}>{stats?.weekly_hours || 0} / 10</div>
-                      <div style={{ fontSize: '13px', color: '#64748b', fontWeight: '600' }}>Hours studied</div>
-                    </div>
-                  </div>
-                  <p style={{ fontSize: '13px', color: '#64748b', margin: '20px 0 0 0', lineHeight: '1.4' }}>
-                    {((stats?.weekly_hours || 0) >= 10) ? "Amazing! You've crushed your weekly goal!" : "Keep pushing! You're almost there."}
-                  </p>
-                </div>
+                  );
+                })()}
 
               </div>
 

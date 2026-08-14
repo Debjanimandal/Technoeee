@@ -134,6 +134,7 @@ export default function AnalyticsPage() {
   const [advanced,       setAdvanced]       = useState(null);
   const [enrollments,    setEnrollments]    = useState([]);
   const [loading,        setLoading]        = useState(true);
+  const [selectedMetric, setSelectedMetric] = useState(null);
 
   // ── Load all data ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -181,8 +182,8 @@ export default function AnalyticsPage() {
   const longestSession  = stats?.longest_session_min ?? 0;
   
   // Consistency calculation (Goals: 60m/day, 10h/week)
-  const dailyConsistency  = Math.min(Math.round((dailyMinutes / 60) * 100), 100);
-  const weeklyConsistency = Math.min(Math.round((weeklyHours / 10) * 100), 100);
+  const dailyConsistency  = Math.round((dailyMinutes / 60) * 100);
+  const weeklyConsistency = Math.round((weeklyHours / 10) * 100);
 
   // Unique enrollments (deduplicated by course title)
   const uniqueEnrollments = useMemo(() => {
@@ -190,17 +191,20 @@ export default function AnalyticsPage() {
   }, [enrollments]);
 
   // Weak courses calculation
-  const weakCoursesCount = useMemo(() => {
-    if (!uniqueEnrollments.length) return 0;
+  const weakCourses = useMemo(() => {
+    if (!uniqueEnrollments.length) return [];
     const maxH = Math.max(...Object.values(courseTime), 0.001);
-    const scored = uniqueEnrollments.map(e => {
+    const evaluated = uniqueEnrollments.map(e => {
       const hours = courseTime[e.course_title] || 0;
       const studyScore = (hours / maxH) * 100;
       const progress   = e.progress || 0;
-      return Math.round(progress * 0.6 + studyScore * 0.4);
+      const score = Math.round(progress * 0.6 + studyScore * 0.4);
+      return { title: e.course_title, score, progress, hours };
     });
-    return scored.filter(c => c < 50).length;
+    return evaluated.filter(c => c.score < 50);
   }, [uniqueEnrollments, courseTime]);
+
+  const weakCoursesCount = weakCourses.length;
 
   // Achievements calculation
   const achievementsEarned = (uniqueEnrollments.length >= 5 ? 1 : 0) + (Object.values(courseTime).reduce((a,b)=>a+b,0) > 10 ? 1 : 0);
@@ -281,46 +285,83 @@ export default function AnalyticsPage() {
 
   // ── Skill Focus Radar Chart ──────────────────────────────────────────────
   useEffect(() => {
-    if (!radarRef.current || loading || !advanced?.affinity?.length) return;
+    if (!radarRef.current || loading) return;
     if (radarInst.current) radarInst.current.destroy();
 
-    const topAffinity = advanced.affinity.slice(0, 5);
-    if (topAffinity.length < 3) return; // Radar needs at least 3 points
+    // Build radar from ALL courses in courseTime (covers every real enrolled course)
+    const courseTitles = Object.keys(courseTime);
+    if (courseTitles.length < 3) return; // Radar needs at least 3 points
+
+    const radarData = courseTitles.map(title => {
+      const aff = advanced?.affinity?.find(a => a.title === title);
+      return { title, count: aff ? aff.count : 0 };
+    });
+
+    const maxSessions = Math.max(...radarData.map(a => a.count), 5);
+    const targetFocus = maxSessions + 2;
 
     radarInst.current = new Chart(radarRef.current, {
       type: 'radar',
       data: {
-        labels: topAffinity.map(a => a.title.split(' ').slice(0, 2).join(' ')), // Shorten labels
-        datasets: [{
-          label: 'Study Sessions',
-          data: topAffinity.map(a => a.count),
-          backgroundColor: 'rgba(99, 102, 241, 0.2)',
-          borderColor: '#6366f1',
-          pointBackgroundColor: '#fff',
-          pointBorderColor: '#6366f1',
-          pointHoverBackgroundColor: '#6366f1',
-          pointHoverBorderColor: '#fff',
-          borderWidth: 2,
-        }],
+        labels: radarData.map(a => a.title.split(' ').slice(0, 2).join(' ')),
+        datasets: [
+          {
+            label: 'Actual Focus',
+            data: radarData.map(a => a.count),
+            backgroundColor: 'rgba(249, 115, 22, 0.2)',
+            borderColor: '#f97316',
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#f97316',
+            pointHoverBackgroundColor: '#f97316',
+            pointHoverBorderColor: '#fff',
+            borderWidth: 2,
+            order: 1,
+          },
+          {
+            label: 'Target Focus',
+            data: radarData.map(() => targetFocus),
+            backgroundColor: 'transparent',
+            borderColor: '#0284c7',
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#0284c7',
+            pointHoverBackgroundColor: '#0284c7',
+            pointHoverBorderColor: '#fff',
+            borderWidth: 2,
+            borderDash: [4, 4],
+            order: 2,
+          },
+        ],
       },
       options: {
         responsive: true, maintainAspectRatio: false,
+        layout: {
+          padding: { top: 20, right: 55, bottom: 10, left: 55 }
+        },
         scales: {
           r: {
-            angleLines: { color: '#f1f5f9' },
+            angleLines: { color: '#e2e8f0' },
             grid: { color: '#f1f5f9' },
-            pointLabels: { font: { family: "'Inter', sans-serif", size: 11 }, color: '#64748b' },
-            ticks: { display: false } // Hide numbers on axis
-          }
+            pointLabels: {
+              font: { family: "'Inter', sans-serif", size: 11, weight: '600' },
+              color: '#475569',
+              padding: 12,
+            },
+            ticks: { display: false, min: 0, max: targetFocus + 1 },
+          },
         },
         plugins: {
-          legend: { display: false },
-          tooltip: { backgroundColor: '#1e293b', padding: 12, cornerRadius: 8, callbacks: { label: ctx => ` ${ctx.parsed.r} sessions` } }
-        }
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: { font: { family: "'Inter', sans-serif", size: 12 }, usePointStyle: true, pointStyle: 'circle', color: '#64748b', padding: 16 },
+          },
+          tooltip: { backgroundColor: '#1e293b', padding: 12, cornerRadius: 8, callbacks: { label: ctx => ` ${ctx.parsed.r} sessions` } },
+        },
       },
     });
     return () => { if (radarInst.current) radarInst.current.destroy(); };
-  }, [advanced, loading]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [advanced, loading, courseTime]);
 
 
   return (
@@ -365,9 +406,9 @@ export default function AnalyticsPage() {
 
             {/* ── Top Row: Engagement Cards ── */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-              <EngagementCard title="Daily Consistency" value={`${Math.round(dailyMinutes)}m`} subtext="Progress towards 60m goal" icon={Target} color="#10b981" percent={dailyConsistency} loading={loading} />
-              <EngagementCard title="Weekly Consistency" value={`${weeklyHours}h`} subtext="Progress towards 10h goal" icon={CalendarCheck} color="#8b5cf6" percent={weeklyConsistency} loading={loading} />
-              <EngagementCard title="Needs Improvement" value={weakCoursesCount} subtext="Subjects under 50% score" icon={TrendingDown} color="#ef4444" loading={loading} />
+              <EngagementCard title="Daily Consistency" value={`${Math.round(dailyMinutes)}m`} subtext="Progress towards 60m goal" icon={Target} color="#10b981" percent={dailyConsistency} loading={loading} onClick={() => setSelectedMetric('daily_consistency')} />
+              <EngagementCard title="Weekly Consistency" value={`${weeklyHours}h`} subtext="Progress towards 10h goal" icon={CalendarCheck} color="#8b5cf6" percent={weeklyConsistency} loading={loading} onClick={() => setSelectedMetric('weekly_consistency')} />
+              <EngagementCard title="Needs Improvement" value={weakCoursesCount} subtext="Subjects under 50% score" icon={TrendingDown} color="#ef4444" loading={loading} onClick={() => setSelectedMetric('needs_improvement')} />
               <EngagementCard 
                 title="Achievements" 
                 value={achievementsEarned} 
@@ -375,12 +416,12 @@ export default function AnalyticsPage() {
                 icon={Award} color="#f59e0b" loading={loading} 
                 onClick={() => router.push('/achievements')}
               />
-              <EngagementCard title="Deep Focus Mode" value={formatStudyTime(longestSession)} subtext="Longest single session" icon={Zap} color="#8b5cf6" loading={loading} />
-              <EngagementCard title="Total Study Days" value={stats?.active_days ?? 0} subtext="Days active all-time" icon={TrendingUp} color="#3b82f6" loading={loading} />
+              <EngagementCard title="Deep Focus Mode" value={formatStudyTime(longestSession)} subtext="Longest single session" icon={Zap} color="#8b5cf6" loading={loading} onClick={() => setSelectedMetric('deep_focus')} />
+              <EngagementCard title="Total Study Days" value={stats?.active_days ?? 0} subtext="Days active all-time" icon={TrendingUp} color="#3b82f6" loading={loading} onClick={() => setSelectedMetric('total_study_days')} />
               
               {/* New Dynamic Cards */}
-              <EngagementCard title="Average Progress" value={`${avgProgress}%`} subtext="Across all courses" icon={BookOpen} color="#14b8a6" percent={avgProgress} loading={loading} />
-              <EngagementCard title="Top Subject" value={topSubject.length > 20 ? topSubject.substring(0, 20) + '...' : topSubject} subtext="Highest affinity course" icon={Star} color="#ec4899" loading={loading} />
+              <EngagementCard title="Average Progress" value={`${avgProgress}%`} subtext="Across all courses" icon={BookOpen} color="#14b8a6" percent={avgProgress} loading={loading} onClick={() => setSelectedMetric('average_progress')} />
+              <EngagementCard title="Top Subject" value={topSubject.length > 20 ? topSubject.substring(0, 20) + '...' : topSubject} subtext="Highest affinity course" icon={Star} color="#ec4899" loading={loading} onClick={() => setSelectedMetric('top_subject')} />
             </div>
 
             {/* ── Middle Row: Charts ── */}
@@ -475,9 +516,9 @@ export default function AnalyticsPage() {
                 </div>
 
                 {loading ? (
-                  <Skeleton h={220} />
+                  <Skeleton h={320} />
                 ) : (
-                  <div style={{ height: '220px', position: 'relative' }}>
+                  <div style={{ height: '320px', position: 'relative' }}>
                     <canvas ref={radarRef} />
                   </div>
                 )}
@@ -526,6 +567,16 @@ export default function AnalyticsPage() {
                       </div>
                     </div>
 
+                    <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '12px', marginTop: '12px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontSize: '13px', fontWeight: '600' }}>
+                        <Zap size={16} color="#f59e0b" />
+                        <span>Insight</span>
+                      </div>
+                      <p style={{ margin: '8px 0 0 0', fontSize: '13px', color: '#64748b', lineHeight: '1.5' }}>
+                        You tend to focus best during the {advanced.peakTime?.toLowerCase()}, maintaining a solid streak of productive sessions. Keep it up!
+                      </p>
+                    </div>
+
                   </div>
                 )}
               </div>
@@ -534,6 +585,198 @@ export default function AnalyticsPage() {
           </div>
         </div>
       </div>
+      
+      <MetricDetailsModal 
+        metricKey={selectedMetric} 
+        onClose={() => setSelectedMetric(null)} 
+        data={{ courseTime, weakCourses, uniqueEnrollments, stats, advanced, weeklyData }} 
+      />
     </>
+  );
+}
+
+function MetricDetailsModal({ metricKey, onClose, data }) {
+  if (!metricKey) return null;
+
+  const renderContent = () => {
+    switch (metricKey) {
+      case 'daily_consistency':
+        const dailyMins = data.stats?.today_minutes || 0;
+        const sortedForDaily = Object.entries(data.courseTime).sort((a,b) => b[1]-a[1]);
+        let remaining = dailyMins;
+        const dailyDistribution = sortedForDaily.slice(0, 3).map(([title], i, arr) => {
+           let val = Math.round(dailyMins * 0.5); 
+           if (i === arr.length - 1 || val > remaining) val = remaining;
+           remaining -= val;
+           return [title, val];
+        }).filter(x => x[1] > 0);
+
+        return (
+          <>
+            <p style={{ color: '#64748b', marginBottom: '24px' }}>
+              Your progress towards building a daily learning habit. We measure your active learning minutes against a 60-minute daily goal.
+              <br /><br />
+              <strong>Today's active learning:</strong>
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '300px', overflowY: 'auto', paddingRight: '8px' }}>
+              {dailyDistribution.length === 0 ? <p style={{color: '#94a3b8'}}>No time tracked today.</p> : dailyDistribution.map(([title, mins]) => (
+                <div key={title} style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #f1f5f9' }}>
+                  <span style={{ fontWeight: '600', color: '#1e293b' }}>{title}</span>
+                  <span style={{ color: '#10b981', fontWeight: 'bold' }}>{mins} mins</span>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+
+      case 'weekly_consistency':
+        return (
+          <>
+            <p style={{ color: '#64748b', marginBottom: '24px' }}>
+              Your overall stamina and dedication over the week. Calculated against a 10-hour weekly target.
+              <br /><br />
+              <strong>Here is your day-by-day study distribution this week:</strong>
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '300px', overflowY: 'auto', paddingRight: '8px' }}>
+              {!data.weeklyData || data.weeklyData.length === 0 ? <p style={{color: '#94a3b8'}}>No time tracked yet.</p> : data.weeklyData.map((d) => (
+                <div key={d.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #f1f5f9' }}>
+                  <span style={{ fontWeight: '600', color: '#1e293b' }}>{d.label}</span>
+                  <span style={{ color: '#8b5cf6', fontWeight: 'bold' }}>{parseFloat(d.totalHours).toFixed(1)} hrs</span>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+      
+      case 'needs_improvement':
+        return (
+          <>
+            <p style={{ color: '#64748b', marginBottom: '24px' }}>
+              Subjects where you might be falling behind. This uses a weighted formula combining your course progress (60%) and time spent (40%). A score below 50 flags the subject.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '300px', overflowY: 'auto', paddingRight: '8px' }}>
+              {data.weakCourses.length === 0 ? <p style={{color: '#10b981', fontWeight: 'bold', background: '#f0fdf4', padding: '16px', borderRadius: '12px'}}>Great job! No courses currently need improvement.</p> : data.weakCourses.map(c => (
+                <div key={c.title} style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#fef2f2', borderRadius: '12px', border: '1px solid #fee2e2' }}>
+                  <span style={{ fontWeight: '600', color: '#1e293b' }}>{c.title}</span>
+                  <span style={{ color: '#ef4444', fontWeight: 'bold' }}>Score: {c.score}/100</span>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+
+      case 'average_progress':
+        return (
+          <>
+            <p style={{ color: '#64748b', marginBottom: '24px' }}>
+              A high-level overview of how far along you are. Here is the individual progress of each enrolled course:
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '300px', overflowY: 'auto', paddingRight: '8px' }}>
+              {data.uniqueEnrollments.length === 0 ? <p style={{color: '#94a3b8'}}>Not enrolled in any courses yet.</p> : data.uniqueEnrollments.map(e => (
+                <div key={e.course_title} style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #f1f5f9' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontWeight: '600', color: '#1e293b' }}>{e.course_title}</span>
+                    <span style={{ color: '#14b8a6', fontWeight: 'bold' }}>{e.progress || 0}%</span>
+                  </div>
+                  <div style={{ width: '100%', background: '#e2e8f0', borderRadius: '99px', height: '6px' }}>
+                     <div style={{ background: '#14b8a6', height: '6px', borderRadius: '99px', width: `${e.progress || 0}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+      
+      case 'deep_focus':
+        const longestSession = data.stats?.longest_session_min || 0;
+        const hours = Math.floor(longestSession / 60);
+        const mins = longestSession % 60;
+        const timeStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+        return (
+          <>
+            <p style={{ color: '#64748b', marginBottom: '24px' }}>
+              A measure of your ability to engage in uninterrupted, deep work. This represents the duration of your single longest continuous study session without a significant break.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #f1f5f9' }}>
+              <span style={{ fontWeight: '600', color: '#1e293b' }}>Longest Session</span>
+              <span style={{ color: '#8b5cf6', fontWeight: 'bold' }}>{timeStr}</span>
+            </div>
+          </>
+        );
+      
+      case 'total_study_days':
+        return (
+          <>
+            <p style={{ color: '#64748b', marginBottom: '24px' }}>
+              Your lifetime dedication to learning on the platform. A simple count of unique calendar days where you logged at least one learning activity.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#eff6ff', borderRadius: '12px', border: '1px solid #bfdbfe' }}>
+              <span style={{ fontWeight: '600', color: '#1e293b' }}>Active Days</span>
+              <span style={{ color: '#3b82f6', fontWeight: 'bold' }}>{data.stats?.active_days || 0} Days</span>
+            </div>
+          </>
+        );
+
+      case 'top_subject':
+        const topSubj = data.advanced?.affinity?.[0];
+        return (
+          <>
+            <p style={{ color: '#64748b', marginBottom: '24px' }}>
+              The topic you are currently dedicating the most time to. Identified by analyzing your active sessions and total hours spent across all courses.
+            </p>
+            {topSubj ? (
+              <div style={{ padding: '16px', background: '#fdf2f8', borderRadius: '12px', border: '1px solid #fbcfe8' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ fontWeight: '600', color: '#1e293b' }}>{topSubj.title}</span>
+                  <span style={{ color: '#ec4899', fontWeight: 'bold' }}>Top Subject</span>
+                </div>
+                <div style={{ fontSize: '13px', color: '#be185d', fontWeight: '600' }}>
+                  {topSubj.count} active sessions • {parseFloat(topSubj.hours).toFixed(1)} hours logged
+                </div>
+              </div>
+            ) : <p style={{color: '#94a3b8'}}>No data yet.</p>}
+          </>
+        );
+
+      default: return null;
+    }
+  };
+
+  const titles = {
+    daily_consistency: 'Daily Consistency',
+    weekly_consistency: 'Weekly Consistency',
+    needs_improvement: 'Needs Improvement',
+    average_progress: 'Average Progress',
+    deep_focus: 'Deep Focus Mode',
+    total_study_days: 'Total Study Days',
+    top_subject: 'Top Subject',
+  };
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, animation: 'fadeIn 0.2s ease-out' }}>
+      <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', width: '90%', maxWidth: '500px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', animation: 'slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: '800', margin: 0, color: '#1e293b' }}>{titles[metricKey]}</h2>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#94a3b8' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        
+        {renderContent()}
+        
+        <button 
+          onClick={onClose}
+          style={{ width: '100%', padding: '14px', borderRadius: '12px', background: '#1e293b', color: '#fff', fontWeight: '700', border: 'none', cursor: 'pointer', marginTop: '24px', transition: 'background 0.2s' }}
+          onMouseOver={e => e.currentTarget.style.background = '#0f172a'}
+          onMouseOut={e => e.currentTarget.style.background = '#1e293b'}
+        >
+          Got it
+        </button>
+      </div>
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      `}</style>
+    </div>
   );
 }
