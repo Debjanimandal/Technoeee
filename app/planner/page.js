@@ -215,25 +215,58 @@ export default function PlannerPage() {
     })();
   }, [user]);
 
-  // 2. Generate Schedule Dynamically
+  // 2. Generate Schedule Dynamically (with caching to prevent shifting)
   useEffect(() => {
     if (enrollments.length > 0) {
       setLoading(true);
-      const dynamicMap = generateDynamicSchedule(enrollments, studyPace, plannerStartDate, completedTasks);
       
-      // Merge with history
-      const mergedMap = { ...dynamicMap };
-      Object.keys(plannerHistory).forEach(date => {
-        // Overlay history on top of dynamic for past dates
-        mergedMap[date] = plannerHistory[date];
+      const cacheKey = JSON.stringify({
+         len: enrollments.length,
+         pace: studyPace,
+         start: plannerStartDate
       });
       
-      setScheduleMap(mergedMap);
+      const savedCacheStr = localStorage.getItem('planner_schedule_cache');
+      let finalMap = null;
+      
+      if (savedCacheStr) {
+         try {
+            const savedCache = JSON.parse(savedCacheStr);
+            if (savedCache.key === cacheKey) {
+               finalMap = savedCache.map;
+            }
+         } catch (e) {}
+      }
+      
+      if (!finalMap) {
+         const dynamicMap = generateDynamicSchedule(enrollments, studyPace, plannerStartDate, completedTasks);
+         
+         finalMap = { ...dynamicMap };
+         Object.keys(plannerHistory).forEach(date => {
+           finalMap[date] = plannerHistory[date];
+         });
+         
+         localStorage.setItem('planner_schedule_cache', JSON.stringify({
+            key: cacheKey,
+            map: finalMap
+         }));
+      }
+      
+      // Apply completions to the map
+      const mapWithCompletions = { ...finalMap };
+      Object.keys(mapWithCompletions).forEach(d => {
+         mapWithCompletions[d] = mapWithCompletions[d].map(t => ({
+            ...t,
+            is_completed: completedTasks.includes(t.id) || t.is_completed
+         }));
+      });
+      
+      setScheduleMap(mapWithCompletions);
       setLoading(false);
     } else if (enrollments.length === 0) {
       setLoading(false);
     }
-  }, [enrollments, studyPace, plannerStartDate, completedTasks, plannerHistory]);
+  }, [enrollments, studyPace, plannerStartDate, plannerHistory]); // Excluded completedTasks to prevent jitter
 
   // 3. Compute Overdue Tasks
   const overdueTasksCount = useMemo(() => {
