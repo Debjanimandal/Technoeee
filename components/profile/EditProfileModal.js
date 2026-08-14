@@ -144,12 +144,7 @@ export default function EditProfileModal({ isOpen, onClose, onBack, initialTab =
             {/* Global Save Button */}
             <div style={{ marginTop: 'auto', paddingTop: '24px' }}>
               <button
-                style={{
-                  width: '100%', padding: '12px', borderRadius: '8px',
-                  background: '#10b981', color: '#fff',
-                  fontWeight: 600, border: 'none', cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
+                className="global-save-btn"
                 onClick={() => {
                   const dataToSave = {
                     basicDetails, aboutText, educationDetails, personalDetails
@@ -242,7 +237,7 @@ export default function EditProfileModal({ isOpen, onClose, onBack, initialTab =
           padding: 24px;
         }
         .modal-container {
-          background: #f8fafc;
+          background: linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%);
           width: 100%;
           max-width: 1100px;
           height: 90vh;
@@ -264,8 +259,9 @@ export default function EditProfileModal({ isOpen, onClose, onBack, initialTab =
           align-items: center;
           justify-content: space-between;
           padding: 16px 24px;
-          background: #fff;
-          border-bottom: 1px solid #e2e8f0;
+          background: rgba(255, 255, 255, 0.4);
+          border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+          backdrop-filter: blur(10px);
         }
         .header-left {
           display: flex;
@@ -301,12 +297,13 @@ export default function EditProfileModal({ isOpen, onClose, onBack, initialTab =
         /* Sidebar */
         .modal-sidebar {
           width: 320px;
-          background: #fff;
-          border-right: 1px solid #e2e8f0;
+          background: rgba(255, 255, 255, 0.6);
+          border-right: 1px solid rgba(226, 232, 240, 0.6);
           display: flex;
           flex-direction: column;
           overflow-y: auto;
           padding: 24px;
+          backdrop-filter: blur(10px);
         }
 
         .resume-promo {
@@ -367,44 +364,59 @@ export default function EditProfileModal({ isOpen, onClose, onBack, initialTab =
         .nav-menu {
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 6px;
         }
         .nav-item {
           display: flex;
           align-items: center;
-          padding: 12px 16px;
-          background: none;
+          padding: 14px 18px;
+          background: transparent;
           border: none;
-          border-radius: 8px;
+          border-radius: 12px;
           cursor: pointer;
           text-align: left;
-          transition: all 0.2s;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           position: relative;
+          overflow: hidden;
         }
         .nav-item:hover {
-          background: #f8fafc;
+          background: rgba(241, 245, 249, 0.8);
+          transform: translateX(4px);
         }
         .nav-item.active {
-          background: #f0f7ff;
+          background: linear-gradient(90deg, #f0f7ff 0%, rgba(255,255,255,0) 100%);
+          box-shadow: inset 2px 0 0 transparent;
+          transform: translateX(6px);
         }
         .nav-item.active::before {
           content: '';
           position: absolute;
-          left: -24px;
-          top: 0; bottom: 0;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          height: 60%;
           width: 4px;
-          background: #3b82f6;
+          background: linear-gradient(180deg, #3b82f6 0%, #2dd4bf 100%);
           border-radius: 0 4px 4px 0;
+          box-shadow: 2px 0 8px rgba(59, 130, 246, 0.4);
         }
         .nav-label {
-          font-size: 14px;
-          color: #334155;
+          font-size: 15px;
+          color: #475569;
           font-weight: 500;
           flex: 1;
+          transition: color 0.3s;
         }
         .nav-item.active .nav-label {
-          color: #1c4980;
-          font-weight: 600;
+          color: #1e3a8a;
+          font-weight: 700;
+        }
+        .nav-item svg {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-item.active svg {
+          transform: scale(1.15);
+          filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
         }
         .required-tag {
           font-size: 10px;
@@ -415,16 +427,39 @@ export default function EditProfileModal({ isOpen, onClose, onBack, initialTab =
           font-weight: 600;
         }
 
+        .global-save-btn {
+          width: 100%;
+          padding: 14px;
+          border-radius: 12px;
+          background: #10b981;
+          color: #fff;
+          font-weight: 700;
+          font-size: 15px;
+          border: none;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+        .global-save-btn:hover {
+          background: #059669;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+        .global-save-btn:active {
+          transform: translateY(0);
+        }
+
         /* Content Area */
         .modal-content {
           flex: 1;
-          background: #fff;
+          background: rgba(255, 255, 255, 0.85);
           margin: 24px;
           border-radius: 12px;
-          border: 1px solid #e2e8f0;
+          border: 1px solid rgba(226, 232, 240, 0.6);
           display: flex;
           flex-direction: column;
           overflow: hidden;
+          backdrop-filter: blur(10px);
         }
         .content-header {
           display: flex;

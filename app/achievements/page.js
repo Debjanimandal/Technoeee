@@ -77,7 +77,7 @@ export default function AchievementsPage() {
       
       <div className="app-layout">
         <Sidebar />
-        <div className="page-content" style={{ backgroundColor: '#f8fafc', minHeight: '100vh', paddingBottom: '60px' }}>
+        <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', minHeight: '100vh', paddingBottom: '60px' }}>
           <DashboardHeader />
 
           <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 32px', paddingTop: '20px' }}>

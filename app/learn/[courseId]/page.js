@@ -129,7 +129,7 @@ export default function CourseLearningPage() {
   return (
     <div className="app-layout">
       <Sidebar />
-      <div className="page-content" style={{ backgroundColor: '#f4f7fb', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <DashboardHeader />
         
         <div style={{ padding: '0 20px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>

@@ -333,7 +333,7 @@ export default function AnalyticsPage() {
       
       <div className="app-layout">
         <Sidebar />
-        <div className="page-content" style={{ backgroundColor: '#f8fafc', minHeight: '100vh', paddingBottom: '40px' }}>
+        <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', minHeight: '100vh', paddingBottom: '40px' }}>
           <DashboardHeader />
 
           <div style={{ padding: '0 32px' }}>

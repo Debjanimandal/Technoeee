@@ -108,7 +108,7 @@ export default function ProfilePage() {
   return (
     <div className="app-layout">
       <Sidebar />
-      <div className="page-content" style={{ backgroundColor: '#f8fafc', overflowY: 'auto', height: '100vh', paddingBottom: '60px' }}>
+      <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', overflowY: 'auto', height: '100vh', paddingBottom: '60px' }}>
         <DashboardHeader />
 
         <div style={{ maxWidth: '900px', margin: '0 auto', paddingTop: '20px' }}>
