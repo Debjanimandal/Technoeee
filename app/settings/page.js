@@ -47,7 +47,7 @@ export default function SettingsPage() {
   return (
     <div className="app-layout">
       <Sidebar />
-      <div className="page-content" style={{ backgroundColor: '#fff', overflowY: 'auto', height: '100vh', paddingBottom: '60px' }}>
+      <div className="page-content" style={{ backgroundColor: '#f8fafc', overflowY: 'auto', height: '100vh', paddingBottom: '60px' }}>
         
         <DashboardHeader />
 
@@ -133,15 +133,15 @@ export default function SettingsPage() {
                 onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#f8fafc'; }}
                 onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#fff'; }}
               >
-                <ArrowLeft size={18} color="#475569" strokeWidth={2.5} />
-                Back
+                <ArrowLeft size={18} color="#2b5876" strokeWidth={2.5} />
+                <span style={{ color: '#2b5876' }}>Back</span>
               </button>
             </div>
 
             <h1 style={{ 
-              fontSize: '32px', 
-              fontWeight: '700', 
-              color: '#333', 
+              fontSize: '36px', 
+              fontWeight: '800', 
+              color: '#0f172a', 
               marginBottom: '32px',
               fontFamily: 'system-ui, -apple-system, sans-serif'
             }}>
@@ -153,9 +153,12 @@ export default function SettingsPage() {
                 <div 
                   key={section.id} 
                   style={{ 
-                    borderRadius: '8px', 
-                    backgroundColor: '#f5f5f5', 
-                    overflow: 'hidden' 
+                    borderRadius: '20px', 
+                    backgroundColor: '#fff', 
+                    overflow: 'hidden',
+                    border: '1px solid rgba(99,102,241,0.15)',
+                    boxShadow: '0 10px 40px rgba(79,70,229,0.06), 0 2px 8px rgba(0,0,0,0.04)',
+                    transition: 'box-shadow 0.3s ease'
                   }}
                 >
                   <button
@@ -165,24 +168,27 @@ export default function SettingsPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '20px 24px',
-                      backgroundColor: 'transparent',
+                      padding: '24px',
+                      backgroundColor: openSection === section.id ? 'rgba(99,102,241,0.02)' : 'transparent',
                       border: 'none',
                       cursor: 'pointer',
-                      minHeight: '64px',
-                      outline: 'none'
+                      outline: 'none',
+                      transition: 'background-color 0.2s ease'
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ebebeb'}
-                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    onMouseOver={(e) => { if (openSection !== section.id) e.currentTarget.style.backgroundColor = '#f8fafc'; }}
+                    onMouseOut={(e) => { if (openSection !== section.id) e.currentTarget.style.backgroundColor = 'transparent'; }}
                   >
-                    <span style={{ 
-                      fontSize: '18px', 
-                      fontWeight: '600', 
-                      color: '#1f2937',
-                      fontFamily: 'system-ui, -apple-system, sans-serif'
-                    }}>
-                      {section.title}
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '4px', height: '18px', background: '#3b82f6', borderRadius: '4px' }}></div>
+                      <span style={{ 
+                        fontSize: '18px', 
+                        fontWeight: '700', 
+                        color: '#0f172a',
+                        fontFamily: 'system-ui, -apple-system, sans-serif'
+                      }}>
+                        {section.title}
+                      </span>
+                    </div>
                     {openSection === section.id ? (
                       <ChevronUp size={18} color="#666" />
                     ) : (
@@ -218,7 +224,7 @@ export default function SettingsPage() {
                                   width: '44px',
                                   height: '24px',
                                   borderRadius: '9999px',
-                                  backgroundColor: emailPreference ? '#2563eb' : '#cbd5e1',
+                                  backgroundColor: emailPreference ? '#2b5876' : '#cbd5e1',
                                   border: 'none',
                                   cursor: 'pointer',
                                   transition: 'background-color 0.3s'
@@ -270,7 +276,7 @@ export default function SettingsPage() {
                                 </div>
                               </div>
                               <div>
-                                <button type="submit" disabled={!isFormValid} style={{ padding: '10px 28px', backgroundColor: isFormValid ? '#1a73e8' : '#f4f6f8', color: isFormValid ? '#ffffff' : '#b0b8c1', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '500', cursor: isFormValid ? 'pointer' : 'not-allowed', marginTop: '8px', transition: 'all 0.2s' }}>
+                                <button type="submit" disabled={!isFormValid} style={{ padding: '12px 32px', backgroundColor: isFormValid ? '#2b5876' : '#f1f5f9', color: isFormValid ? '#ffffff' : '#94a3b8', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: isFormValid ? 'pointer' : 'not-allowed', marginTop: '8px', transition: 'all 0.2s', boxShadow: isFormValid ? '0 4px 12px rgba(43,88,118,0.2)' : 'none' }}>
                                   Submit
                                 </button>
                               </div>
@@ -303,7 +309,7 @@ export default function SettingsPage() {
                                   width: '44px',
                                   height: '24px',
                                   borderRadius: '9999px',
-                                  backgroundColor: mfaEnabled ? '#2563eb' : '#cbd5e1',
+                                  backgroundColor: mfaEnabled ? '#2b5876' : '#cbd5e1',
                                   border: 'none',
                                   cursor: 'pointer',
                                   transition: 'background-color 0.3s'
