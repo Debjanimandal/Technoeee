@@ -239,11 +239,13 @@ export default function PlannerPage() {
       }
       
       if (!finalMap) {
-         const dynamicMap = generateDynamicSchedule(enrollments, studyPace, plannerStartDate, completedTasks);
+         const dynamicMap = generateDynamicSchedule(enrollments, studyPace, plannerStartDate, completedTasks, plannerHistory);
          
          finalMap = { ...dynamicMap };
          Object.keys(plannerHistory).forEach(date => {
-           finalMap[date] = plannerHistory[date];
+           if (date < plannerStartDate) {
+             finalMap[date] = plannerHistory[date];
+           }
          });
          
          localStorage.setItem('planner_schedule_cache', JSON.stringify({
@@ -286,14 +288,36 @@ export default function PlannerPage() {
 
   // Mark task complete (locally)
   const handleComplete = (dateStr, taskId) => {
-    let newCompleted = [...completedTasks];
-    if (newCompleted.includes(taskId)) {
-      return; // Already completed, cannot uncheck manually for now
-    } else {
-      newCompleted.push(taskId);
+    if (!completedTasks.includes(taskId)) {
+      const updated = [...completedTasks, taskId];
+      setCompletedTasks(updated);
+      localStorage.setItem('planner_completed', JSON.stringify(updated));
+      
+      // Lock it in history immediately so it survives pace changes!
+      setPlannerHistory(prev => {
+        const nextHist = { ...prev };
+        if (!nextHist[dateStr]) nextHist[dateStr] = [];
+        
+        // Find the full task object from current schedule
+        const taskObj = scheduleMap[dateStr]?.find(t => t.id === taskId);
+        if (taskObj && !nextHist[dateStr].some(t => t.id === taskId)) {
+           nextHist[dateStr] = [...nextHist[dateStr], { ...taskObj, is_completed: true }];
+        }
+        localStorage.setItem('planner_history', JSON.stringify(nextHist));
+        return nextHist;
+      });
+
+      // Update the local schedule map to reflect completion immediately
+      setScheduleMap(prev => {
+        const next = { ...prev };
+        if (next[dateStr]) {
+          next[dateStr] = next[dateStr].map(t => 
+            t.id === taskId ? { ...t, is_completed: true } : t
+          );
+        }
+        return next;
+      });
     }
-    setCompletedTasks(newCompleted);
-    localStorage.setItem('planner_completed', JSON.stringify(newCompleted));
   };
 
   // Rebalance Schedule (Snapshot history)
