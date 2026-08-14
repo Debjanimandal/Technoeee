@@ -462,7 +462,7 @@ export default function DashboardPage() {
               <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
                 <div style={{ background: '#fff', borderRadius: '24px', padding: '32px', width: '100%', maxWidth: '450px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
                   <h2 style={{ fontSize: '24px', fontWeight: '800', marginBottom: '8px' }}>How is Focus Score Calculated?</h2>
-                  <p style={{ color: '#64748b', marginBottom: '24px' }}>This metric evaluates your active engagement. It starts at 100% and drops if you have too much idle time or low quiz scores. It requires at least 1 minute of data or 1 quiz taken to compute.</p>
+                  <p style={{ color: '#64748b', marginBottom: '24px' }}>This metric evaluates your active engagement. Once you start learning, your score is calculated from a baseline of 100% and drops if you have too much idle time or low quiz scores. It requires at least 1 minute of data or 1 quiz taken to compute.</p>
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f8fafc', borderRadius: '12px' }}>
