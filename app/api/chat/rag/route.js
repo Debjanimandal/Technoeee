@@ -29,6 +29,7 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 const { searchChunks } = require('@/lib/rag/contentIndex');
+const { vectorSearchChunks, isVectorStoreReady } = require('@/lib/rag/vectorSearch');
 
 // NVIDIA NIM — OpenAI-compatible endpoint
 const nvidia = new OpenAI({
@@ -122,11 +123,32 @@ export async function POST(request) {
     }
 
     // 1. Retrieve relevant content chunks
-    const retrievedChunks = searchChunks(
-      question,
-      4,
-      studentContext.courseCode || null
-    );
+    // Try semantic vector search first; fall back to TF-IDF if store not ready
+    let retrievedChunks = [];
+    let searchMode = 'tfidf';
+
+    try {
+      const vectorReady = await isVectorStoreReady();
+      if (vectorReady) {
+        retrievedChunks = await vectorSearchChunks(
+          question,
+          4,
+          studentContext.courseCode || null
+        );
+        searchMode = 'vector';
+        // If vector search returned nothing, fall back to TF-IDF
+        if (retrievedChunks.length === 0) {
+          retrievedChunks = searchChunks(question, 4, studentContext.courseCode || null);
+          searchMode = 'tfidf-fallback';
+        }
+      } else {
+        // Vector store empty — use TF-IDF until ingestion is run
+        retrievedChunks = searchChunks(question, 4, studentContext.courseCode || null);
+      }
+    } catch (searchErr) {
+      console.warn('[RAG] Vector search failed, using TF-IDF:', searchErr.message);
+      retrievedChunks = searchChunks(question, 4, studentContext.courseCode || null);
+    }
 
     // 2. Build system prompt with retrieved context + student context
     const systemPrompt = buildSystemPrompt(retrievedChunks, studentContext);
@@ -189,7 +211,8 @@ export async function POST(request) {
       sources,
       insightSignal,
       isGrounded: retrievedChunks.length > 0,
-      model: usedModel, // useful for debugging
+      model: usedModel,
+      searchMode, // 'vector' | 'tfidf' | 'tfidf-fallback'
     });
 
   } catch (err) {
