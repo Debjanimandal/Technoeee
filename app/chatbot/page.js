@@ -63,36 +63,36 @@ function AnswerText({ text }) {
     const parts = str.split(/(\*\*[^*]+\*\*)/g);
     return parts.map((part, j) =>
       part.startsWith('**') && part.endsWith('**')
-        ? <strong key={j} style={{ color: '#e2e8f0' }}>{part.slice(2, -2)}</strong>
+        ? <strong key={j} style={{ color: '#ffffff', fontWeight: 600 }}>{part.slice(2, -2)}</strong>
         : part
     );
   };
 
   return (
-    <div style={{ lineHeight: 1.75, fontSize: '14px' }}>
+    <div style={{ lineHeight: 1.75, fontSize: '14.5px', color: '#f8fafc' }}>
       {lines.map((line, i) => {
         if (line.startsWith('## ')) {
-          return <h3 key={i} style={{ fontSize: '15px', fontWeight: 700, margin: '14px 0 6px', color: '#e2e8f0' }}>{renderInline(line.slice(3))}</h3>;
+          return <h3 key={i} style={{ fontSize: '16px', fontWeight: 700, margin: '18px 0 8px', color: '#ffffff', letterSpacing: '-0.3px' }}>{renderInline(line.slice(3))}</h3>;
         }
         if (line.startsWith('### ')) {
-          return <h4 key={i} style={{ fontSize: '14px', fontWeight: 600, margin: '10px 0 4px', color: '#cbd5e1' }}>{renderInline(line.slice(4))}</h4>;
+          return <h4 key={i} style={{ fontSize: '15px', fontWeight: 600, margin: '12px 0 6px', color: '#f1f5f9' }}>{renderInline(line.slice(4))}</h4>;
         }
         if (line.startsWith('- ') || line.startsWith('* ')) {
-          return <div key={i} style={{ display: 'flex', gap: '8px', margin: '3px 0', paddingLeft: '4px' }}><span style={{ color: '#6366f1', marginTop: '2px', flexShrink: 0 }}>•</span><span>{renderInline(line.slice(2))}</span></div>;
+          return <div key={i} style={{ display: 'flex', gap: '10px', margin: '6px 0', paddingLeft: '4px' }}><span style={{ color: '#818cf8', marginTop: '2px', flexShrink: 0 }}>•</span><span>{renderInline(line.slice(2))}</span></div>;
         }
         if (/^\d+\.\s/.test(line)) {
           const match = line.match(/^(\d+)\.\s(.*)/);
           if (match) {
-            return <div key={i} style={{ display: 'flex', gap: '8px', margin: '3px 0', paddingLeft: '4px' }}><span style={{ color: '#6366f1', fontWeight: 600, flexShrink: 0 }}>{match[1]}.</span><span>{renderInline(match[2])}</span></div>;
+            return <div key={i} style={{ display: 'flex', gap: '10px', margin: '6px 0', paddingLeft: '4px' }}><span style={{ color: '#818cf8', fontWeight: 600, flexShrink: 0 }}>{match[1]}.</span><span>{renderInline(match[2])}</span></div>;
           }
         }
         if (line.startsWith('**') && line.endsWith('**') && line.length > 4) {
-          return <p key={i} style={{ margin: '4px 0', fontWeight: 700, color: '#e2e8f0' }}>{line.slice(2, -2)}</p>;
+          return <p key={i} style={{ margin: '6px 0', fontWeight: 600, color: '#ffffff' }}>{line.slice(2, -2)}</p>;
         }
         if (line.trim() === '') return <div key={i} style={{ height: '8px' }} />;
         
         return (
-          <p key={i} style={{ margin: '3px 0', color: '#cbd5e1' }}>
+          <p key={i} style={{ margin: '6px 0' }}>
             {renderInline(line)}
           </p>
         );
