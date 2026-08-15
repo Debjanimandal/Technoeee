@@ -3,6 +3,9 @@
  *
  * POST /api/chat/rag
  *
+ * Uses NVIDIA NIM API (OpenAI-compatible) with meta/llama-3.3-70b-instruct
+ * Base URL: https://integrate.api.nvidia.com/v1
+ *
  * Body: {
  *   question: string,
  *   studentContext: {
@@ -12,29 +15,39 @@
  *     enrolledCourses: string[],
  *     progressPercent: number,
  *   },
- *   history: Array<{ role: 'user'|'model', text: string }>,  // last 6 turns for context
+ *   history: Array<{ role: 'user'|'model', text: string }>,
  * }
  *
  * Response: {
  *   answer: string,
  *   sources: Array<{ topicName, courseName, moduleTitle, sourceType }>,
- *   insightSignal: string | null,   // e.g. "needs_explanation", "needs_example"
- *   isGrounded: boolean,            // true if retrieved TechnoEEE content was used
+ *   insightSignal: string | null,
+ *   isGrounded: boolean,
  * }
  */
 
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import OpenAI from 'openai';
 const { searchChunks } = require('@/lib/rag/contentIndex');
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// NVIDIA NIM — OpenAI-compatible endpoint
+const nvidia = new OpenAI({
+  apiKey: process.env.NVIDIA_API_KEY,
+  baseURL: 'https://integrate.api.nvidia.com/v1',
+});
+
+// Model priority — fastest first for good UX, large model as fallback
+const MODEL_PRIORITY = [
+  'meta/llama-3.1-8b-instruct',       // Fast: ~5-10s, great for RAG Q&A
+  'mistralai/mistral-7b-instruct-v0.3', // Fast alternative
+  'meta/llama-3.3-70b-instruct',        // Slow but highest quality fallback
+];
 
 // ─── Prompt Builder ─────────────────────────────────────────────────────────
 
 function buildSystemPrompt(retrievedChunks, studentContext) {
   const { courseName, currentTopic, enrolledCourses, progressPercent } = studentContext;
 
-  // Build the retrieved context block
   let contextBlock = '';
   if (retrievedChunks.length > 0) {
     contextBlock = retrievedChunks
@@ -45,7 +58,6 @@ function buildSystemPrompt(retrievedChunks, studentContext) {
       .join('\n\n---\n\n');
   }
 
-  // Student context section
   let studentCtx = '';
   if (courseName) studentCtx += `\n- Currently studying: ${courseName}`;
   if (currentTopic) studentCtx += `\n- Current topic: ${currentTopic}`;
@@ -90,7 +102,6 @@ const INSIGHT_PATTERN = /\[INSIGHT:([\w_]+)\]\s*$/m;
 function extractInsight(rawAnswer) {
   const match = rawAnswer.match(INSIGHT_PATTERN);
   const insightSignal = match ? match[1] : 'general_question';
-  // Remove the insight tag from the visible answer
   const cleanAnswer = rawAnswer.replace(INSIGHT_PATTERN, '').trim();
   return { cleanAnswer, insightSignal };
 }
@@ -106,40 +117,65 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Question is required' }, { status: 400 });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
-      return NextResponse.json({ error: 'AI service not configured' }, { status: 503 });
+    if (!process.env.NVIDIA_API_KEY) {
+      return NextResponse.json({ error: 'AI service not configured. NVIDIA_API_KEY missing.' }, { status: 503 });
     }
 
-    // 1. Retrieve relevant content
+    // 1. Retrieve relevant content chunks
     const retrievedChunks = searchChunks(
       question,
       4,
       studentContext.courseCode || null
     );
 
-    // 2. Build prompt
+    // 2. Build system prompt with retrieved context + student context
     const systemPrompt = buildSystemPrompt(retrievedChunks, studentContext);
 
-    // 3. Build conversation history for Gemini
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-      systemInstruction: systemPrompt,
-    });
-
-    // Convert last N turns of history into Gemini format
-    const chatHistory = history.slice(-6).map(turn => ({
-      role: turn.role,
-      parts: [{ text: turn.text }],
+    // 3. Build OpenAI-format messages
+    // Convert history (role: 'model' → role: 'assistant' for OpenAI format)
+    const historyMessages = history.slice(-6).map(turn => ({
+      role: turn.role === 'model' ? 'assistant' : 'user',
+      content: turn.text,
     }));
 
-    const chat = model.startChat({ history: chatHistory });
-    const result = await chat.sendMessage(question);
-    const rawAnswer = result.response.text();
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      ...historyMessages,
+      { role: 'user', content: question },
+    ];
 
-    // 4. Extract insight signal
+    // 4. Try models in priority order
+    let rawAnswer = null;
+    let lastError = null;
+    let usedModel = null;
+
+    for (const modelName of MODEL_PRIORITY) {
+      try {
+        const completion = await nvidia.chat.completions.create({
+          model: modelName,
+          messages,
+          temperature: 0.6,
+          max_tokens: 900,
+          top_p: 0.95,
+        });
+
+        rawAnswer = completion.choices?.[0]?.message?.content || '';
+        usedModel = modelName;
+        break;
+      } catch (modelErr) {
+        lastError = modelErr;
+        console.warn(`[RAG] Model ${modelName} failed:`, modelErr?.message?.split('\n')[0]);
+      }
+    }
+
+    if (!rawAnswer) {
+      throw lastError || new Error('All AI models unavailable');
+    }
+
+    // 5. Extract insight signal (hidden tag from response)
     const { cleanAnswer, insightSignal } = extractInsight(rawAnswer);
 
-    // 5. Build source list for UI attribution
+    // 6. Build source attribution list
     const sources = retrievedChunks.map(r => ({
       topicName: r.chunk.topicName,
       courseName: r.chunk.courseName,
@@ -153,6 +189,7 @@ export async function POST(request) {
       sources,
       insightSignal,
       isGrounded: retrievedChunks.length > 0,
+      model: usedModel, // useful for debugging
     });
 
   } catch (err) {

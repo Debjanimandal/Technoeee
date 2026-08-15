@@ -5,7 +5,8 @@ import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
 import Sidebar from '@/components/layout/Sidebar';
 import DashboardHeader from '@/components/layout/DashboardHeader';
-import { BotMessageSquare, Send, BookOpen, ChevronDown, CircleDot, FileText, Lightbulb, X } from 'lucide-react';
+import { BotMessageSquare, Send, BookOpen, ChevronDown, FileText, Lightbulb, X } from 'lucide-react';
+import coursesData from '@/public/data/real_courses_data.json';
 
 // ─── Small helper components ────────────────────────────────────────────────
 
@@ -217,10 +218,18 @@ export default function ChatbotPage() {
     if (!user) return;
     supabase
       .from('enrollments')
-      .select('course_title, course_code, progress')
+      // course_code column does not exist in enrollments — look it up from JSON
+      .select('course_title, progress')
       .eq('user_id', user.id)
       .then(({ data }) => {
-        if (data) setEnrolledCourses(data);
+        if (data) {
+          // Enrich each enrollment with the subject_code from the courses JSON
+          const enriched = data.map(enr => {
+            const match = coursesData.find(c => c.course_name === enr.course_title);
+            return { ...enr, course_code: match?.subject_code || null };
+          });
+          setEnrolledCourses(enriched);
+        }
       });
   }, [user]);
 
