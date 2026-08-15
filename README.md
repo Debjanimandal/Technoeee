@@ -1,6 +1,6 @@
-# 🎓 TechnoEEE — End-to-End Academic Learning Platform & Project Report
+# 🎓 TechnoEEE — End-to-End Academic Learning Platform & AI Assistant
 
-> **TechnoEEE** is a student-focused, university-grade online learning management platform built with Next.js 16, Supabase, and custom CSS design systems. It enables computer science and engineering students to explore structured curricula, follow interactive lesson roadmaps, track real-time study analytics, schedule weekly study routines, and earn gamified academic achievements — all within a clean, professional, emoji-free interface.
+> **TechnoEEE** is a student-focused, university-grade online learning management platform built with Next.js 16, Supabase, NVIDIA NIM, and custom CSS design systems. It enables computer science and engineering students to explore structured curricula, follow interactive lesson roadmaps, track real-time study analytics, schedule weekly study routines, and get personalized help from an embedded RAG-powered AI Academic Assistant.
 
 ---
 
@@ -20,7 +20,9 @@
 ## 🎯 Executive Summary
 
 ### What is TechnoEEE?
-TechnoEEE bridges the gap between traditional academic coursework and modern self-paced learning tools. Built specifically for technical fields (Computer Science, Artificial Intelligence, Machine Learning, DBMS, Algorithms, and Electronics), TechnoEEE organizes university subjects into digestible modules, interactive roadmaps, video lessons, notes, and topic quizzes.
+TechnoEEE bridges the gap between traditional academic coursework and modern self-paced learning tools. Built specifically for technical fields (Computer Science, Artificial Intelligence, Machine Learning, DBMS, Algorithms, and Electronics), TechnoEEE organizes university subjects into digestible modules, interactive roadmaps, video lessons, notes, and topic quizzes. 
+
+It now features a **Semantic Retrieval-Augmented Generation (RAG) AI Chatbot**, acting as an on-demand tutor that grounds its answers strictly in the course material.
 
 ### Target Audience
 - **Undergraduate & Postgraduate Technical Students:** Seeking structured revision, roadmap tracking, and self-paced course exploration.
@@ -29,6 +31,8 @@ TechnoEEE bridges the gap between traditional academic coursework and modern sel
 ### Core Value Propositions
 - **Structured Roadmap Learner:** Replaces unstructured videos with a split-screen roadmap timeline.
 - **Data-Driven Progress Tracking:** Instant visibility into completed modules, weekly streaks, and study hours.
+- **Context-Aware AI Tutor:** A state-of-the-art AI chatbot utilizing Supabase `pgvector` and NVIDIA NIM (`Llama-3.1-8b`) for semantic search across course materials.
+- **AI Learning Insights:** Automatic gap-analysis based on student-chatbot interactions, highlighting confusing topics on the analytics dashboard.
 - **Gamified Milestone Recognition:** Rule-based badge engine rewarding consistency and course completions.
 - **Strict Professional Aesthetics:** Built with a curated dark-slate/indigo palette, smooth Lenis scrolling, fluid CSS scaling (`clamp()`, `vw`), and zero emojis (100% SVG vectors).
 
@@ -49,27 +53,31 @@ graph TD
         CourseLearner[Interactive Learner]
         Planner[Weekly Study Planner]
         Reports[Analytics & Reports]
+        Chatbot[AI Chatbot UI]
         BadgesPage[Achievements Hub]
-        ProfileModal[Profile Manager]
     end
 
     subgraph Context & Service Layer
         AuthCtx[Auth Context]
         BadgeCtx[Badge Context]
-        StudyService[Study Service RPC / Supabase Client]
+        StudyService[Study Service RPC]
+        RAG[NVIDIA NIM + Pgvector RAG]
     end
 
     subgraph Supabase Service
         Auth[Supabase Auth Engine]
         DB[(PostgreSQL Database)]
+        VectorDB[(Pgvector / knowledge_chunks)]
         RLS[Row-Level Security Policies]
     end
 
     Frontend --> AuthCtx
     Frontend --> BadgeCtx
     Frontend --> StudyService
+    Frontend --> RAG
     AuthCtx --> Auth
     StudyService --> DB
+    RAG --> VectorDB
     DB --> RLS
 ```
 
@@ -83,23 +91,22 @@ sequenceDiagram
     participant Dash as Student Dashboard
     participant Catalog as Course Catalog
     participant Learner as Course Learner
+    participant AI as RAG Chatbot
     participant DB as Supabase DB
 
     Student->>Landing: Visit TechnoEEE
-    Landing-->>Student: Display Dev Mode Hero & Course Overview
     Student->>Auth: Click Sign In / Sign Up
     Auth->>DB: Create User & Trigger `profiles` creation
     DB-->>Dash: Authenticated Session Established
     Student->>Dash: Redirected to /dashboard
-    Dash-->>Student: Display Metrics, Active Courses & AI Insights
-    Student->>Catalog: Browse Courses (/courses)
-    Student->>Catalog: Click "Enroll Now"
+    Student->>Catalog: Browse Courses & Click "Enroll Now"
     Catalog->>DB: Insert record into `enrollments` table
-    Student->>Learner: Enter Learning Environment (/learn/[courseId])
-    Learner->>DB: Fetch course progress & module status
     Student->>Learner: Complete Topics & Quizzes
     Learner->>DB: Update `enrollments.progress` %
-    Learner-->>Student: Unlock Badge & Trigger Notification
+    Student->>AI: Ask course-related question (/chatbot)
+    AI->>DB: Perform Semantic Vector Search (pgvector)
+    AI-->>Student: Generate grounded answer (Llama-3.1-8b)
+    AI->>DB: Log AI Learning Insight (Gap Analysis)
 ```
 
 ---
@@ -109,68 +116,46 @@ sequenceDiagram
 ### 1. 🌐 Landing Page & Public Portal (`/`)
 - **Interactive Dev Mode Hero:** Toggle between production showcase mode and technical developer mode.
 - **Wide Course Grid:** Displaying top subjects scaled dynamically to 92vw (max 1440px) to eliminate display white space.
-- **Academic FAQ Accordion:** Interactive, accessible Q&A accordion featuring 6 custom questions specific to TechnoEEE.
-- **Global Header & Navigation:** Quick search dropdown, courses menu, dev mode toggle, and seamless auth triggering.
+- **Academic FAQ Accordion:** Interactive, accessible Q&A accordion featuring custom questions specific to TechnoEEE.
 
 ### 2. 🔐 Authentication Engine (`/components/auth/AuthModal.js`)
 - **Supabase Auth Integration:** Email and password sign-up/sign-in flows.
-- **Auto Profile Generator:** PostgreSQL database trigger `on_auth_user_created` automatically inserts a row into `public.profiles` upon account creation.
-- **Session Persistence:** Managed via `AuthContext`, handling automatic session revalidation, sign-out, and protected route access.
+- **Auto Profile Generator:** PostgreSQL database trigger `on_auth_user_created` automatically inserts a row into `public.profiles`.
 
 ### 3. 📊 Student Dashboard (`/dashboard`)
-- **Dynamic Welcome Banner:** Displays logged-in student name, quick-action buttons for planner and course discovery, and dark-slate gradient styling.
-- **Metric Cards:**
-  - *Courses in Progress*
-  - *Completed Topics*
-  - *Total Hours Spent*
-  - *Current Streak (Days)*
-- **Active Courses Grid:** Visual cards with course thumbnails, course codes, and progress bars.
+- **Dynamic Welcome Banner:** Displays logged-in student name and quick-action buttons.
+- **Metric Cards:** Courses in Progress, Completed Topics, Total Hours Spent, Current Streak.
 - **Up Next Widget:** Pinned card indicating the current lesson in progress with a direct "Resume Next Lecture" CTA.
-- **AI Insights & Weekly Goal:** Visual feedback widgets highlighting study consistency and remaining weekly target hours.
 
-### 4. 📚 Course Catalog (`/courses`)
+### 4. 📚 Course Catalog & Hub (`/courses`, `/my-courses`)
 - **Filterable Subject Browser:** Search by course code or subject title.
-- **Category & Difficulty Pills:** Filter courses by Beginner, Intermediate, or Advanced level.
-- **One-Click Enrollment:** Instant enrollment write-back to Supabase `enrollments` table with immediate UI feedback.
-
-### 5. 🎓 Enrolled Courses Hub (`/my-courses`)
-- **Personalized Course Dashboard:** Displays all courses currently enrolled by the user.
+- **One-Click Enrollment:** Instant enrollment write-back to Supabase `enrollments` table.
 - **Visual Progress Meters:** Live completion bar per course (0% – 100%).
-- **Direct Learner Link:** Clicking any enrolled course opens the split-screen learning environment.
 
-### 6. 🧩 Interactive Course Learner (`/learn/[courseId]`)
-- **Split-Screen Layout:**
-  - **Left Pane (Roadmap Tree):** Vertical timeline with interactive nodes for modules, topics, mandatory module quizzes, final grand quiz, and badge claim nodes.
-  - **Right Pane (Content Player):** Workspace switching between Video Lessons (custom VideoPlayer component), Markdown Notes, and Interactive Quizzes.
+### 5. 🧩 Interactive Course Learner (`/learn/[courseId]`)
+- **Split-Screen Layout:** Vertical timeline with interactive nodes (left) and content workspace for Videos, Notes, and Quizzes (right).
 - **Badge Engine Integration:** Automatically calculates course completion (100%) and unlocks the course badge for immediate claiming.
-- **Clickable Header Logo:** Clicking the top-left TechnoEEE logo instantly routes back to `/dashboard` from any deep learning route.
 
-### 7. 📅 Weekly Study Planner (`/planner`)
+### 6. 📅 Weekly Study Planner (`/planner`)
 - **Weekly Schedule Grid:** Organize study sessions across Monday through Sunday.
 - **Built-in Pomodoro Focus Timer:** 25-minute focus session timer with start/pause/reset controls.
-- **Task Management:** Add, edit, and check off study topics.
 
-### 8. 📈 Analytics & Performance Reports (`/reports`)
-- **Chart.js Visualizations:** Bar and line charts displaying hours studied per day/week.
-- **Topic Strength Analysis:** Strengths vs. weak areas breakdown.
-- **Affinity Badges:** Dynamic performance labels ("Consistent", "Loved") calculated via `studyService.js`.
+### 7. 🤖 AI Academic Assistant & Semantic RAG (`/chatbot`)
+- **Semantic Vector Search:** Integrates Supabase `pgvector` to store and retrieve course content chunks via cosine similarity.
+- **NVIDIA NIM LLM Engine:** Powered by NVIDIA's `nv-embedqa-e5-v5` for embeddings and `meta/llama-3.1-8b-instruct` for fast, grounded generation.
+- **Source Attribution:** Dynamically renders clickable source badges showing exactly which course module the answer came from.
+- **Topic Fallback:** Implements a hybrid search (Vector Semantic Search falling back to TF-IDF if the vector store is uninitialized).
 
-### 9. 🤖 AI Academic Assistant (`/chatbot`)
-- **Interactive Chat Interface:** Natural language assistant tailored for engineering and computer science subject questions.
-- **Suggested Prompts:** Instant topic starters for algorithms, data structures, and system design.
+### 8. 📈 Analytics, Reports, & AI Insights (`/reports`)
+- **Chart.js Visualizations:** Bar and line charts displaying hours studied per day/week, and a skill focus radar.
+- **AI Learning Insights Panel:** A dedicated section that analyzes all student-chatbot interactions to reveal:
+  - **Most Queried Topics:** (e.g., "Von Neumann bottleneck", "SIMD").
+  - **Learning Gap Types:** (e.g., *Concept Confusion*, *Needs Example*, *Needs Explanation*).
+  - Helps students (and eventually faculty) pinpoint exactly where the learning struggles lie.
 
-### 10. 🏅 Achievements & Badges (`/achievements`)
-- **Badge Catalog:** Pre-defined badge rules (`lib/data/badges.js`) covering course completion, study streaks, and platform milestones.
-- **Interactive Claim Modal (`BadgeClaimModal.js`):** Confetti-style victory modal when claiming earned badges.
-
-### 11. 👤 Student Profile & Settings (`/profile`, `EditProfileModal.js`)
-- **Profile Customizer:** Change display name, username, bio, and avatar.
-- **Profile Completion Tracker:** Percentage indicator tracking profile completeness.
-
-### 12. 🔔 Notification Engine (`NotificationDropdown.js`)
-- **Real-Time Notification Bell:** Header notification icon with live unread badge count.
-- **Swipe-to-Dismiss:** Touch and mouse swipe gestures for dismissing alerts.
-- **Category Filter:** Color-coded SVG icons for warning, revision, badge claim, and general alerts.
+### 9. 🏅 Achievements & Badges (`/achievements`)
+- **Interactive Claim Modal:** Confetti-style victory modal when claiming earned badges.
+- **Notification Engine:** Real-time header bell with unread badge count and swipe-to-dismiss functionality.
 
 ---
 
@@ -183,22 +168,11 @@ sequenceDiagram
 | Primary Blue | `#1352f1` / `#3a8aff` | Primary CTAs, active sidebar item, active tags |
 | Accent Teal / Cyan | `#26d0ce` | Gradients, progress accents |
 | Page Background | `#f4f7fb` | Main application background |
-| Text Primary | `#0f172a` / `#1a1a1a` | Headings, card titles |
-| Text Secondary | `#64748b` / `#555555` | Subtitles, secondary metrics |
-
-### Typography & Sizing
-- **Font Family:** `Poppins`, sans-serif (imported via `next/font/google`).
-- **Responsive Sizing:** Utilizes fluid viewport calculations (`clamp()`, `vw`) so layouts fit properly across screen dimensions without overflow or truncation.
+| Text Primary | `#0f172a` / `#f8fafc` | Headings, card titles (light/dark mode variants) |
+| Text Secondary | `#64748b` / `#cbd5e1` | Subtitles, secondary metrics |
 
 ### Zero-Emoji Policy
-To maintain corporate-grade professionalism, **all emojis have been removed** from the entire application and replaced with custom, vector-based inline SVG icons or `lucide-react` SVG components:
-- 🔥 Difficulty → Flame SVG Icon
-- 💼 Relevance → Briefcase SVG Icon
-- 🎯 Course Outcomes → Target SVG Icon
-- 📝 Quizzes → Quiz/Pen SVG Icon
-- 📚 Module Intro → Book SVG Icon
-- 🏆 Badges → Trophy SVG Icon
-- 📧 Email Alert → Mail SVG Icon
+To maintain corporate-grade professionalism, **all emojis have been removed** from the entire application and replaced with custom, vector-based inline SVG icons or `lucide-react` SVG components (e.g., Target, Shield, BookOpen, BotMessageSquare).
 
 ---
 
@@ -207,41 +181,35 @@ To maintain corporate-grade professionalism, **all emojis have been removed** fr
 ### PostgreSQL Tables (Supabase)
 
 ```sql
--- 1. Profiles Table
-CREATE TABLE public.profiles (
-  id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
-  username TEXT UNIQUE NOT NULL,
-  full_name TEXT,
-  avatar_url TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', NOW())
+-- Core Tables
+CREATE TABLE public.profiles (...);
+CREATE TABLE public.enrollments (...);
+CREATE TABLE public.modules_progress (...);
+
+-- AI RAG & Insights Tables
+CREATE TABLE public.knowledge_chunks (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  chunk_id text UNIQUE NOT NULL,
+  course_code text NOT NULL,
+  topic_name text NOT NULL,
+  chunk_text text NOT NULL,
+  embedding vector(1024),          -- pgvector extension
+  created_at timestamptz DEFAULT now()
 );
 
--- 2. Enrollments Table
-CREATE TABLE public.enrollments (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
-  course_title TEXT NOT NULL,
-  course_id TEXT,
-  category TEXT,
-  progress INTEGER DEFAULT 0,
-  status TEXT DEFAULT 'Ongoing',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc', NOW())
-);
-
--- 3. Modules Progress Table
-CREATE TABLE public.modules_progress (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
-  enrollment_id UUID REFERENCES enrollments ON DELETE CASCADE NOT NULL,
-  module_name TEXT NOT NULL,
-  progress INTEGER DEFAULT 0
+CREATE TABLE public.ai_learning_insights (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id uuid REFERENCES auth.users ON DELETE CASCADE,
+  course_code text,
+  topic_name text,
+  insight_type text,               -- e.g., 'concept_confusion'
+  summary text,
+  created_at timestamptz DEFAULT now()
 );
 ```
 
-### Row Level Security (RLS)
-- `profiles`: SELECT, UPDATE, INSERT enabled for authenticated `auth.uid() = id`.
-- `enrollments`: ALL operations enabled for `auth.uid() = user_id`.
-- `modules_progress`: ALL operations enabled for `auth.uid() = user_id`.
+### Supabase RPCs (Stored Procedures)
+- `match_knowledge_chunks`: Performs fast cosine similarity search across `vector(1024)` embeddings to power the Chatbot RAG pipeline.
 
 ---
 
@@ -252,46 +220,26 @@ Technoeee/
 ├── app/
 │   ├── page.js                  # Landing page (Dev mode hero, course explorer, FAQ)
 │   ├── globals.css              # Custom CSS design system, dark-blue themes, cards
-│   ├── layout.js                # Root layout with Auth & Badge Providers
-│   ├── dashboard/page.js        # Student Dashboard (Stats, Active Courses, AI Insights)
+│   ├── dashboard/page.js        # Student Dashboard (Stats, Active Courses)
 │   ├── courses/page.js          # Course Catalog with filterable search & enrollment
-│   ├── my-courses/page.js       # Enrolled Courses progress manager
 │   ├── learn/[courseId]/page.js # Split-screen course learner with timeline roadmap
-│   ├── planner/page.js          # Weekly Study Planner & Pomodoro Timer
-│   ├── reports/page.js          # Analytics, Chart.js visualizer & Streaks
-│   ├── chatbot/page.js          # AI Academic Assistant interface
-│   ├── achievements/page.js     # Badges & Milestones Hub
-│   └── profile/page.js          # Student Profile settings page
+│   ├── reports/page.js          # Analytics, Chart.js visualizer & AI Insights
+│   ├── chatbot/page.js          # AI Academic Assistant UI
+│   ├── api/chat/rag/route.js    # AI Chatbot RAG API (NVIDIA NIM)
+│   └── api/chat/insights/route.js # AI Learning Insights logger API
 ├── components/
-│   ├── layout/
-│   │   ├── Navbar.js            # Top header for landing & general pages
-│   │   ├── Sidebar.js           # Fixed sidebar navigation (no scrollbar)
-│   │   ├── DashboardHeader.js   # Inner page header with clickable logo & profile pill
-│   │   └── Footer.js            # Landing page footer
-│   ├── auth/
-│   │   └── AuthModal.js         # Sign Up / Sign In modal
-│   ├── profile/
-│   │   └── EditProfileModal.js  # Profile edit modal (About Me, Username, Avatar)
-│   ├── achievements/
-│   │   └── BadgeClaimModal.js   # Gamified badge victory modal
-│   └── shared/
-│       ├── NotificationDropdown.js # Real-time notification menu
-│       ├── PomodoroTimer.js     # 25-minute focus timer
-│       ├── ProfileDropdown.js      # Header avatar popup menu
-│       └── VideoPlayer.js         # Responsive video lesson container
+│   ├── layout/                  # Navbar, Sidebar, DashboardHeader
+│   ├── auth/                    # AuthModal
+│   └── shared/                  # PomodoroTimer, VideoPlayer, NotificationDropdown
 ├── lib/
-│   ├── supabase/
-│   │   └── client.js            # Supabase client instance
-│   ├── context/
-│   │   ├── auth-context.js      # Supabase authentication provider context
-│   │   └── badge-context.js     # Gamification & badge eligibility context
-│   ├── services/
-│   │   └── studyService.js      # RPC & analytics data service
-│   └── data/
-│       └── badges.js            # Badge catalog definitions and check functions
+│   ├── supabase/client.js       # Supabase client instance
+│   ├── context/                 # auth-context.js, badge-context.js
+│   ├── services/studyService.js # RPC & analytics data service
+│   └── rag/                     # vectorSearch.js (pgvector logic), contentIndex.js
+├── scripts/
+│   └── ingestEmbeddings.js      # CLI tool to batch-embed JSON course notes to Supabase
 ├── public/
-│   ├── data/
-│   │   └── real_courses_data.json # Master course catalog & topics repository
+│   ├── data/real_courses_data.json # Master course catalog & topics repository
 │   └── image/                   # Logos, static banners, icons
 └── README.md                    # Project report & documentation
 ```
@@ -302,19 +250,14 @@ Technoeee/
 
 ### 1. Prerequisites
 - **Node.js:** v18.0.0 or higher
-- **npm:** v9.0.0 or higher
 - **Supabase Account:** Free project at [supabase.com](https://supabase.com)
+- **NVIDIA Developer Account:** Free NIM API key at [build.nvidia.com](https://build.nvidia.com)
 
 ### 2. Local Environment Setup
 
 ```bash
-# Clone the repository
 git clone https://github.com/Debjanimandal/Technoeee.git
-
-# Enter project directory
 cd Technoeee
-
-# Install dependencies
 npm install
 ```
 
@@ -324,14 +267,21 @@ Create a `.env.local` file in the root directory:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-supabase-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+NVIDIA_API_KEY=nvapi-your-nvidia-nim-key
 ```
 
-### 4. Running Development Server
+### 4. Database Setup & RAG Ingestion
+1. Run the SQL scripts found in your Supabase SQL Editor to create tables (including `pgvector` setup).
+2. To enable Semantic Search, run the ingestion script locally to embed your course notes:
+```bash
+node scripts/ingestEmbeddings.js
+```
 
+### 5. Running Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your web browser.
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
@@ -339,15 +289,10 @@ Open [http://localhost:3000](http://localhost:3000) in your web browser.
 
 This project is optimized for deployment on **Vercel**:
 
-1. Push your changes to GitHub:
-   ```bash
-   git add .
-   git commit -m "feat: project updates"
-   git push origin main
-   ```
+1. Push your changes to GitHub.
 2. Link your GitHub repository to [Vercel](https://vercel.com).
-3. Set environment variables `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in Vercel project settings.
-4. Trigger deployment — Vercel builds the Next.js App Router application automatically.
+3. Set environment variables `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `NVIDIA_API_KEY` in Vercel project settings.
+4. Trigger deployment — Vercel builds the Next.js application automatically.
 
 ---
 
@@ -355,17 +300,15 @@ This project is optimized for deployment on **Vercel**:
 
 | Requirement / Request | Implementation Status | Location in Codebase |
 |-----------------------|-----------------------|----------------------|
-| **Supabase Auth & Auto-Profile** | ✅ Completed | `lib/context/auth-context.js`, `AuthModal.js` |
-| **Responsive Screen Sizing (`clamp()`, `vw`)** | ✅ Completed | `app/globals.css`, `ProfileDropdown.js` |
-| **Zero-Emoji Policy (100% SVG)** | ✅ Completed | All pages (`app/learn/[courseId]/page.js`, `courses/page.js`) |
-| **Clickable Logo to Dashboard** | ✅ Completed | `components/layout/DashboardHeader.js` |
-| **Sidebar Scrollbar Removal** | ✅ Completed | `app/globals.css` (`.sidebar { overflow: hidden; }`) |
-| **Wide Course Cards Grid (92vw)** | ✅ Completed | `app/globals.css` (`.course-grid`) |
-| **Academic FAQ Accordion (6 Qs)** | ✅ Completed | `app/page.js` |
+| **Supabase Auth & Auto-Profile** | ✅ Completed | `auth-context.js`, `AuthModal.js` |
+| **Responsive Screen Sizing (`clamp()`)** | ✅ Completed | `app/globals.css` |
+| **Zero-Emoji Policy (100% SVG)** | ✅ Completed | All UI components |
 | **Split-Screen Course Learner** | ✅ Completed | `app/learn/[courseId]/page.js` |
-| **Badge Claim & Victory Engine** | ✅ Completed | `lib/context/badge-context.js`, `BadgeClaimModal.js` |
-| **Weekly Planner & Pomodoro Timer** | ✅ Completed | `app/planner/page.js`, `PomodoroTimer.js` |
-| **Chart.js Study Analytics** | ✅ Completed | `app/reports/page.js`, `lib/services/studyService.js` |
+| **Badge Claim & Victory Engine** | ✅ Completed | `badge-context.js`, `BadgeClaimModal.js` |
+| **Chart.js Study Analytics** | ✅ Completed | `app/reports/page.js` |
+| **RAG AI Chatbot (NVIDIA + Llama 3)** | ✅ Completed | `app/chatbot/page.js`, `api/chat/rag/route.js` |
+| **pgvector Semantic Search Integration** | ✅ Completed | `lib/rag/vectorSearch.js`, `scripts/ingestEmbeddings.js` |
+| **AI Learning Insights Dashboard** | ✅ Completed | `app/reports/page.js`, `api/chat/insights/route.js` |
 
 ---
 
