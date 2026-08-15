@@ -1641,8 +1641,8 @@ body.sidebar-collapsed .page-content {
   background: #e2e8f0;
 }
 .sidebar-item.active {
-  background-color: #e0f2fe;
-  color: #0369a1;
+  background-color: #2b5876;
+  color: #ffffff;
   font-weight: 600;
 }
 .sidebar-item .icon-container {
