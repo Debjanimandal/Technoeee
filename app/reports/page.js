@@ -11,7 +11,7 @@ import DashboardHeader from '@/components/layout/DashboardHeader';
 import { useAuth } from '@/lib/context/auth-context';
 import { supabase } from '@/lib/supabase/client';
 import { getLearningStats, getDailyStudyData, getCourseStudyTime, formatStudyTime, getAdvancedAnalytics } from '@/lib/services/studyService';
-import { Target, Clock, Zap, TrendingUp, BarChart3, PieChart, Heart, Compass, CalendarCheck, TrendingDown, Award, BookOpen, Star, Flame } from 'lucide-react';
+import { Target, Clock, Zap, TrendingUp, BarChart3, PieChart, Heart, Compass, CalendarCheck, TrendingDown, Award, BookOpen, Star, Flame, BotMessageSquare, AlertCircle, HelpCircle, Lightbulb, CheckCircle } from 'lucide-react';
 
 Chart.register(
   BarController, BarElement,
@@ -135,6 +135,8 @@ export default function AnalyticsPage() {
   const [enrollments,    setEnrollments]    = useState([]);
   const [loading,        setLoading]        = useState(true);
   const [selectedMetric, setSelectedMetric] = useState(null);
+  const [aiInsights,     setAiInsights]     = useState([]);
+  const [insightsLoading, setInsightsLoading] = useState(true);
 
   // ── Load all data ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -174,6 +176,21 @@ export default function AnalyticsPage() {
       setEnrollments(noRealEnrollments ? MOCK_ENROLLMENTS : realEnrollments);
       setLoading(false);
     })();
+  }, [user]);
+
+  // ── Load AI Learning Insights ──────────────────────────────────────────────
+  useEffect(() => {
+    if (!user) { setInsightsLoading(false); return; }
+    supabase
+      .from('ai_learning_insights')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(100)
+      .then(({ data }) => {
+        setAiInsights(data || []);
+        setInsightsLoading(false);
+      });
   }, [user]);
 
   // ── Derived values ─────────────────────────────────────────────────────────
@@ -222,6 +239,24 @@ export default function AnalyticsPage() {
     if (uniqueEnrollments.length > 0) return uniqueEnrollments[0].course_title;
     return 'None';
   }, [advanced, uniqueEnrollments]);
+
+  // AI Insights derived data
+  const insightsByTopic = useMemo(() => {
+    const counts = {};
+    aiInsights.forEach(i => {
+      const key = i.topic_name || 'General';
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  }, [aiInsights]);
+
+  const insightsByType = useMemo(() => {
+    const counts = {};
+    aiInsights.forEach(i => { counts[i.insight_type] = (counts[i.insight_type] || 0) + 1; });
+    return counts;
+  }, [aiInsights]);
+
+  const totalAiInteractions = aiInsights.length;
 
   // ── Activity Bar Chart ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -584,6 +619,104 @@ export default function AnalyticsPage() {
               </div>
 
             </div>
+
+            {/* ── AI Learning Insights ── */}
+            <div style={{ marginTop: '32px', paddingBottom: '32px' }}>
+              <div className="hover-lift" style={{ background: '#fff', borderRadius: '24px', padding: '32px', border: '1px solid #f1f5f9', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
+                
+                {/* Header */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: '#ede9fe', color: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <BotMessageSquare size={20} />
+                    </div>
+                    <div>
+                      <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#1e293b', margin: 0 }}>AI Learning Insights</h2>
+                      <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0 0' }}>What your chatbot interactions reveal about your learning gaps</p>
+                    </div>
+                  </div>
+                  {totalAiInteractions > 0 && (
+                    <span style={{ background: '#ede9fe', color: '#7c3aed', borderRadius: '20px', padding: '4px 14px', fontSize: '13px', fontWeight: '700' }}>
+                      {totalAiInteractions} AI interaction{totalAiInteractions !== 1 ? 's' : ''}
+                    </span>
+                  )}
+                </div>
+
+                {insightsLoading ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                    <Skeleton h={200} /><Skeleton h={200} />
+                  </div>
+                ) : totalAiInteractions === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px', color: '#94a3b8', border: '2px dashed #e2e8f0', borderRadius: '16px' }}>
+                    <BotMessageSquare size={32} style={{ marginBottom: '12px', opacity: 0.4 }} />
+                    <p style={{ margin: 0, fontWeight: '600' }}>No AI interactions yet</p>
+                    <p style={{ margin: '8px 0 0', fontSize: '13px' }}>Start chatting with the AI Assistant to see your learning gap analysis here.</p>
+                  </div>
+                ) : (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+
+                    {/* Left: Struggling Topics */}
+                    <div>
+                      <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 16px' }}>Most Queried Topics</h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {insightsByTopic.length === 0 ? (
+                          <p style={{ color: '#94a3b8', fontSize: '13px' }}>No topic data yet.</p>
+                        ) : (() => {
+                          const max = insightsByTopic[0]?.[1] || 1;
+                          return insightsByTopic.map(([topic, count], i) => (
+                            <div key={i}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                <span style={{ fontSize: '13px', fontWeight: '600', color: '#1e293b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '75%' }}>
+                                  {topic.length > 35 ? topic.substring(0, 35) + '...' : topic}
+                                </span>
+                                <span style={{ fontSize: '12px', color: '#64748b', fontWeight: '700', flexShrink: 0 }}>{count}x</span>
+                              </div>
+                              <div style={{ height: '6px', background: '#f1f5f9', borderRadius: '999px', overflow: 'hidden' }}>
+                                <div style={{ height: '100%', width: `${(count / max) * 100}%`, background: 'linear-gradient(90deg, #7c3aed, #a78bfa)', borderRadius: '999px', transition: 'width 0.6s ease' }} />
+                              </div>
+                            </div>
+                          ));
+                        })()}
+                      </div>
+                    </div>
+
+                    {/* Right: Insight Type Breakdown */}
+                    <div>
+                      <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 16px' }}>Learning Gap Types</h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {[{
+                          key: 'needs_explanation', label: 'Needs Explanation',
+                          color: '#f59e0b', bg: '#fef3c7', Icon: HelpCircle
+                        }, {
+                          key: 'concept_confusion', label: 'Concept Confusion',
+                          color: '#ef4444', bg: '#fee2e2', Icon: AlertCircle
+                        }, {
+                          key: 'needs_example', label: 'Needs Example',
+                          color: '#10b981', bg: '#d1fae5', Icon: Lightbulb
+                        }, {
+                          key: 'needs_revision', label: 'Needs Revision',
+                          color: '#8b5cf6', bg: '#ede9fe', Icon: BookOpen
+                        }, {
+                          key: 'confident', label: 'Confident',
+                          color: '#3b82f6', bg: '#dbeafe', Icon: CheckCircle
+                        }].filter(t => insightsByType[t.key] > 0).map(({ key, label, color, bg, Icon }) => (
+                          <div key={key} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', background: bg, borderRadius: '12px' }}>
+                            <Icon size={16} color={color} />
+                            <span style={{ flex: 1, fontSize: '13px', fontWeight: '600', color: '#1e293b' }}>{label}</span>
+                            <span style={{ fontSize: '18px', fontWeight: '800', color }}>{insightsByType[key]}</span>
+                          </div>
+                        ))}
+                        {Object.keys(insightsByType).length === 0 && (
+                          <p style={{ color: '#94a3b8', fontSize: '13px' }}>No insight types recorded yet.</p>
+                        )}
+                      </div>
+                    </div>
+
+                  </div>
+                )}
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
