@@ -315,12 +315,12 @@ export default function ChatbotPage() {
         { role: 'model', text: answer },
       ].slice(-12)); // keep last 6 turns
 
-      // Save meaningful learning insights (fire-and-forget)
-      if (insightSignal && insightSignal !== 'general_question') {
+      // Save learning insights (fire-and-forget) — save all interactions for topic tracking
+      if (insightSignal) {
         saveInsight({
           insightType: insightSignal,
-          courseCode: selectedCourse?.course_code,
-          topicName: sources?.[0]?.topicName,
+          courseCode: selectedCourse?.course_code || 'general',
+          topicName: sources?.[0]?.topicName || null,
           summary: question,
         });
       }

@@ -25,12 +25,10 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 );
 
-// Insight types that are meaningful to persist (skip trivial ones)
-const MEANINGFUL_INSIGHTS = new Set([
-  'needs_explanation',
-  'needs_example',
-  'concept_confusion',
-  'needs_revision',
+// All insight types we track (including general_question for topic analytics)
+const VALID_INSIGHTS = new Set([
+  'needs_explanation', 'needs_example', 'concept_confusion',
+  'needs_revision', 'confident', 'general_question',
 ]);
 
 export async function POST(request) {
@@ -38,8 +36,8 @@ export async function POST(request) {
     const body = await request.json();
     const { userId, courseCode, topicName, insightType, summary } = body;
 
-    // Only persist insights that indicate a learning struggle
-    if (!userId || !courseCode || !MEANINGFUL_INSIGHTS.has(insightType)) {
+    // Require userId and a valid insight type
+    if (!userId || !VALID_INSIGHTS.has(insightType)) {
       return NextResponse.json({ saved: false, reason: 'skipped' });
     }
 
