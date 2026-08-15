@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Chart, BarController, BarElement,
-  LinearScale, CategoryScale, DoughnutController, ArcElement, 
+  LinearScale, CategoryScale, DoughnutController, PieController, ArcElement, 
   Tooltip, Legend, RadarController, RadialLinearScale, PointElement, LineElement
 } from 'chart.js';
 import Sidebar from '@/components/layout/Sidebar';
@@ -15,7 +15,7 @@ import { Target, Clock, Zap, TrendingUp, BarChart3, PieChart, Heart, Compass, Ca
 
 Chart.register(
   BarController, BarElement,
-  LinearScale, CategoryScale, DoughnutController, ArcElement, 
+  LinearScale, CategoryScale, DoughnutController, PieController, ArcElement, 
   Tooltip, Legend, RadarController, RadialLinearScale, PointElement, LineElement
 );
 
@@ -261,19 +261,21 @@ export default function AnalyticsPage() {
     if (sortedCourses.length === 0) return;
 
     const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981'];
+    const totalHours = sortedCourses.reduce((sum, [, h]) => sum + h, 0);
 
     donutInst.current = new Chart(donutRef.current, {
-      type: 'doughnut',
+      type: 'pie',
       data: {
-        labels: sortedCourses.map(([name]) => name),
+        labels: sortedCourses.map(([name, h]) => `${name} (${Math.round((h / totalHours) * 100)}%)`),
         datasets: [{
           data: sortedCourses.map(([, h]) => parseFloat(h.toFixed(2))),
           backgroundColor: COLORS.slice(0, sortedCourses.length),
-          borderWidth: 0,
+          borderWidth: 2,
+          borderColor: '#ffffff',
         }],
       },
       options: {
-        responsive: true, maintainAspectRatio: false, cutout: '75%',
+        responsive: true, maintainAspectRatio: false,
         plugins: {
           legend: { position: 'right', labels: { font: { family: "'Inter', sans-serif", size: 12 }, color: '#64748b', padding: 20, usePointStyle: true, pointStyle: 'circle' } },
           tooltip: { backgroundColor: '#1e293b', padding: 12, cornerRadius: 8, callbacks: { label: ctx => ` ${ctx.parsed} hrs` } },
