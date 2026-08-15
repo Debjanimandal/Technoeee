@@ -1,304 +1,558 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/context/auth-context';
+import { supabase } from '@/lib/supabase/client';
+import Sidebar from '@/components/layout/Sidebar';
+import DashboardHeader from '@/components/layout/DashboardHeader';
+import { BotMessageSquare, Send, BookOpen, ChevronDown, CircleDot, FileText, Lightbulb, X } from 'lucide-react';
 
-const courseResponses = {
-  'css': 'CSS (Cascading Style Sheets) is used to style web pages, controlling layout, colors, and fonts. Example: `p { color: blue; }` sets paragraph text to blue. Want to know about a specific CSS property?',
-  'html': 'HTML (HyperText Markup Language) structures content on the web. Example: `<div>Hello</div>` creates a container. Need help with a specific HTML tag?',
-  'javascript': 'JavaScript adds interactivity to web pages. Example: `console.log("Hello");` prints to the console. Ask about a specific JavaScript feature!',
-  'python': 'Python is a versatile programming language used in our Programming course. Example: `print("Hello")` outputs text. Want to learn about a Python concept?',
-  'java': 'Java is a robust, object-oriented language taught in our Programming course. Example: `System.out.println("Hello");` prints text. Need help with Java syntax?',
-  'ui/ux': 'UI/UX Designing focuses on user interfaces and experiences. UI is about visual design; UX is about usability. Want details on tools like Figma?',
-  'web designing': "Our Web Designing course covers HTML, CSS, and JavaScript for building responsive websites. It's $99 for 8 weeks. Ask about a topic or type \"enroll now\" to join!",
-  'programming': "Our Programming course teaches Python, Java, and C++. It's $120 for 10 weeks. Want to explore a specific language?",
-  'ui/ux designing': "The UI/UX Designing course covers user-centered design and prototyping. It's $110 for 9 weeks. Interested in specific tools or techniques?",
-};
+// ─── Small helper components ────────────────────────────────────────────────
 
-const followUpDetails = {
-  'css': [
-    'CSS also supports responsive design with media queries, e.g., `@media (max-width: 600px) { body { font-size: 14px; } }`. Type "next" for more or "stop" to stop.',
-    'Advanced CSS techniques include Flexbox for layouts and CSS Grid for complex grids. Type "next" for more or "stop" to stop.',
-    'CSS preprocessors like Sass or Less can enhance productivity. Type "next" for more or "stop" to stop.',
-  ],
-  'html': [
-    'HTML5 introduces semantic tags like `<header>`, `<footer>`, and `<article>` for better structure. Type "next" for more or "stop" to stop.',
-    'It supports multimedia with `<audio>` and `<video>` tags, reducing reliance on plugins. Type "next" for more or "stop" to stop.',
-    'HTML forms can be enhanced with attributes like `required` and `pattern` for validation. Type "next" for more or "stop" to stop.',
-  ],
-  'javascript': [
-    'JavaScript uses event listeners, e.g., `document.addEventListener("click", function() { ... });`. Type "next" for more or "stop" to stop.',
-    'It supports modern features like async/await for handling asynchronous operations. Type "next" for more or "stop" to stop.',
-    'Frameworks like React and Node.js extend JavaScript for full-stack development. Type "next" for more or "stop" to stop.',
-  ],
-  'python': [
-    'Python supports OOP with classes. Type "next" for more or "stop" to stop.',
-    'It has powerful libraries like NumPy and Pandas. Type "next" for more or "stop" to stop.',
-    "Python's simplicity makes it ideal for beginners and AI projects. Type \"next\" for more or \"stop\" to stop.",
-  ],
-  'java': [
-    'Java uses inheritance with `extends` for code reuse. Type "next" for more or "stop" to stop.',
-    'It supports multithreading with the `Thread` class. Type "next" for more or "stop" to stop.',
-    "Java's JVM ensures platform independence. Type \"next\" for more or \"stop\" to stop.",
-  ],
-  'ui/ux': [
-    'UI/UX tools include Adobe XD for prototyping and Sketch for vector design. Type "next" for more or "stop" to stop.',
-    'User testing is key in UX, often using tools like UsabilityHub. Type "next" for more or "stop" to stop.',
-    'Trends include microinteractions to enhance user engagement. Type "next" for more or "stop" to stop.',
-  ],
-  'web designing': [
-    'Web Designing includes learning SEO basics to improve site visibility. Type "next" for more or "stop" to stop.',
-    'Responsive design is taught using Bootstrap or Tailwind CSS frameworks. Type "next" for more or "stop" to stop.',
-    'Projects may involve building a portfolio site as a capstone. Type "next" for more or "stop" to stop.',
-  ],
-  'programming': [
-    'Programming covers algorithms like sorting and searching. Type "next" for more or "stop" to stop.',
-    'Version control with Git is taught to manage code changes. Type "next" for more or "stop" to stop.',
-    'Students work on real-world projects like a calculator or game. Type "next" for more or "stop" to stop.',
-  ],
-  'ui/ux designing': [
-    'UI/UX Designing includes wireframing with tools like Figma or InVision. Type "next" for more or "stop" to stop.',
-    'A/B testing is used to optimize user interfaces. Type "next" for more or "stop" to stop.',
-    'Career paths include UX researcher or UI designer roles. Type "next" for more or "stop" to stop.',
-  ],
-};
-
-const futureInsights = {
-  'css': 'The future of CSS includes Container Queries, and improved animations with Houdini.',
-  'html': 'HTML is evolving with Web Components and better accessibility standards.',
-  'javascript': "JavaScript's future includes WebAssembly integration and dominance in full-stack development.",
-  'python': "Python's future is bright with growth in AI, machine learning, and data science.",
-  'java': 'Java will continue to thrive in enterprise applications and cloud computing.',
-  'ui/ux': 'UI/UX is set to grow with AI-driven design tools and AR/VR integration.',
-  'web designing': 'Web Designing is trending toward AI-assisted layouts and progressive web apps.',
-  'programming': "Programming's future lies in automation, quantum computing, and AI.",
-  'ui/ux designing': 'UI/UX Designing will see advancements in voice interfaces and personalized UX.',
-};
-
-const courseRoadmaps = {
-  'web designing': '- Week 1-2: Introduction to HTML\n- Week 3-4: Mastering CSS\n- Week 5-6: JavaScript Basics\n- Week 7-8: Final Project',
-  'programming': '- Week 1-3: Python Fundamentals\n- Week 4-6: Java Basics\n- Week 7-9: C++ Introduction\n- Week 10: Capstone Project',
-  'ui/ux designing': '- Week 1-3: Design Principles\n- Week 4-6: Tool Mastery (Figma)\n- Week 7-9: User Testing\n- Week 10: Final Project',
-};
-
-const courses = ['Web Designing', 'Programming', 'UI/UX Designing'];
-
-function normalizeInput(input) {
-  return input.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim();
+function SourceBadge({ sources }) {
+  if (!sources || sources.length === 0) return null;
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '10px' }}>
+      {sources.slice(0, 3).map((s, i) => (
+        <span key={i} style={{
+          display: 'inline-flex', alignItems: 'center', gap: '4px',
+          background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)',
+          borderRadius: '20px', padding: '3px 10px', fontSize: '11px',
+          color: '#6366f1', fontWeight: 500,
+        }}>
+          <FileText size={10} />
+          {s.topicName.length > 30 ? s.topicName.substring(0, 30) + '...' : s.topicName}
+        </span>
+      ))}
+    </div>
+  );
 }
 
-function extractKeywords(text) {
-  const keywords = {
-    'design': ['design', 'ui', 'ux', 'art', 'creative', 'visual'],
-    'programming': ['code', 'coding', 'program', 'develop', 'algorithm', 'script'],
-    'web': ['web', 'website', 'html', 'css', 'javascript', 'site'],
+function InsightTag({ insightType }) {
+  const map = {
+    needs_explanation: { label: 'Concept Explanation', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+    needs_example:     { label: 'Example Requested', color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
+    concept_confusion: { label: 'Concept Clarification', color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
+    needs_revision:    { label: 'Needs Revision', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
+    confident:         { label: 'Confident', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
   };
-  const norm = normalizeInput(text);
-  for (let cat in keywords) {
-    for (let kw of keywords[cat]) {
-      if (norm.includes(kw)) return cat;
-    }
-  }
-  return null;
+  const info = map[insightType];
+  if (!info) return null;
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '4px',
+      background: info.bg, border: `1px solid ${info.color}33`,
+      borderRadius: '20px', padding: '2px 9px', fontSize: '10px',
+      color: info.color, fontWeight: 500, marginTop: '6px',
+    }}>
+      <Lightbulb size={9} />
+      {info.label}
+    </span>
+  );
 }
+
+/** Render answer text with basic markdown-like formatting */
+function AnswerText({ text }) {
+  if (!text) return null;
+  const lines = text.split('\n');
+  return (
+    <div style={{ lineHeight: 1.75, fontSize: '14px' }}>
+      {lines.map((line, i) => {
+        if (line.startsWith('## ')) {
+          return <h3 key={i} style={{ fontSize: '15px', fontWeight: 700, margin: '14px 0 6px', color: '#e2e8f0' }}>{line.slice(3)}</h3>;
+        }
+        if (line.startsWith('### ')) {
+          return <h4 key={i} style={{ fontSize: '14px', fontWeight: 600, margin: '10px 0 4px', color: '#cbd5e1' }}>{line.slice(4)}</h4>;
+        }
+        if (line.startsWith('- ') || line.startsWith('* ')) {
+          return <div key={i} style={{ display: 'flex', gap: '8px', margin: '3px 0', paddingLeft: '4px' }}><span style={{ color: '#6366f1', marginTop: '2px', flexShrink: 0 }}>•</span><span>{line.slice(2)}</span></div>;
+        }
+        if (/^\d+\.\s/.test(line)) {
+          const [num, ...rest] = line.split('. ');
+          return <div key={i} style={{ display: 'flex', gap: '8px', margin: '3px 0', paddingLeft: '4px' }}><span style={{ color: '#6366f1', fontWeight: 600, flexShrink: 0 }}>{num}.</span><span>{rest.join('. ')}</span></div>;
+        }
+        if (line.startsWith('**') && line.endsWith('**') && line.length > 4) {
+          return <p key={i} style={{ margin: '4px 0', fontWeight: 700, color: '#e2e8f0' }}>{line.slice(2, -2)}</p>;
+        }
+        if (line.trim() === '') return <div key={i} style={{ height: '8px' }} />;
+        // Inline bold: replace **text** with bold span
+        const parts = line.split(/(\*\*[^*]+\*\*)/g);
+        return (
+          <p key={i} style={{ margin: '3px 0', color: '#cbd5e1' }}>
+            {parts.map((part, j) =>
+              part.startsWith('**') && part.endsWith('**')
+                ? <strong key={j} style={{ color: '#e2e8f0' }}>{part.slice(2, -2)}</strong>
+                : part
+            )}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+// ─── Message Component ──────────────────────────────────────────────────────
+
+function Message({ msg }) {
+  const isUser = msg.role === 'user';
+  const isError = msg.isError;
+
+  if (isUser) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <div style={{
+          maxWidth: '75%', background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+          borderRadius: '18px 18px 4px 18px', padding: '12px 16px',
+          color: '#fff', fontSize: '14px', lineHeight: 1.6,
+          boxShadow: '0 4px 12px rgba(99,102,241,0.3)',
+        }}>
+          {msg.text}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div style={{ display: 'flex', marginBottom: '16px' }}>
+        <div style={{
+          maxWidth: '85%', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
+          borderRadius: '4px 18px 18px 18px', padding: '12px 16px',
+          color: '#fca5a5', fontSize: '13px',
+        }}>
+          {msg.text}
+        </div>
+      </div>
+    );
+  }
+
+  // Bot message
+  return (
+    <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', alignItems: 'flex-start' }}>
+      <div style={{
+        width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
+        background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        boxShadow: '0 2px 8px rgba(99,102,241,0.4)',
+      }}>
+        <BotMessageSquare size={16} color="#fff" />
+      </div>
+      <div style={{ maxWidth: '85%', flex: 1 }}>
+        <div style={{
+          background: 'rgba(30,41,59,0.9)', border: '1px solid rgba(99,102,241,0.15)',
+          borderRadius: '4px 18px 18px 18px', padding: '14px 16px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+        }}>
+          {msg.isLoading ? (
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', color: '#94a3b8' }}>
+              <span style={{ fontSize: '13px' }}>Searching course material and generating answer</span>
+              <div style={{ display: 'flex', gap: '3px' }}>
+                {[0,1,2].map(i => (
+                  <div key={i} style={{
+                    width: '5px', height: '5px', borderRadius: '50%',
+                    background: '#6366f1', animation: `bounce 1.2s ${i * 0.2}s ease-in-out infinite`,
+                  }} />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <AnswerText text={msg.text} />
+          )}
+        </div>
+        {!msg.isLoading && (
+          <div style={{ marginLeft: '2px' }}>
+            {msg.isGrounded === false && (
+              <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '6px', fontStyle: 'italic' }}>
+                General knowledge — no matching course material found
+              </div>
+            )}
+            <SourceBadge sources={msg.sources} />
+            {msg.insightType && <InsightTag insightType={msg.insightType} />}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Suggested Questions ────────────────────────────────────────────────────
+
+const SUGGESTED_QUESTIONS = [
+  'Explain the Von Neumann bottleneck',
+  'What is the difference between RISC and CISC?',
+  'How does pipelining work?',
+  'Explain inheritance in OOP with an example',
+  'What is Flynn\'s taxonomy?',
+  'Explain cache memory mapping techniques',
+];
+
+// ─── Main Page ──────────────────────────────────────────────────────────────
 
 export default function ChatbotPage() {
   const router = useRouter();
-  const messagesRef = useRef(null);
-  const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([
-    { type: 'bot', text: "Welcome to the Course Q&A Assistant! I'm here to help you explore courses. Type 'help' for suggestions." }
-  ]);
-  const [chatState, setChatState] = useState({
-    stage: 'qa',
-    userData: { course: null, name: null, email: null },
-    lastQuestion: null,
-    followUpIndex: 0,
-    isFollowUpActive: false,
-  });
+  const { user } = useAuth();
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
-  useEffect(() => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+  const [messages, setMessages] = useState([
+    {
+      id: 'welcome',
+      role: 'bot',
+      text: 'Hello! I am the TechnoEEE AI Academic Assistant. I can answer questions about your enrolled courses using the actual course material — notes, concepts, and explanations from your learning content.\n\nAsk me anything about your courses, or pick a suggested question below.',
+      sources: [],
+      isGrounded: null,
     }
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [conversationHistory, setConversationHistory] = useState([]);
+
+  // Student context
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [showCourseDropdown, setShowCourseDropdown] = useState(false);
+
+  // Load enrolled courses
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from('enrollments')
+      .select('course_title, course_code, progress')
+      .eq('user_id', user.id)
+      .then(({ data }) => {
+        if (data) setEnrolledCourses(data);
+      });
+  }, [user]);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  function addMessage(type, text) {
-    setMessages(prev => [...prev, { type, text }]);
-  }
-
-  function processMessage(rawMessage) {
-    const message = rawMessage.trim();
-    if (!message) { addMessage('error', 'Please type a question or code snippet.'); return; }
-    addMessage('user', 'You: ' + message);
-    const norm = normalizeInput(message);
-    const hasFuture = norm.includes('future');
-    const isYes = norm === 'yes';
-    const isNext = norm === 'next';
-    const isStop = norm === 'stop';
-
-    setTimeout(() => {
-      setChatState(prev => {
-        const state = { ...prev, userData: { ...prev.userData } };
-
-        if (state.stage !== 'qa') {
-          switch (state.stage) {
-            case 'enrollmentGreeting':
-              if (norm === 'yes') {
-                state.stage = 'courseSelection';
-                addMessage('bot', `Please choose a course: ${courses.join(', ')}. Type the course name or a number (1, 2, 3).`);
-              } else if (norm === 'no') {
-                state.stage = 'qa';
-                addMessage('bot', 'No problem! Ask a question about our courses or type "enroll now" to start enrollment.');
-              } else {
-                addMessage('error', 'Please type "yes" or "no" to continue.');
-              }
-              break;
-            case 'courseSelection':
-              const idx = parseInt(message) - 1;
-              const selected = courses[idx] || courses.find(c => normalizeInput(c) === norm);
-              if (selected) {
-                state.userData.course = selected;
-                state.stage = 'userDetails';
-                addMessage('bot', `Awesome, you've chosen ${selected}! Please provide your full name.`);
-              } else {
-                addMessage('error', `Invalid course. Choose from: ${courses.join(', ')} (or use 1, 2, 3).`);
-              }
-              break;
-            case 'userDetails':
-              if (!state.userData.name) {
-                if (message.length < 2) { addMessage('error', 'Please provide a valid full name.'); }
-                else { state.userData.name = message; addMessage('bot', 'Thanks! Now provide your email address.'); }
-              } else if (!state.userData.email) {
-                if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(message)) {
-                  state.userData.email = message;
-                  state.stage = 'confirmation';
-                  addMessage('bot', `Confirm your enrollment:\nCourse: ${state.userData.course}\nName: ${state.userData.name}\nEmail: ${state.userData.email}\nType "confirm", "restart", or "back".`);
-                } else { addMessage('error', 'Please enter a valid email (e.g., user@example.com).'); }
-              }
-              break;
-            case 'confirmation':
-              if (norm === 'confirm') {
-                state.stage = 'done';
-                addMessage('bot', 'Enrollment confirmed! You\'ll receive a confirmation email soon. Type "ask" to return to Q&A or "enroll now" for another enrollment.');
-              } else if (norm === 'restart') {
-                state.stage = 'enrollmentGreeting';
-                state.userData = { course: null, name: null, email: null };
-                addMessage('bot', 'Let\'s start over. Would you like to enroll? (Type "yes" or "no")');
-              } else if (norm === 'back') {
-                state.stage = 'qa';
-                state.userData = { course: null, name: null, email: null };
-                addMessage('bot', 'Back to Q&A. What\'s your question? Type "help" for suggestions.');
-              } else { addMessage('error', 'Please type "confirm", "restart", or "back".'); }
-              break;
-            case 'done':
-              if (norm === 'ask') {
-                state.stage = 'qa';
-                state.userData = { course: null, name: null, email: null };
-                addMessage('bot', 'What\'s your question? Type "help" for suggestions.');
-              } else if (norm === 'enroll now') {
-                state.stage = 'enrollmentGreeting';
-                state.userData = { course: null, name: null, email: null };
-                addMessage('bot', 'Would you like to start the enrollment process? (Type "yes" or "no")');
-              } else { addMessage('error', 'Type "ask" to return to Q&A or "enroll now" to start another enrollment.'); }
-              break;
-          }
-          return state;
-        }
-
-        // Q&A stage
-        if (norm === 'enroll now') {
-          state.stage = 'enrollmentGreeting';
-          addMessage('bot', 'Would you like to start the enrollment process? (Type "yes" or "no")');
-        } else if (norm === 'help') {
-          addMessage('bot', 'Ask about: CSS, HTML, JavaScript, Python, Java, UI/UX, Web Designing, Programming, or UI/UX Designing. Describe your interests for a course suggestion. Include "future" for future insights or "yes" for detailed info, then "next"/"stop".');
-        } else if (isYes && state.lastQuestion) {
-          state.isFollowUpActive = true;
-          state.followUpIndex = 0;
-          addMessage('bot', followUpDetails[state.lastQuestion][0]);
-        } else if (isNext && state.isFollowUpActive && state.lastQuestion) {
-          state.followUpIndex = (state.followUpIndex + 1) % followUpDetails[state.lastQuestion].length;
-          addMessage('bot', followUpDetails[state.lastQuestion][state.followUpIndex]);
-        } else if (isStop && state.isFollowUpActive) {
-          state.isFollowUpActive = false;
-          state.followUpIndex = 0;
-          addMessage('bot', 'Follow-up stopped. Ask a new question or type "help" for suggestions.');
-        } else {
-          const matchedKey = Object.keys(courseResponses).find(key => norm.includes(key));
-          if (matchedKey) {
-            state.lastQuestion = matchedKey;
-            state.followUpIndex = 0;
-            state.isFollowUpActive = false;
-            const base = courseResponses[matchedKey];
-            const future = futureInsights[matchedKey] || 'No specific future insights available yet.';
-            addMessage('bot', hasFuture ? `${base}\nFuture Insight: ${future}` : base);
-          } else {
-            const interest = extractKeywords(message);
-            if (interest) {
-              const suggested = { design: 'UI/UX Designing', programming: 'Programming', web: 'Web Designing' }[interest];
-              const roadmap = courseRoadmaps[suggested.toLowerCase()];
-              addMessage('bot', `Based on your interest, I suggest the ${suggested} course. Here's a roadmap:\n${roadmap}\nType "enroll now" to start or ask more questions!`);
-            } else {
-              addMessage('error', "I'm not sure I understood that. Try asking about CSS, HTML, JavaScript, Python, UI/UX, or describe your interests. Type \"help\" for suggestions.");
-            }
-          }
-        }
-        return state;
+  const saveInsight = useCallback(async ({ insightType, courseCode, topicName, summary }) => {
+    if (!user) return;
+    try {
+      await fetch('/api/chat/insights', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          courseCode: courseCode || 'unknown',
+          topicName: topicName || null,
+          insightType,
+          summary,
+        }),
       });
-    }, 500);
-  }
+    } catch (_) {
+      // Silently ignore — insights are non-critical
+    }
+  }, [user]);
 
-  function handleSend() {
-    processMessage(input);
+  const sendMessage = useCallback(async (questionText) => {
+    const question = (questionText || input).trim();
+    if (!question || isLoading) return;
+
+    const userMsgId = Date.now().toString();
+    const botMsgId = `bot-${userMsgId}`;
+
+    // Add user message
+    setMessages(prev => [...prev, { id: userMsgId, role: 'user', text: question }]);
     setInput('');
-  }
+    setIsLoading(true);
 
-  function handleKeyPress(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
-  }
+    // Add loading placeholder
+    setMessages(prev => [...prev, {
+      id: botMsgId, role: 'bot', text: '', isLoading: true, sources: [],
+    }]);
+
+    try {
+      const studentContext = {
+        courseCode: selectedCourse?.course_code || null,
+        courseName: selectedCourse?.course_title || null,
+        currentTopic: null,
+        enrolledCourses: enrolledCourses.map(e => e.course_title),
+        progressPercent: selectedCourse?.progress || 0,
+      };
+
+      const res = await fetch('/api/chat/rag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question,
+          studentContext,
+          history: conversationHistory,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Something went wrong');
+      }
+
+      const { answer, sources, insightSignal, isGrounded } = data;
+
+      // Replace loading placeholder with real answer
+      setMessages(prev => prev.map(m =>
+        m.id === botMsgId
+          ? { ...m, text: answer, isLoading: false, sources, isGrounded, insightType: insightSignal }
+          : m
+      ));
+
+      // Update conversation history for multi-turn context
+      setConversationHistory(prev => [
+        ...prev,
+        { role: 'user', text: question },
+        { role: 'model', text: answer },
+      ].slice(-12)); // keep last 6 turns
+
+      // Save meaningful learning insights (fire-and-forget)
+      if (insightSignal && insightSignal !== 'general_question') {
+        saveInsight({
+          insightType: insightSignal,
+          courseCode: selectedCourse?.course_code,
+          topicName: sources?.[0]?.topicName,
+          summary: question,
+        });
+      }
+
+    } catch (err) {
+      setMessages(prev => prev.map(m =>
+        m.id === botMsgId
+          ? { ...m, text: `Could not get a response: ${err.message}. Please try again.`, isLoading: false, isError: true }
+          : m
+      ));
+    } finally {
+      setIsLoading(false);
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [input, isLoading, selectedCourse, enrolledCourses, conversationHistory, saveInsight]);
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
 
   return (
-    <div style={{ fontFamily: '"Poppins", sans-serif', margin: 0, padding: 0, backgroundColor: '#0a0e1a', color: '#333', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-      <div style={{ maxWidth: '700px', width: '100%', margin: '50px auto', padding: '20px', backgroundColor: 'rgba(255,255,255,0.3)', borderRadius: '10px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', position: 'relative' }}>
-        <h2 style={{ color: '#ffffff', fontSize: '32px', textAlign: 'center', marginBottom: '20px' }}>Course Q&amp;A Assistant</h2>
-        <button
-          onClick={() => router.back()}
-          style={{ position: 'absolute', top: '20px', left: '20px', padding: '10px 20px', border: '1px solid #007bff', borderRadius: '5px', backgroundColor: '#007bff', color: 'white', fontSize: '14px', cursor: 'pointer', fontFamily: '"Poppins", sans-serif' }}
-        >
-          Back
-        </button>
-        <div style={{ border: '1px solid #8b8585', padding: '20px', height: '500px', display: 'flex', flexDirection: 'column', backgroundColor: 'rgba(255,255,255,0.5)', borderRadius: '8px' }}>
-          <div ref={messagesRef} style={{ flex: 1, overflowY: 'auto', borderBottom: '1px solid #8b8585', padding: '10px', fontSize: '14px' }}>
-            {messages.map((msg, i) => (
-              <p key={i} style={{
-                margin: '5px 0', padding: '10px', borderRadius: '5px', maxWidth: '80%', wordWrap: 'break-word', whiteSpace: 'pre-wrap',
-                animation: 'slideIn 0.3s ease-out',
-                ...(msg.type === 'user' ? { backgroundColor: '#007bff', color: 'white', marginLeft: 'auto', textAlign: 'right' }
-                  : msg.type === 'error' ? { backgroundColor: 'rgba(255,0,0,0.2)', color: '#fff', marginRight: 'auto' }
-                  : { backgroundColor: 'rgba(0,5,8,0.8)', color: '#fff', textShadow: '0 0 6px rgba(255,255,255,0.6)', marginRight: 'auto' })
+    <>
+      <style>{`
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); opacity: 0.5; }
+          50% { transform: translateY(-5px); opacity: 1; }
+        }
+        .chat-send-btn:hover { background: linear-gradient(135deg, #4f46e5, #7c3aed) !important; transform: scale(1.05); }
+        .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+        .suggested-q:hover { background: rgba(99,102,241,0.15) !important; border-color: rgba(99,102,241,0.5) !important; }
+        .course-option:hover { background: rgba(99,102,241,0.1) !important; }
+        .clear-btn:hover { color: #ef4444 !important; }
+      `}</style>
+
+      <div className="app-layout">
+        <Sidebar />
+        <div className="page-content" style={{ backgroundColor: '#0f172a', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <DashboardHeader />
+
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px 20px 20px', gap: '16px', maxWidth: '900px', width: '100%', margin: '0 auto', boxSizing: 'border-box' }}>
+
+            {/* Page Header */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+              <div>
+                <h1 style={{ fontSize: '22px', fontWeight: 700, color: '#f1f5f9', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <BotMessageSquare size={22} color="#6366f1" />
+                  AI Academic Assistant
+                </h1>
+                <p style={{ fontSize: '13px', color: '#64748b', margin: '4px 0 0', fontWeight: 400 }}>
+                  Answers grounded in your TechnoEEE course material
+                </p>
+              </div>
+
+              {/* Course Context Selector */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setShowCourseDropdown(v => !v)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.3)',
+                    borderRadius: '10px', padding: '8px 14px', cursor: 'pointer',
+                    color: '#a5b4fc', fontSize: '13px', fontWeight: 500,
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <BookOpen size={14} />
+                  {selectedCourse ? selectedCourse.course_title.substring(0, 28) + (selectedCourse.course_title.length > 28 ? '...' : '') : 'Select Course Context'}
+                  <ChevronDown size={13} style={{ opacity: 0.7 }} />
+                </button>
+
+                {showCourseDropdown && (
+                  <div style={{
+                    position: 'absolute', top: 'calc(100% + 6px)', right: 0, zIndex: 100,
+                    background: '#1e293b', border: '1px solid rgba(99,102,241,0.25)',
+                    borderRadius: '12px', minWidth: '280px', overflow: 'hidden',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
+                  }}>
+                    <div style={{ padding: '8px', borderBottom: '1px solid rgba(99,102,241,0.1)' }}>
+                      <p style={{ fontSize: '11px', color: '#64748b', margin: 0, padding: '4px 8px', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                        Your enrolled courses
+                      </p>
+                    </div>
+                    {enrolledCourses.length === 0 ? (
+                      <div style={{ padding: '16px', color: '#64748b', fontSize: '13px', textAlign: 'center' }}>
+                        No enrolled courses found
+                      </div>
+                    ) : (
+                      <>
+                        <div
+                          className="course-option"
+                          onClick={() => { setSelectedCourse(null); setShowCourseDropdown(false); }}
+                          style={{ padding: '10px 14px', cursor: 'pointer', color: '#94a3b8', fontSize: '13px', transition: 'background 0.15s', borderBottom: '1px solid rgba(99,102,241,0.08)' }}
+                        >
+                          All Courses (no filter)
+                        </div>
+                        {enrolledCourses.map((c, i) => (
+                          <div
+                            key={i}
+                            className="course-option"
+                            onClick={() => { setSelectedCourse(c); setShowCourseDropdown(false); }}
+                            style={{
+                              padding: '10px 14px', cursor: 'pointer',
+                              color: selectedCourse?.course_title === c.course_title ? '#a5b4fc' : '#cbd5e1',
+                              fontSize: '13px', transition: 'background 0.15s',
+                              fontWeight: selectedCourse?.course_title === c.course_title ? 600 : 400,
+                            }}
+                          >
+                            {c.course_title}
+                            {c.progress ? <span style={{ fontSize: '11px', color: '#64748b', marginLeft: '8px' }}>{c.progress}% done</span> : null}
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Chat Window */}
+            <div style={{
+              flex: 1, display: 'flex', flexDirection: 'column',
+              background: 'rgba(15,23,42,0.8)', border: '1px solid rgba(99,102,241,0.15)',
+              borderRadius: '16px', overflow: 'hidden',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
+              minHeight: '480px',
+            }}>
+              {/* Messages Area */}
+              <div
+                onClick={() => showCourseDropdown && setShowCourseDropdown(false)}
+                style={{ flex: 1, overflowY: 'auto', padding: '20px 20px 8px', display: 'flex', flexDirection: 'column' }}
+              >
+                {messages.map((msg) => (
+                  <Message key={msg.id} msg={msg} />
+                ))}
+
+                {/* Suggested questions (shown when only welcome message exists) */}
+                {messages.length === 1 && (
+                  <div style={{ marginTop: '8px' }}>
+                    <p style={{ fontSize: '12px', color: '#475569', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 500 }}>
+                      Try asking
+                    </p>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {SUGGESTED_QUESTIONS.map((q, i) => (
+                        <button
+                          key={i}
+                          className="suggested-q"
+                          onClick={() => sendMessage(q)}
+                          style={{
+                            background: 'rgba(30,41,59,0.8)', border: '1px solid rgba(99,102,241,0.2)',
+                            borderRadius: '20px', padding: '6px 14px',
+                            color: '#94a3b8', fontSize: '12px', cursor: 'pointer',
+                            fontFamily: 'inherit', transition: 'all 0.2s',
+                          }}
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Input Area */}
+              <div style={{
+                borderTop: '1px solid rgba(99,102,241,0.12)', padding: '14px 16px',
+                background: 'rgba(15,23,42,0.95)',
+                display: 'flex', gap: '10px', alignItems: 'flex-end',
               }}>
-                {msg.text}
-              </p>
-            ))}
-          </div>
-          <div style={{ display: 'flex', padding: '10px' }}>
-            <textarea
-              id="chatInput"
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Type your question or code..."
-              aria-label="Chat input"
-              style={{ flex: 1, padding: '10px', marginRight: '10px', border: '1px solid #8b8585', borderRadius: '5px', fontSize: '14px', backgroundColor: 'rgba(255,255,255,0.7)', resize: 'none', height: '60px', fontFamily: '"Poppins", sans-serif' }}
-            />
-            <button
-              onClick={handleSend}
-              style={{ padding: '10px 20px', border: '1px solid #007bff', borderRadius: '5px', backgroundColor: '#007bff', color: 'white', fontSize: '14px', cursor: 'pointer', fontFamily: '"Poppins", sans-serif' }}
-            >
-              Send
-            </button>
+                {messages.length > 1 && (
+                  <button
+                    className="clear-btn"
+                    title="Clear conversation"
+                    onClick={() => {
+                      setMessages([{
+                        id: 'welcome',
+                        role: 'bot',
+                        text: 'Conversation cleared. Ask me anything about your course material.',
+                        sources: [],
+                      }]);
+                      setConversationHistory([]);
+                    }}
+                    style={{
+                      background: 'none', border: 'none', cursor: 'pointer',
+                      color: '#475569', padding: '4px', transition: 'color 0.2s',
+                      flexShrink: 0, alignSelf: 'center',
+                    }}
+                  >
+                    <X size={15} />
+                  </button>
+                )}
+                <textarea
+                  ref={inputRef}
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask a question about your course... (Enter to send, Shift+Enter for new line)"
+                  disabled={isLoading}
+                  rows={1}
+                  style={{
+                    flex: 1, background: 'rgba(30,41,59,0.8)',
+                    border: '1px solid rgba(99,102,241,0.2)', borderRadius: '12px',
+                    padding: '11px 15px', color: '#e2e8f0', fontSize: '14px',
+                    fontFamily: 'inherit', resize: 'none', outline: 'none',
+                    lineHeight: 1.5, maxHeight: '120px', overflowY: 'auto',
+                    transition: 'border-color 0.2s',
+                    fieldSizing: 'content',
+                  }}
+                  onFocus={e => e.target.style.borderColor = 'rgba(99,102,241,0.5)'}
+                  onBlur={e => e.target.style.borderColor = 'rgba(99,102,241,0.2)'}
+                />
+                <button
+                  className="chat-send-btn"
+                  onClick={() => sendMessage()}
+                  disabled={!input.trim() || isLoading}
+                  title="Send message"
+                  style={{
+                    width: '44px', height: '44px', borderRadius: '12px', flexShrink: 0,
+                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                    border: 'none', cursor: 'pointer', color: '#fff',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(99,102,241,0.4)',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  <Send size={18} />
+                </button>
+              </div>
+            </div>
+
+            {/* Footer info */}
+            <p style={{ fontSize: '11px', color: '#334155', textAlign: 'center', margin: 0 }}>
+              Answers are generated using TechnoEEE course notes and Gemini AI. Always verify critical information with your instructor.
+            </p>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
