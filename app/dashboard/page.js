@@ -205,12 +205,22 @@ export default function DashboardPage() {
       setStreak(noRealStats ? MOCK_STREAK : realStreak);
       // Store active dates (use mock dates spanning last 30 days when no real data)
       if (noRealStats) {
-        const today = new Date();
-        const mockDates = [];
-        for (let i = 0; i < 30; i++) {
-          const d = new Date(today);
-          d.setDate(today.getDate() - i);
-          if (Math.random() > 0.3) mockDates.push(d.toISOString().split('T')[0]);
+        let mockDates = [];
+        try {
+          const stored = localStorage.getItem('mockActiveDates');
+          if (stored) mockDates = JSON.parse(stored);
+        } catch (e) {}
+
+        if (!mockDates || mockDates.length === 0) {
+          const today = new Date();
+          mockDates = [];
+          for (let i = 0; i < 30; i++) {
+            const d = new Date(today);
+            d.setDate(today.getDate() - i);
+            // 70% chance of being active on any given day for realistic mock data
+            if (Math.random() > 0.3) mockDates.push(d.toISOString().split('T')[0]);
+          }
+          try { localStorage.setItem('mockActiveDates', JSON.stringify(mockDates)); } catch (e) {}
         }
         setActiveDates(mockDates);
       } else {
