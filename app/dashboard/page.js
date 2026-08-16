@@ -755,7 +755,7 @@ export default function DashboardPage() {
                           }
 
                           return (
-                            <div key={cell.dateStr} style={{
+                            <div key={cell.dateStr} suppressHydrationWarning style={{
                               background: bg,
                               borderRadius: '6px',
                               aspectRatio: '1',
@@ -766,8 +766,8 @@ export default function DashboardPage() {
                               outline: isToday ? '2px solid #6366f1' : 'none',
                               outlineOffset: '-2px',
                             }}>
-                              <span style={{ fontSize: '9px', fontWeight: '700', color: textColor, lineHeight: 1 }}>{symbol}</span>
-                              <span style={{ fontSize: '8px', color: textColor, opacity: 0.7, lineHeight: 1.2 }}>{cell.day}</span>
+                              <span suppressHydrationWarning style={{ fontSize: '9px', fontWeight: '700', color: textColor, lineHeight: 1 }}>{symbol}</span>
+                              <span suppressHydrationWarning style={{ fontSize: '8px', color: textColor, opacity: 0.7, lineHeight: 1.2 }}>{cell.day}</span>
                             </div>
                           );
                         })}
