@@ -421,75 +421,91 @@ export default function MockInterviewPage() {
     setInterviewPhase('opening');
 
     try {
-      // 1. Camera + mic
+      // 1. Camera + mic (hard requirement — fail here is a real error)
       setInitStatus('Requesting camera and microphone...');
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
       streamRef.current = stream;
 
-      // 2. Load MediaPipe scripts
-      setInitStatus('Loading Face Detection model...');
-      await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.js');
+      // 2. MediaPipe (optional — if WebGL fails we skip it gracefully)
+      let mediapipeEnabled = false;
+      const _origAlert = window.alert;
+      window.alert = (msg) => { throw new Error(String(msg)); }; // intercept MediaPipe internal alerts
+      try {
+        // Check WebGL availability first
+        const testCanvas = document.createElement('canvas');
+        const gl = testCanvas.getContext('webgl2') || testCanvas.getContext('webgl');
+        if (!gl) throw new Error('WebGL not available');
 
-      setInitStatus('Loading Pose Detection model...');
-      await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js');
+        setInitStatus('Loading vision models...');
+        await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.js');
+        await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js');
 
-      setInitStatus('Initializing AI models (this takes ~10s on first run)...');
+        setInitStatus('Initializing AI models (this takes ~10s on first run)...');
 
-      // 3. FaceMesh
-      const faceMesh = new window.FaceMesh({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/${file}`,
-      });
-      faceMesh.setOptions({ maxNumFaces:1, refineLandmarks:true, minDetectionConfidence:0.5, minTrackingConfidence:0.5 });
-      faceMesh.onResults((results) => {
-        totalFramesRef.current++;
-        if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
-          setEyeStatus('No face detected');
-          const s = totalFramesRef.current > 0 ? Math.round((eyeContactFramesRef.current / totalFramesRef.current) * 100) : 100;
+        const faceMesh = new window.FaceMesh({
+          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/${file}`,
+        });
+        faceMesh.setOptions({ maxNumFaces:1, refineLandmarks:true, minDetectionConfidence:0.5, minTrackingConfidence:0.5 });
+        faceMesh.onResults((results) => {
+          totalFramesRef.current++;
+          if (!results.multiFaceLandmarks || results.multiFaceLandmarks.length === 0) {
+            setEyeStatus('No face detected');
+            const s = totalFramesRef.current > 0 ? Math.round((eyeContactFramesRef.current / totalFramesRef.current) * 100) : 100;
+            setEyeContactScore(s);
+            return;
+          }
+          const lm = results.multiFaceLandmarks[0];
+          if (lm.length < 478) { eyeContactFramesRef.current++; return; }
+          const li = lm[468]; const ri = lm[473];
+          const lc = { x: (lm[33].x + lm[133].x) / 2 };
+          const rc = { x: (lm[263].x + lm[362].x) / 2 };
+          const lw = Math.abs(lm[33].x - lm[133].x);
+          const rw = Math.abs(lm[263].x - lm[362].x);
+          const devL = lw > 0 ? Math.abs(li.x - lc.x) / lw : 0;
+          const devR = rw > 0 ? Math.abs(ri.x - rc.x) / rw : 0;
+          const isLooking = (devL + devR) / 2 < 0.22;
+          if (isLooking) eyeContactFramesRef.current++;
+          const s = Math.round((eyeContactFramesRef.current / totalFramesRef.current) * 100);
           setEyeContactScore(s);
-          return;
-        }
-        const lm = results.multiFaceLandmarks[0];
-        if (lm.length < 478) { eyeContactFramesRef.current++; return; }
-        const li = lm[468]; const ri = lm[473];
-        const lc = { x: (lm[33].x + lm[133].x) / 2 };
-        const rc = { x: (lm[263].x + lm[362].x) / 2 };
-        const lw = Math.abs(lm[33].x - lm[133].x);
-        const rw = Math.abs(lm[263].x - lm[362].x);
-        const devL = lw > 0 ? Math.abs(li.x - lc.x) / lw : 0;
-        const devR = rw > 0 ? Math.abs(ri.x - rc.x) / rw : 0;
-        const isLooking = (devL + devR) / 2 < 0.22;
-        if (isLooking) eyeContactFramesRef.current++;
-        const s = Math.round((eyeContactFramesRef.current / totalFramesRef.current) * 100);
-        setEyeContactScore(s);
-        setEyeStatus(isLooking ? 'Looking at camera' : 'Look at the camera');
-      });
-      await faceMesh.initialize();
-      faceMeshRef.current = faceMesh;
+          setEyeStatus(isLooking ? 'Looking at camera' : 'Look at the camera');
+        });
+        await faceMesh.initialize();
+        faceMeshRef.current = faceMesh;
 
-      // 4. Pose
-      const pose = new window.Pose({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`,
-      });
-      pose.setOptions({ modelComplexity:1, smoothLandmarks:true, enableSegmentation:false, minDetectionConfidence:0.5, minTrackingConfidence:0.5 });
-      pose.onResults((results) => {
-        if (!results.poseLandmarks) return;
-        const lm = results.poseLandmarks;
-        const ls = lm[11]; const rs = lm[12]; const nose = lm[0];
-        if (!ls || !rs || !nose) return;
-        const tilt = Math.abs(ls.y - rs.y);
-        const avgShY = (ls.y + rs.y) / 2;
-        const headUp = nose.y < avgShY;
-        const vis = (ls.visibility ?? 1) > 0.5 && (rs.visibility ?? 1) > 0.5;
-        const good = tilt < 0.07 && headUp && vis;
-        if (good) goodPostureFramesRef.current++;
-        const s2 = totalFramesRef.current > 0 ? Math.round((goodPostureFramesRef.current / totalFramesRef.current) * 100) : 100;
-        setPostureScore(s2);
-        setPostureStatus(!vis ? 'Move closer to camera' : !headUp ? 'Sit up straight' : tilt >= 0.07 ? 'Level your shoulders' : 'Great posture');
-      });
-      await pose.initialize();
-      poseRef.current = pose;
+        const pose = new window.Pose({
+          locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`,
+        });
+        pose.setOptions({ modelComplexity:1, smoothLandmarks:true, enableSegmentation:false, minDetectionConfidence:0.5, minTrackingConfidence:0.5 });
+        pose.onResults((results) => {
+          if (!results.poseLandmarks) return;
+          const lm = results.poseLandmarks;
+          const ls = lm[11]; const rs = lm[12]; const nose = lm[0];
+          if (!ls || !rs || !nose) return;
+          const tilt = Math.abs(ls.y - rs.y);
+          const avgShY = (ls.y + rs.y) / 2;
+          const headUp = nose.y < avgShY;
+          const vis = (ls.visibility ?? 1) > 0.5 && (rs.visibility ?? 1) > 0.5;
+          const good = tilt < 0.07 && headUp && vis;
+          if (good) goodPostureFramesRef.current++;
+          const s2 = totalFramesRef.current > 0 ? Math.round((goodPostureFramesRef.current / totalFramesRef.current) * 100) : 100;
+          setPostureScore(s2);
+          setPostureStatus(!vis ? 'Move closer to camera' : !headUp ? 'Sit up straight' : tilt >= 0.07 ? 'Level your shoulders' : 'Great posture');
+        });
+        await pose.initialize();
+        poseRef.current = pose;
+        mediapipeEnabled = true;
+      } catch (mpErr) {
+        // MediaPipe / WebGL failed — log it and continue without analytics
+        console.warn('[MediaPipe unavailable]', mpErr.message);
+        setEyeStatus('Analytics unavailable');
+        setPostureStatus('Analytics unavailable');
+        faceMeshRef.current = null;
+        poseRef.current = null;
+      } finally {
+        window.alert = _origAlert; // always restore
+      }
 
-      // 5. Speech Recognition
+      // 3. Speech Recognition
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SR) {
         const rec = new SR();
@@ -517,7 +533,7 @@ export default function MockInterviewPage() {
         try { rec.start(); } catch (_) {}
       }
 
-      // 6. Reset tracking
+      // 4. Reset tracking
       eyeContactFramesRef.current = 0;
       goodPostureFramesRef.current = 0;
       totalFramesRef.current = 0;
@@ -529,7 +545,7 @@ export default function MockInterviewPage() {
       silenceSecondsRef.current = 0;
       startTimeRef.current = Date.now();
 
-      // 7. Start main timer + silence detector
+      // 5. Start main timer + silence detector
       timerRef.current = setInterval(() => {
         setElapsedSeconds(s => s + 1);
         const mins = (Date.now() - startTimeRef.current) / 60000;
@@ -537,12 +553,10 @@ export default function MockInterviewPage() {
 
         // Silence detection — only runs when AI is NOT speaking or thinking
         if (isAISpeakingRef.current || isAIThinkingRef.current) {
-          // AI is active — reset baseline so student gets a clean window after AI finishes
           lastWordCountRef.current = wordCountRef.current;
           silenceSecondsRef.current = 0;
         } else if (wordCountRef.current === lastWordCountRef.current) {
           silenceSecondsRef.current++;
-          // Thresholds: 12s first prompt, 20s second prompt, 30s auto-advance
           if (silenceSecondsRef.current === 12) setSilencePrompt('Take your time...');
           if (silenceSecondsRef.current === 20) setSilencePrompt('Are you unsure about this one?');
           if (silenceSecondsRef.current === 30) {
@@ -558,18 +572,28 @@ export default function MockInterviewPage() {
         }
       }, 1000);
 
-      // 8. Start frame loop
-      animFrameRef.current = requestAnimationFrame(processFrameRef.current);
+      // 6. Start frame loop (only if MediaPipe loaded)
+      if (mediapipeEnabled) {
+        animFrameRef.current = requestAnimationFrame(processFrameRef.current);
+      }
 
       setInitStatus('');
       setInterviewState('interviewing');
 
-      // 9. Get first AI question (after state update)
+      // 7. Get first AI question
       setTimeout(() => fetchNextQuestion('', 'opening'), 600);
 
     } catch (err) {
+      // Only camera/mic failures reach here now
       console.error('Interview start error:', err);
-      alert('Could not access camera/microphone. Please allow permissions and try again.');
+      if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); streamRef.current = null; }
+      let msg = 'Could not access camera or microphone. Please allow permissions and try again.';
+      if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
+        msg = 'Camera or microphone access was denied. Please click the camera icon in the address bar and allow access.';
+      } else if (err?.name === 'NotFoundError') {
+        msg = 'No camera or microphone found. Please connect a device and try again.';
+      }
+      alert(msg);
       setInterviewState('idle');
     }
   };
