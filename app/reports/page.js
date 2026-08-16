@@ -312,7 +312,7 @@ export default function AnalyticsPage() {
       options: {
         responsive: true, maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'right', labels: { font: { family: "'Inter', sans-serif", size: 12 }, color: '#64748b', padding: 20, usePointStyle: true, pointStyle: 'circle' } },
+          legend: { onClick: null, position: 'right', labels: { font: { family: "'Inter', sans-serif", size: 12 }, color: '#64748b', padding: 20, usePointStyle: true, pointStyle: 'circle' } },
           tooltip: { backgroundColor: '#1e293b', padding: 12, cornerRadius: 8, callbacks: { label: ctx => ` ${ctx.parsed} hrs` } },
         },
       },
