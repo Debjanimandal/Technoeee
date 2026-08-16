@@ -23,18 +23,28 @@ const AcademicsIcon= () => <svg width="15" height="15" viewBox="0 0 24 24" fill=
 const FeedbackIcon = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="menu-icon" style={{flexShrink:0}}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>;
 const AboutIcon    = () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="menu-icon" style={{flexShrink:0}}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>;
 
+import { FolderOpen, FileText, Award, BotMessageSquare } from 'lucide-react';
+
 const MENU = [
   { label: 'Edit Profile',    Icon: EditIcon,      action: 'edit'         },
   { label: 'About Me',        Icon: AboutIcon,     route: '/profile'      },
   { label: 'Settings',        Icon: SettingsIcon,  route: '/settings'     },
-  { label: 'Academics',       Icon: AcademicsIcon, route: '/academics'    },
+  { label: 'Academics',       Icon: AcademicsIcon, action: 'submenu', subId: 'academics' },
   { label: 'My Analytics',    Icon: AnalyticsIcon, route: '/reports'      },
   { label: 'My Achievements', Icon: AchievIcon,    route: '/achievements' },
+];
+
+const SUBMENU_ACADEMICS = [
+  { label: 'My Saved Notes', route: '/academics/saved-notes', Icon: FolderOpen },
+  { label: 'Quiz History', route: '/academics/quiz-history', Icon: FileText },
+  { label: 'Results', route: '/academics/results', Icon: Award },
+  { label: 'AI Chats', route: '/academics/ai-chats', Icon: BotMessageSquare },
 ];
 
 export default function ProfileDropdown({ isOpen, onClose, user, profile, onSignOut, onEditProfile }) {
   const router = useRouter();
   const [profileCompletion, setProfileCompletion] = useState(0);
+  const [hoveredMenu, setHoveredMenu] = useState(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -50,6 +60,7 @@ export default function ProfileDropdown({ isOpen, onClose, user, profile, onSign
 
   function handleItem(item) {
     if (item.action === 'edit') { onEditProfile?.(); return; }
+    if (item.action === 'submenu') return; // Do nothing on click for submenus
     onClose();
     router.push(item.route);
   }
@@ -65,7 +76,6 @@ export default function ProfileDropdown({ isOpen, onClose, user, profile, onSign
       borderRadius: '18px',
       boxShadow: '0 12px 36px rgba(0,10,40,0.13), 0 0 0 1px rgba(0,0,0,0.06)',
       zIndex: 1000,
-      overflow: 'hidden',
       animation: 'slideDown 0.22s cubic-bezier(0.2,0.8,0.2,1)',
     }}>
       <style jsx>{`
@@ -147,12 +157,70 @@ export default function ProfileDropdown({ isOpen, onClose, user, profile, onSign
       {/* ── Menu items ── */}
       <div style={{ padding: '6px 0' }}>
         {MENU.map(item => (
-          <div key={item.label} className="pd-item" onClick={() => handleItem(item)}>
+          <div 
+            key={item.label} 
+            className="pd-item" 
+            onClick={() => handleItem(item)}
+            onMouseEnter={() => {
+              if (item.subId) {
+                if (window.hoverTimeout) clearTimeout(window.hoverTimeout);
+                setHoveredMenu(item.subId);
+              }
+            }}
+            onMouseLeave={() => {
+              if (item.subId) {
+                window.hoverTimeout = setTimeout(() => {
+                  setHoveredMenu(null);
+                }, 300); // 300ms delay prevents gap issues
+              }
+            }}
+            style={{ position: 'relative' }}
+          >
             <div className="pd-item-left">
               <item.Icon />
               <span>{item.label}</span>
             </div>
             <ChevronIcon />
+            
+            {/* Submenu rendering */}
+            {item.action === 'submenu' && item.subId === 'academics' && hoveredMenu === 'academics' && (
+              <div 
+                style={{
+                  position: 'absolute',
+                  top: '-10px',
+                  right: '100%',
+                  marginRight: '12px',
+                  width: '210px',
+                  background: 'rgba(255,255,255,0.98)',
+                  backdropFilter: 'blur(16px)',
+                  borderRadius: '16px',
+                  boxShadow: '0 12px 36px rgba(0,10,40,0.13), 0 0 0 1px rgba(0,0,0,0.06)',
+                  zIndex: 1001,
+                  padding: '8px 0',
+                  cursor: 'default'
+                }}
+                onClick={(e) => e.stopPropagation()}
+                onMouseEnter={() => {
+                  if (window.hoverTimeout) clearTimeout(window.hoverTimeout);
+                }}
+              >
+                {SUBMENU_ACADEMICS.map(subItem => {
+                  const SubIcon = subItem.Icon;
+                  return (
+                    <div 
+                      key={subItem.label} 
+                      className="pd-item" 
+                      onClick={() => { onClose(); router.push(subItem.route); }}
+                    >
+                      <div className="pd-item-left">
+                        <SubIcon size={15} className="menu-icon" strokeWidth={2.5} style={{ flexShrink: 0 }} />
+                        <span>{subItem.label}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         ))}
       </div>
