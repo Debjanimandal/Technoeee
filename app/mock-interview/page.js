@@ -233,6 +233,9 @@ export default function MockInterviewPage() {
   // ── Silence detection refs ───────────────────────────────────────────────────
   const lastWordCountRef = useRef(0);
   const silenceSecondsRef = useRef(0);
+  // Readable refs for interval callbacks (React state can't be read in setInterval)
+  const isAISpeakingRef = useRef(false);
+  const isAIThinkingRef = useRef(false);
 
   // ── Analytics state ──────────────────────────────────────────────────────────
   const [eyeContactScore, setEyeContactScore] = useState(100);
@@ -303,17 +306,26 @@ export default function MockInterviewPage() {
     const preferred = voices.find(v => v.lang === 'en-US' && v.name.toLowerCase().includes('female'))
       || voices.find(v => v.lang.startsWith('en'));
     if (preferred) utter.voice = preferred;
-    utter.onstart = () => setIsAISpeaking(true);
-    utter.onend   = () => setIsAISpeaking(false);
-    utter.onerror = () => setIsAISpeaking(false);
+    utter.onstart = () => { setIsAISpeaking(true); isAISpeakingRef.current = true; };
+    utter.onend   = () => {
+      setIsAISpeaking(false);
+      isAISpeakingRef.current = false;
+      // Give the student a FRESH silence window the moment AI stops speaking
+      silenceSecondsRef.current = 0;
+      lastWordCountRef.current = wordCountRef.current;
+      setSilencePrompt('');
+    };
+    utter.onerror = () => { setIsAISpeaking(false); isAISpeakingRef.current = false; };
     ttsRef.current = utter;
     setIsAISpeaking(true);
+    isAISpeakingRef.current = true;
     window.speechSynthesis.speak(utter);
   }, [isTTSMuted]);
 
   // ── Get next AI question ─────────────────────────────────────────────────────
   const fetchNextQuestion = useCallback(async (answer = '', forcePhase = null) => {
     setIsAIThinking(true);
+    isAIThinkingRef.current = true;
     setSilencePrompt('');
     silenceSecondsRef.current = 0;
 
@@ -381,6 +393,7 @@ export default function MockInterviewPage() {
       speakQuestion(fallback);
     } finally {
       setIsAIThinking(false);
+      isAIThinkingRef.current = false;
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interviewType, interviewTopic, speakQuestion]);
@@ -522,13 +535,17 @@ export default function MockInterviewPage() {
         const mins = (Date.now() - startTimeRef.current) / 60000;
         if (mins > 0) setWpm(Math.round(wordCountRef.current / mins));
 
-        // Silence detection
-        if (wordCountRef.current === lastWordCountRef.current) {
+        // Silence detection — only runs when AI is NOT speaking or thinking
+        if (isAISpeakingRef.current || isAIThinkingRef.current) {
+          // AI is active — reset baseline so student gets a clean window after AI finishes
+          lastWordCountRef.current = wordCountRef.current;
+          silenceSecondsRef.current = 0;
+        } else if (wordCountRef.current === lastWordCountRef.current) {
           silenceSecondsRef.current++;
-          if (silenceSecondsRef.current === 6) setSilencePrompt('Take your time...');
-          if (silenceSecondsRef.current === 10) setSilencePrompt('Are you unsure about this one?');
-          if (silenceSecondsRef.current === 16) {
-            // Auto-submit with empty (silence = candidate doesn't know)
+          // Thresholds: 12s first prompt, 20s second prompt, 30s auto-advance
+          if (silenceSecondsRef.current === 12) setSilencePrompt('Take your time...');
+          if (silenceSecondsRef.current === 20) setSilencePrompt('Are you unsure about this one?');
+          if (silenceSecondsRef.current === 30) {
             lastWordCountRef.current = wordCountRef.current;
             silenceSecondsRef.current = 0;
             setSilencePrompt('');
