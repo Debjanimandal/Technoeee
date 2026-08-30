@@ -16,23 +16,26 @@ import { supabase } from '@/lib/supabase/client';
 import SecureNotesViewer from '@/components/shared/SecureNotesViewer';
 import QuizViewer from '@/components/shared/QuizViewer';
 import { useAnalytics } from '@/lib/context/analytics-context';
+import VideoAskPanel from '@/components/shared/VideoAskPanel';
 
 export default function CourseLearningPage() {
   const { courseId } = useParams();
   const router = useRouter();
   const { user } = useAuth();
-  
+
   const [course, setCourse] = useState(null);
-  const [expandedModule, setExpandedModule] = useState(null); 
+  const [expandedModule, setExpandedModule] = useState(null);
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [selectedContentIdx, setSelectedContentIdx] = useState(0);
   const [completedItems, setCompletedItems] = useState([]);
   const [isNotesViewerOpen, setIsNotesViewerOpen] = useState(false);
   const [activeQuiz, setActiveQuiz] = useState(null);
-  
+  const [videoAskOpen, setVideoAskOpen] = useState(false);
+  const [videoAskContext, setVideoAskContext] = useState({ topic: '', summary: '', videoUrl: '', partLabel: '' });
+
   const { claimedBadges, claimBadge } = useBadges();
   const [progressPercent, setProgressPercent] = useState(0);
-  
+
   const { logTime, logQuizResult } = useAnalytics();
 
   // Activity timer
@@ -70,7 +73,7 @@ export default function CourseLearningPage() {
           .eq('user_id', user.id)
           .eq('course_title', course.course_name)
           .maybeSingle();
-        
+
         if (data && data.progress) {
           setProgressPercent(data.progress);
         }
@@ -83,7 +86,7 @@ export default function CourseLearningPage() {
 
   const totalModules = course.modules?.length || 0;
   // Mock tracking
-  const remainingHours = parseInt(course.estimated_time) || 40; 
+  const remainingHours = parseInt(course.estimated_time) || 40;
   const estRemaining = Math.max(0, Math.floor(remainingHours * (1 - (progressPercent / 100))));
 
   // Robust topic lookup — handles apostrophe encoding differences (Flynn's vs Flynn's)
@@ -131,9 +134,9 @@ export default function CourseLearningPage() {
       <Sidebar />
       <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <DashboardHeader />
-        
+
         <div style={{ padding: '0 20px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-          
+
           {/* Header Section */}
           <div style={{
             background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
@@ -149,7 +152,7 @@ export default function CourseLearningPage() {
             <div style={{ position: 'absolute', top: '-40px', right: '180px', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(43,88,118,0.1)', pointerEvents: 'none' }} />
             <div style={{ position: 'absolute', bottom: '-50px', right: '80px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(78,67,118,0.08)', pointerEvents: 'none' }} />
             <div style={{ position: 'absolute', top: '20px', right: '280px', width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(43,88,118,0.06)', pointerEvents: 'none' }} />
-            
+
             <Link href="/my-courses" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontSize: '14px', marginBottom: '15px', display: 'inline-block' }}>
               ← Back to My Courses
             </Link>
@@ -192,7 +195,7 @@ export default function CourseLearningPage() {
 
           {/* Course Outcomes Section - Moved outside the header for better visuals */}
           {course.outcomes && course.outcomes.length > 0 && (
-            <div style={{ 
+            <div style={{
               background: '#fff', borderRadius: '20px', padding: '25px 30px', marginBottom: '20px',
               boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0'
             }}>
@@ -209,33 +212,45 @@ export default function CourseLearningPage() {
           )}
 
           {/* Split Screen Workspace */}
+          <style>{`
+            @keyframes aiColIn {
+              from { opacity: 0; transform: translateX(30px) scale(0.97); }
+              to   { opacity: 1; transform: translateX(0)   scale(1); }
+            }
+            @keyframes aiColOut {
+              from { opacity: 1; transform: translateX(0)   scale(1); }
+              to   { opacity: 0; transform: translateX(30px) scale(0.97); }
+            }
+          `}</style>
           <div style={{ display: 'flex', gap: '20px', flex: 1, minHeight: '600px' }}>
-            
-            {/* LEFT PANE: Vertical Timeline Tree */}
+
+            {/* LEFT PANE: Vertical Timeline Tree — compresses when chat is open */}
             <div style={{
-              width: '380px', background: '#fff', borderRadius: '20px', padding: '25px',
+              width: videoAskOpen ? '240px' : '380px',
+              transition: 'width 0.4s cubic-bezier(0.4,0,0.2,1)',
+              background: '#fff', borderRadius: '20px', padding: '25px',
               boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0',
-              overflowY: 'auto', flexShrink: 0
+              overflowY: 'auto', flexShrink: 0, overflowX: 'hidden',
             }}>
               <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '25px' }}>Learning Roadmap</h3>
-              
+
               <div style={{ position: 'relative', paddingLeft: '0px' }}>
                 {/* The main vertical track line */}
                 <div style={{ position: 'absolute', left: '19px', top: '20px', bottom: '20px', width: '2px', background: '#bbdefb', borderRadius: '5px' }}></div>
-                
+
                 {course.modules?.map((mod, modIdx) => {
                   const isExpanded = expandedModule === modIdx;
-                  const isModCompleted = progressPercent > ((modIdx+1) * 20); // mock logic
-                  
+                  const isModCompleted = progressPercent > ((modIdx + 1) * 20); // mock logic
+
                   return (
                     <div key={modIdx} style={{ marginBottom: '20px', position: 'relative' }}>
                       {/* Module Node */}
-                      <div 
+                      <div
                         onClick={() => {
                           setExpandedModule(isExpanded ? null : modIdx);
                           if (!isExpanded) setSelectedTopic(null); // Reset topic so module intro shows
                         }}
-                        style={{ 
+                        style={{
                           display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer',
                           padding: '10px 10px 10px 13px', borderRadius: '12px', background: isExpanded ? '#f8f9fa' : 'transparent',
                           transition: 'background 0.2s'
@@ -243,7 +258,7 @@ export default function CourseLearningPage() {
                       >
                         <div style={{
                           width: '14px', height: '14px', borderRadius: '50%', zIndex: 2, flexShrink: 0,
-                          background: isModCompleted || isExpanded ? '#3a8aff' : '#fff', 
+                          background: isModCompleted || isExpanded ? '#3a8aff' : '#fff',
                           border: isModCompleted || isExpanded ? '3px solid #e3f2fd' : '3px solid #64b5f6',
                           boxShadow: isModCompleted || isExpanded ? '0 0 10px rgba(58,138,255,0.7)' : 'none',
                         }} />
@@ -326,36 +341,36 @@ export default function CourseLearningPage() {
 
                 {/* Final End Nodes */}
                 <div style={{ marginTop: '40px', position: 'relative' }}>
-                  <div 
-                      onClick={() => { setSelectedTopic('GRAND_QUIZ'); setSelectedContentIdx(3); }}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '15px', padding: '15px 10px 15px 13px', cursor: 'pointer',
-                        transition: 'transform 0.2s, background 0.2s', zIndex: 2, borderRadius: '12px',
-                        background: selectedTopic === 'GRAND_QUIZ' ? 'rgba(58,138,255,0.05)' : 'transparent',
-                        border: selectedTopic === 'GRAND_QUIZ' ? '1px solid rgba(58,138,255,0.2)' : '1px solid transparent',
-                        boxShadow: selectedTopic === 'GRAND_QUIZ' ? '0 0 15px rgba(58,138,255,0.3)' : 'none'
+                  <div
+                    onClick={() => { setSelectedTopic('GRAND_QUIZ'); setSelectedContentIdx(3); }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '15px', padding: '15px 10px 15px 13px', cursor: 'pointer',
+                      transition: 'transform 0.2s, background 0.2s', zIndex: 2, borderRadius: '12px',
+                      background: selectedTopic === 'GRAND_QUIZ' ? 'rgba(58,138,255,0.05)' : 'transparent',
+                      border: selectedTopic === 'GRAND_QUIZ' ? '1px solid rgba(58,138,255,0.2)' : '1px solid transparent',
+                      boxShadow: selectedTopic === 'GRAND_QUIZ' ? '0 0 15px rgba(58,138,255,0.3)' : 'none'
                     }}
                     onMouseOver={(e) => e.currentTarget.style.transform = 'translateX(5px)'}
                     onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
-                      <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#fff', border: '3px solid #90caf9', zIndex: 2, flexShrink: 0 }} />
-                      <h4 style={{ fontSize: '14px', fontWeight: 'bold', color: '#1a1a1a', margin: 0 }}>Grand Final Quiz</h4>
+                    <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#fff', border: '3px solid #90caf9', zIndex: 2, flexShrink: 0 }} />
+                    <h4 style={{ fontSize: '14px', fontWeight: 'bold', color: '#1a1a1a', margin: 0 }}>Grand Final Quiz</h4>
                   </div>
-                  <div 
-                      onClick={() => { setSelectedTopic('BADGE'); setSelectedContentIdx(0); }}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '15px', padding: '15px 10px 15px 13px', cursor: 'pointer',
-                        transition: 'transform 0.2s, background 0.2s', zIndex: 2, borderRadius: '12px',
-                        background: selectedTopic === 'BADGE' ? 'rgba(255,215,0,0.1)' : 'transparent',
-                        border: selectedTopic === 'BADGE' ? '1px solid rgba(255,215,0,0.4)' : '1px solid transparent',
-                        boxShadow: selectedTopic === 'BADGE' ? '0 0 15px rgba(255,215,0,0.4)' : 'none'
+                  <div
+                    onClick={() => { setSelectedTopic('BADGE'); setSelectedContentIdx(0); }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '15px', padding: '15px 10px 15px 13px', cursor: 'pointer',
+                      transition: 'transform 0.2s, background 0.2s', zIndex: 2, borderRadius: '12px',
+                      background: selectedTopic === 'BADGE' ? 'rgba(255,215,0,0.1)' : 'transparent',
+                      border: selectedTopic === 'BADGE' ? '1px solid rgba(255,215,0,0.4)' : '1px solid transparent',
+                      boxShadow: selectedTopic === 'BADGE' ? '0 0 15px rgba(255,215,0,0.4)' : 'none'
                     }}
                     onMouseOver={(e) => e.currentTarget.style.transform = 'translateX(5px)'}
                     onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}>
-                      <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#fff', border: '3px solid #ffd700', boxShadow: '0 0 15px rgba(255,215,0,0.4)', zIndex: 2, flexShrink: 0 }} />
-                      <h4 style={{ fontSize: '15px', fontWeight: 'bold', color: '#b8860b', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <Icons.Award size={18} color="#b8860b" />
-                        Claim Course Badge
-                      </h4>
+                    <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: '#fff', border: '3px solid #ffd700', boxShadow: '0 0 15px rgba(255,215,0,0.4)', zIndex: 2, flexShrink: 0 }} />
+                    <h4 style={{ fontSize: '15px', fontWeight: 'bold', color: '#b8860b', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Icons.Award size={18} color="#b8860b" />
+                      Claim Course Badge
+                    </h4>
                   </div>
                 </div>
 
@@ -368,7 +383,7 @@ export default function CourseLearningPage() {
               boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0',
               display: 'flex', flexDirection: 'column'
             }}>
-              
+
               {!selectedTopic ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#666' }}>
                   {expandedModule !== null && course.modules[expandedModule]?.intro ? (
@@ -399,16 +414,16 @@ export default function CourseLearningPage() {
                   const isModuleQuiz = selectedTopic.startsWith('MANDATORY_QUIZ_');
                   const quizTitle = isModuleQuiz ? 'Mandatory Module Quiz' : 'Grand Final Quiz';
                   const questions = isModuleQuiz ? course?.module_quiz || [] : []; // We'd load grand quiz questions here
-                  
+
                   // Unlock logic: For Module Quiz, check if last video of the module is done.
                   let isLocked = true;
                   if (isModuleQuiz && moduleVideosFlattened.length > 0) {
-                     const lastModVideo = moduleVideosFlattened[moduleVideosFlattened.length - 1];
-                     const lastModVideoId = lastModVideo.idx === 0 ? lastModVideo.topic : `${lastModVideo.topic}_${lastModVideo.idx + 1}`;
-                     isLocked = !completedItems.includes(lastModVideoId);
+                    const lastModVideo = moduleVideosFlattened[moduleVideosFlattened.length - 1];
+                    const lastModVideoId = lastModVideo.idx === 0 ? lastModVideo.topic : `${lastModVideo.topic}_${lastModVideo.idx + 1}`;
+                    isLocked = !completedItems.includes(lastModVideoId);
                   } else if (selectedTopic === 'GRAND_QUIZ') {
-                     // For Grand Quiz, lock until 100% progress
-                     isLocked = progressPercent < 100;
+                    // For Grand Quiz, lock until 100% progress
+                    isLocked = progressPercent < 100;
                   }
 
                   if (isLocked) {
@@ -454,7 +469,7 @@ export default function CourseLearningPage() {
                       <p style={{ fontSize: '15px', color: '#888', textAlign: 'center', maxWidth: '380px', marginBottom: '30px' }}>
                         Test your knowledge on this {isModuleQuiz ? 'module' : 'course'} with a timed quiz. Good luck!
                       </p>
-                      <button 
+                      <button
                         onClick={() => setActiveQuiz({ title: quizTitle, questions })}
                         style={{
                           padding: '14px 40px', backgroundColor: '#ef4444', color: 'white',
@@ -500,13 +515,13 @@ export default function CourseLearningPage() {
                       <p style={{ fontSize: '15px', color: '#64748b', textAlign: 'center', maxWidth: '380px', marginBottom: '32px' }}>
                         {badge.description}
                       </p>
-                      
+
                       {isClaimed ? (
                         <div style={{ padding: '12px 32px', background: '#dcfce7', color: '#166534', borderRadius: '30px', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <Icons.CheckCircle size={20} /> Claimed!
                         </div>
                       ) : isEligible ? (
-                        <button 
+                        <button
                           onClick={() => window.dispatchEvent(new CustomEvent('trigger_badge_claim', { detail: badge.id }))}
                           style={{
                             background: badge.color, color: '#fff', border: 'none', padding: '16px 40px',
@@ -531,58 +546,58 @@ export default function CourseLearningPage() {
                   <h2 style={{ fontSize: '22px', fontWeight: 'bold', color: '#1a1a1a', marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid #eee' }}>
                     {selectedTopic}
                   </h2>
-                  
+
                   {/* Content Sub-Timeline (Video -> Notes -> Quiz) */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0', marginBottom: '60px', overflowX: 'visible', padding: '10px 10px' }}>
                     {(() => {
                       const isTopicArray = Array.isArray(currentTopicData);
                       const videoCount = isTopicArray ? currentTopicData.length : (currentTopicData?.videoUrl3 ? 3 : currentTopicData?.videoUrl2 ? 2 : 1);
                       const timelineItems = [];
-                      
+
                       for (let i = 0; i < videoCount; i++) {
-                         timelineItems.push({ type: `Video ${videoCount > 1 ? i + 1 : ''}`.trim(), icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#3b82f6', bg: '#eff6ff', isVideo: true, videoIdx: i });
+                        timelineItems.push({ type: `Video ${videoCount > 1 ? i + 1 : ''}`.trim(), icon: <Icons.PlayCircle size={24} strokeWidth={2.5} />, color: '#3b82f6', bg: '#eff6ff', isVideo: true, videoIdx: i });
                       }
-                      timelineItems.push({ type: 'Notes',   icon: <Icons.FileText size={22} strokeWidth={2.5} />, color: '#8b5cf6', bg: '#f5f3ff', isVideo: false });
-                      timelineItems.push({ type: 'Quiz',    icon: <Icons.HelpCircle size={24} strokeWidth={2.5} />, color: '#b91c1c', bg: '#fef2f2', isVideo: false });
-                      
+                      timelineItems.push({ type: 'Notes', icon: <Icons.FileText size={22} strokeWidth={2.5} />, color: '#8b5cf6', bg: '#f5f3ff', isVideo: false });
+                      timelineItems.push({ type: 'Quiz', icon: <Icons.HelpCircle size={24} strokeWidth={2.5} />, color: '#b91c1c', bg: '#fef2f2', isVideo: false });
+
                       return timelineItems.map((item, idx, arr) => {
                         const isSelected = selectedContentIdx === idx;
                         return (
                           <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
-                             <div 
+                            <div
                               onClick={() => setSelectedContentIdx(idx)}
-                              style={{ 
+                              style={{
                                 position: 'relative',
                                 cursor: 'pointer', opacity: isSelected ? 1 : 0.6,
                                 transition: 'transform 0.2s, opacity 0.2s', zIndex: 2,
                                 transform: isSelected ? 'scale(1.05)' : 'scale(1)'
                               }}
-                             >
-                              <div style={{ 
-                                width: '50px', height: '50px', borderRadius: '12px', 
+                            >
+                              <div style={{
+                                width: '50px', height: '50px', borderRadius: '12px',
                                 background: isSelected ? item.color : '#fff',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 border: `2px solid ${item.color}`, flexShrink: 0,
                                 boxShadow: isSelected ? `0 0 15px ${item.color}66` : 'none',
                                 position: 'relative', zIndex: 2, color: isSelected ? '#fff' : item.color
                               }}>
                                 {item.icon}
                               </div>
-                              <span style={{ 
+                              <span style={{
                                 position: 'absolute', top: '58px', left: '50%', transform: 'translateX(-50%)',
                                 fontSize: '12px', fontWeight: 'bold', color: isSelected ? item.color : '#888', whiteSpace: 'nowrap'
                               }}>
                                 {item.type}
                               </span>
-                             </div>
-                             {idx < arr.length - 1 && (
-                               <div style={{ 
-                                 width: '40px', height: '3px', 
-                                 background: isSelected ? item.color : '#e0e0e0', 
-                                 opacity: isSelected ? 0.8 : 0.4, 
-                                 zIndex: 1, marginLeft: '-2px', marginRight: '-2px'
-                               }} />
-                             )}
+                            </div>
+                            {idx < arr.length - 1 && (
+                              <div style={{
+                                width: '40px', height: '3px',
+                                background: isSelected ? item.color : '#e0e0e0',
+                                opacity: isSelected ? 0.8 : 0.4,
+                                zIndex: 1, marginLeft: '-2px', marginRight: '-2px'
+                              }} />
+                            )}
                           </div>
                         );
                       });
@@ -591,11 +606,11 @@ export default function CourseLearningPage() {
 
                   {/* Main Video/Content Player Area */}
                   <div style={{ flex: 1, background: '#f9fafb', borderRadius: '16px', border: '1px dashed #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    
+
                     {(() => {
                       const isTopicArray = Array.isArray(currentTopicData);
                       const videoCount = isTopicArray ? currentTopicData.length : (currentTopicData?.videoUrl3 ? 3 : currentTopicData?.videoUrl2 ? 2 : 1);
-                      
+
                       if (selectedContentIdx < videoCount && currentTopicData) {
                         let activeData = null;
                         if (isTopicArray) {
@@ -605,29 +620,70 @@ export default function CourseLearningPage() {
                           if (selectedContentIdx === 1) activeData = { ...currentTopicData, videoUrl: currentTopicData.videoUrl2, summary: currentTopicData.summary2 || currentTopicData.summary, thumbnail: currentTopicData.thumbnail2 || currentTopicData.thumbnail };
                           if (selectedContentIdx === 2) activeData = { ...currentTopicData, videoUrl: currentTopicData.videoUrl3, summary: currentTopicData.summary3 || currentTopicData.summary, thumbnail: currentTopicData.thumbnail3 || currentTopicData.thumbnail };
                         }
-                        
+
                         const completedId = selectedContentIdx === 0 ? selectedTopic : `${selectedTopic}_${selectedContentIdx + 1}`;
                         const locked = !isVideoUnlocked(selectedTopic, selectedContentIdx);
 
                         if (activeData?.videoUrl) {
+                          const partLabel = videoCount > 1 ? `Part ${selectedContentIdx + 1}` : '';
                           return (
-                            <VideoPlayer 
-                              videoUrl={activeData.videoUrl}
-                              title={selectedTopic + (videoCount > 1 ? ` (Part ${selectedContentIdx + 1})` : '')}
-                              summary={activeData.summary}
-                              thumbnailUrl={activeData.thumbnail}
-                              isCompleted={completedItems.includes(completedId)}
-                              isLocked={locked}
-                              onComplete={() => {
-                                if (!completedItems.includes(completedId)) {
-                                  setCompletedItems(prev => [...prev, completedId]);
-                                }
-                              }}
-                            />
+                            <div style={{ width: '100%' }}>
+                              <VideoPlayer
+                                videoUrl={activeData.videoUrl}
+                                title={selectedTopic + (videoCount > 1 ? ` (Part ${selectedContentIdx + 1})` : '')}
+                                summary={activeData.summary}
+                                thumbnailUrl={activeData.thumbnail}
+                                isCompleted={completedItems.includes(completedId)}
+                                isLocked={locked}
+                                onComplete={() => {
+                                  if (!completedItems.includes(completedId)) {
+                                    setCompletedItems(prev => [...prev, completedId]);
+                                  }
+                                }}
+                              />
+                              {/* Ask AI Button */}
+                              {!locked && (
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
+                                  <button
+                                    onClick={() => {
+                                      setVideoAskContext({
+                                        topic: selectedTopic,
+                                        summary: activeData.summary || '',
+                                        videoUrl: activeData.videoUrl || '',
+                                        partLabel,
+                                      });
+                                      setVideoAskOpen(true);
+                                    }}
+                                    style={{
+                                      background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
+                                      color: '#fff',
+                                      border: 'none',
+                                      borderRadius: '10px',
+                                      padding: '9px 18px',
+                                      fontSize: '13px',
+                                      fontWeight: '600',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      gap: '7px',
+                                      boxShadow: '0 4px 14px rgba(99,102,241,0.35)',
+                                      transition: 'all 0.2s',
+                                    }}
+                                    onMouseOver={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+                                    onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                  >
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                    </svg>
+                                    Ask AI about this video
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                           );
                         }
                       }
-                      
+
                       // Notes Tab Logic
                       if (selectedContentIdx === videoCount) {
                         const isLocked = !isVideoUnlocked(selectedTopic, 0); // If topic is locked, notes are locked
@@ -665,7 +721,7 @@ export default function CourseLearningPage() {
                             <p style={{ color: '#64748b', fontSize: '15px', marginBottom: '30px' }}>
                               These notes are highly secure and can only be viewed in the secure reader.
                             </p>
-                            <button 
+                            <button
                               onClick={() => setIsNotesViewerOpen(true)}
                               style={{
                                 padding: '12px 24px', backgroundColor: '#3b82f6', color: 'white',
@@ -680,7 +736,7 @@ export default function CourseLearningPage() {
                           </div>
                         );
                       }
-                      
+
                       // Topic Quiz Tab Logic
                       if (selectedContentIdx === videoCount + 1) {
                         const questions = course?.topicQuizzes?.[selectedTopic] || [];
@@ -690,26 +746,26 @@ export default function CourseLearningPage() {
                         const isLocked = videoCount > 0 && !completedItems.includes(lastVideoId);
 
                         if (isLocked) {
-                           return (
-                             <div style={{ textAlign: 'center', padding: '40px' }}>
-                               <div style={{ width: '80px', height: '80px', background: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#64748b' }}>
-                                 <Lock size={40} />
-                               </div>
-                               <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>Quiz Locked</h3>
-                               <p style={{ color: '#64748b', fontSize: '14px', maxWidth: '400px', margin: '0 auto' }}>
-                                 You must complete all preceding videos in this topic to unlock the quiz.
-                               </p>
-                             </div>
-                           );
+                          return (
+                            <div style={{ textAlign: 'center', padding: '40px' }}>
+                              <div style={{ width: '80px', height: '80px', background: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#64748b' }}>
+                                <Lock size={40} />
+                              </div>
+                              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>Quiz Locked</h3>
+                              <p style={{ color: '#64748b', fontSize: '14px', maxWidth: '400px', margin: '0 auto' }}>
+                                You must complete all preceding videos in this topic to unlock the quiz.
+                              </p>
+                            </div>
+                          );
                         }
 
                         if (questions.length === 0) {
-                           return (
-                             <div style={{ textAlign: 'center', padding: '40px' }}>
-                               <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>No Quiz Available</h3>
-                               <p style={{ color: '#64748b' }}>There are no quiz questions configured for this topic.</p>
-                             </div>
-                           );
+                          return (
+                            <div style={{ textAlign: 'center', padding: '40px' }}>
+                              <h3 style={{ fontSize: '20px', fontWeight: 'bold', color: '#334155', marginBottom: '10px' }}>No Quiz Available</h3>
+                              <p style={{ color: '#64748b' }}>There are no quiz questions configured for this topic.</p>
+                            </div>
+                          );
                         }
 
                         return (
@@ -721,7 +777,7 @@ export default function CourseLearningPage() {
                             <p style={{ color: '#64748b', fontSize: '15px', marginBottom: '30px' }}>
                               Test your understanding of this topic with a timed quiz. Your results will be saved.
                             </p>
-                            <button 
+                            <button
                               onClick={() => setActiveQuiz({ title: selectedTopic, questions })}
                               style={{
                                 padding: '12px 32px', backgroundColor: '#ef4444', color: 'white',
@@ -737,7 +793,7 @@ export default function CourseLearningPage() {
                           </div>
                         );
                       }
-                      
+
                       // Fallback for anything else
                       return (
                         <>
@@ -756,13 +812,43 @@ export default function CourseLearningPage() {
               )}
 
             </div>
+
+            {/* RIGHT AI CHAT COLUMN — inline, animated slide-in */}
+            <div style={{
+              width: videoAskOpen ? '360px' : '0px',
+              minWidth: videoAskOpen ? '360px' : '0px',
+              opacity: videoAskOpen ? 1 : 0,
+              overflow: 'hidden',
+              flexShrink: 0,
+              borderRadius: '20px',
+              transition: 'width 0.4s cubic-bezier(0.4,0,0.2,1), min-width 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease',
+              boxShadow: videoAskOpen ? '0 10px 40px rgba(99,102,241,0.18)' : 'none',
+            }}>
+              <div style={{
+                width: '360px', height: '100%',
+                transform: videoAskOpen ? 'translateX(0) scale(1)' : 'translateX(30px) scale(0.97)',
+                transition: 'transform 0.4s cubic-bezier(0.4,0,0.2,1)',
+              }}>
+                <VideoAskPanel
+                  isOpen={videoAskOpen}
+                  onClose={() => setVideoAskOpen(false)}
+                  videoTopic={videoAskContext.topic}
+                  videoSummary={videoAskContext.summary}
+                  videoUrl={videoAskContext.videoUrl}
+                  courseName={course?.course_name || ''}
+                  partLabel={videoAskContext.partLabel}
+                />
+              </div>
+            </div>
+
           </div>
-          
+
+
         </div>
       </div>
 
       {isNotesViewerOpen && (
-        <SecureNotesViewer 
+        <SecureNotesViewer
           title={selectedTopic}
           markdownContent={Array.isArray(currentTopicData) ? currentTopicData[0]?.notes : currentTopicData?.notes}
           onClose={() => setIsNotesViewerOpen(false)}
