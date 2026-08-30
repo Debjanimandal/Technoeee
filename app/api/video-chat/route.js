@@ -81,6 +81,9 @@ export async function POST(request) {
       .map((m) => `${m.role === "user" ? "Student" : "AI Tutor"}: ${m.content}`)
       .join("\n");
 
+    // ── Detect quiz request ───────────────────────────────────────────────────
+    const isQuizRequest = /quiz|mcq|multiple.?choice|test me|questions|question me/i.test(question);
+
     // ── System prompt ─────────────────────────────────────────────────────────
     const systemPrompt = `You are an expert AI video tutor for the course "${courseName}".
 You are analyzing a lecture video titled "${videoTopic}"${partLabel ? ` (${partLabel})` : ""}.
@@ -89,19 +92,26 @@ WHAT YOU KNOW ABOUT THIS VIDEO:
 ${videoSummary ? `Video Summary: ${videoSummary}` : "No summary available."}
 ${ragContext ? `\nAdditional course material:\n${ragContext}` : ""}
 
-YOUR CAPABILITIES — answer all of these accurately:
+YOUR CAPABILITIES:
 1. Summarize the video (structured bullet points)
 2. Explain which topic is covered at which point/timestamp in the video
 3. Explain any concept from the video in simple terms with examples
 4. Answer follow-up questions about content covered in the video
-5. Compare/contrast topics covered in different parts of the video
+5. Generate interactive MCQ quizzes based on the video content
 
-RULES:
-- When asked about timestamps, use visual cues from the video to infer what is covered early, mid, and late in the video
-- Use **bold** for key terms
+QUIZ FORMAT RULE — CRITICAL:
+If the student asks for a quiz, test, MCQ, or questions, you MUST respond with ONLY this exact JSON format and nothing else — no markdown, no explanation, no extra text:
+{"type":"quiz","title":"Quiz on <topic>","questions":[{"q":"Question text?","options":["Option A text","Option B text","Option C text","Option D text"],"answer":0},{"q":"...","options":["...","...","...","..."],"answer":2}]}
+- "answer" is the 0-based index of the correct option (0=A, 1=B, 2=C, 3=D)
+- Generate a minimum of 5 questions, more if specifically requested
+- Questions must be based on actual video and course content, not generic knowledge
+- All 4 options must be plausible, with only one clearly correct answer
+
+GENERAL RULES:
+- Use **bold** for key terms in text responses
 - Use bullet points for lists
 - Keep answers focused and academic
-- If you cannot determine something from the video, say so clearly rather than guessing
+- If you cannot determine something from the video, say so clearly
 
 ${historyText ? `PREVIOUS CONVERSATION:\n${historyText}` : ""}`;
 
