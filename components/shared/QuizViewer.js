@@ -72,6 +72,7 @@ export default function QuizViewer({ title, questions, onClose, onSubmitQuiz }) 
 
   const q = questions[currentIdx];
   const userAns = selectedAnswers[currentIdx] || [];
+  const isCurrentQuestionCorrect = userAns.length === q.correct_answers.length && userAns.every(v => q.correct_answers.includes(v));
 
   return (
     <>
@@ -338,7 +339,7 @@ export default function QuizViewer({ title, questions, onClose, onSubmitQuiz }) 
               </div>
 
               {/* Explanations Area */}
-              {isSubmitted && q.explanations && q.explanations.length > 0 && (
+              {isSubmitted && !isCurrentQuestionCorrect && q.explanations && q.explanations.length > 0 && (
                 <div style={{ 
                   marginTop: '50px', padding: '35px', backgroundColor: '#fffbeb', 
                   borderRadius: '20px', border: '1px solid #fde68a',
@@ -353,21 +354,28 @@ export default function QuizViewer({ title, questions, onClose, onSubmitQuiz }) 
                   </h4>
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    {q.explanations.map((exp, i) => (
-                      <div key={i} style={{ display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
-                        <div style={{ 
-                          backgroundColor: '#fef3c7', color: '#b45309', padding: '6px 12px', 
-                          borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold',
-                          flexShrink: 0, border: '1px solid #fde68a'
-                        }}>
-                          Option {exp.option}
+                    {q.explanations.map((exp, i) => {
+                      // Handle both string format and object format for robustness
+                      const isString = typeof exp === 'string';
+                      const option = isString ? q.correct_answers[0] : exp.option;
+                      const text = isString ? exp : (exp.reason || exp.text);
+                      
+                      return (
+                        <div key={i} style={{ display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
+                          <div style={{ 
+                            backgroundColor: '#fef3c7', color: '#b45309', padding: '6px 12px', 
+                            borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold',
+                            flexShrink: 0, border: '1px solid #fde68a'
+                          }}>
+                            Option {option}
+                          </div>
+                          <div style={{ color: '#78350f', lineHeight: '1.7', fontSize: '1.05rem', fontWeight: '500' }}>
+                            <span style={{ fontWeight: 'bold', color: '#92400e' }}>Explanation: </span>
+                            {text}
+                          </div>
                         </div>
-                        <div style={{ color: '#78350f', lineHeight: '1.7', fontSize: '1.05rem', fontWeight: '500' }}>
-                          <span style={{ fontWeight: 'bold', color: '#92400e' }}>Why it's incorrect: </span>
-                          {exp.reason}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
