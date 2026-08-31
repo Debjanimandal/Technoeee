@@ -69,7 +69,7 @@ You MUST output ONLY valid JSON matching this exact structure, with no markdown 
         'Authorization': `Bearer ${NVIDIA_API_KEY}`
       },
       body: JSON.stringify({
-        model: "meta/llama-3.1-8b-instruct", // Using Llama 3 for JSON structuring reliability
+        model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning", // Using Nemotron model
         messages,
         temperature: 0.7, 
         max_tokens: 4000
