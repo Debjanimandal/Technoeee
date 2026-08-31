@@ -37,7 +37,7 @@ STRICT INSTRUCTIONS:
 3. 20% of the questions can test general outside knowledge related to this specific topic.
 4. Each question MUST have exactly 4 options (A, B, C, D).
 5. Only ONE option should be correct.
-6. Provide a concise educational explanation for the correct answer.
+6. For EACH option (A, B, C, D), provide a concise educational explanation of why it is correct or incorrect.
 7. CRITICAL: Do NOT generate any questions that match or are highly similar to the following previously asked questions:
 ${previousQuestions.length > 0 ? previousQuestions.map((q, i) => `   - ${q}`).join('\n') : '   (No previous history, generate any valid questions)'}
 
@@ -53,7 +53,12 @@ You MUST output ONLY valid JSON matching this exact structure, with no markdown 
       { "id": "D", "text": "Option D text" }
     ],
     "correct_answers": ["A"],
-    "explanations": ["Explanation for why A is correct."]
+    "explanations": {
+      "A": "Explanation for why A is correct.",
+      "B": "Explanation for why B is incorrect.",
+      "C": "Explanation for why C is incorrect.",
+      "D": "Explanation for why D is incorrect."
+    }
   }
 ]`;
 

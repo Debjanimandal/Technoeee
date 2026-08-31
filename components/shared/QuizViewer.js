@@ -339,7 +339,7 @@ export default function QuizViewer({ title, questions, onClose, onSubmitQuiz }) 
               </div>
 
               {/* Explanations Area */}
-              {isSubmitted && !isCurrentQuestionCorrect && q.explanations && q.explanations.length > 0 && (
+              {isSubmitted && q.explanations && (
                 <div style={{ 
                   marginTop: '50px', padding: '35px', backgroundColor: '#fffbeb', 
                   borderRadius: '20px', border: '1px solid #fde68a',
@@ -354,28 +354,61 @@ export default function QuizViewer({ title, questions, onClose, onSubmitQuiz }) 
                   </h4>
                   
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    {q.explanations.map((exp, i) => {
-                      // Handle both string format and object format for robustness
-                      const isString = typeof exp === 'string';
-                      const option = isString ? q.correct_answers[0] : exp.option;
-                      const text = isString ? exp : (exp.reason || exp.text);
-                      
+                    {(() => {
+                      // Normalize explanations to a dictionary { A: "...", B: "..." }
+                      let expDict = {};
+                      if (Array.isArray(q.explanations)) {
+                        q.explanations.forEach(exp => {
+                          if (typeof exp === 'string') {
+                            expDict[q.correct_answers[0]] = exp;
+                          } else if (exp.option) {
+                            expDict[exp.option] = exp.text || exp.reason;
+                          }
+                        });
+                      } else {
+                        expDict = q.explanations || {};
+                      }
+
                       return (
-                        <div key={i} style={{ display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
-                          <div style={{ 
-                            backgroundColor: '#fef3c7', color: '#b45309', padding: '6px 12px', 
-                            borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold',
-                            flexShrink: 0, border: '1px solid #fde68a'
-                          }}>
-                            Option {option}
-                          </div>
-                          <div style={{ color: '#78350f', lineHeight: '1.7', fontSize: '1.05rem', fontWeight: '500' }}>
-                            <span style={{ fontWeight: 'bold', color: '#92400e' }}>Explanation: </span>
-                            {text}
-                          </div>
-                        </div>
+                        <>
+                          {/* If they got it wrong, explain why their choice was wrong (if available) */}
+                          {!isCurrentQuestionCorrect && userAns.map(ans => expDict[ans] && !q.correct_answers.includes(ans) && (
+                            <div key={`wrong-${ans}`} style={{ display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
+                              <div style={{ 
+                                backgroundColor: '#fef2f2', color: '#dc2626', padding: '6px 12px', 
+                                borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold',
+                                flexShrink: 0, border: '1px solid #fca5a5'
+                              }}>
+                                Option {ans}
+                              </div>
+                              <div style={{ color: '#7f1d1d', lineHeight: '1.7', fontSize: '1.05rem', fontWeight: '500' }}>
+                                <span style={{ fontWeight: 'bold', color: '#991b1b' }}>Why your answer is incorrect: </span>
+                                {expDict[ans]}
+                              </div>
+                            </div>
+                          ))}
+
+                          {/* Always explain the correct answer */}
+                          {q.correct_answers.map(ans => expDict[ans] && (
+                            <div key={`correct-${ans}`} style={{ display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
+                              <div style={{ 
+                                backgroundColor: '#ecfdf5', color: '#059669', padding: '6px 12px', 
+                                borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold',
+                                flexShrink: 0, border: '1px solid #6ee7b7'
+                              }}>
+                                Option {ans}
+                              </div>
+                              <div style={{ color: '#064e3b', lineHeight: '1.7', fontSize: '1.05rem', fontWeight: '500' }}>
+                                <span style={{ fontWeight: 'bold', color: '#065f46' }}>
+                                  {isCurrentQuestionCorrect ? 'Explanation: ' : 'Why the correct answer is correct: '}
+                                </span>
+                                {expDict[ans]}
+                              </div>
+                            </div>
+                          ))}
+                        </>
                       );
-                    })}
+                    })()}
                   </div>
                 </div>
               )}
