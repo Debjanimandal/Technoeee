@@ -132,7 +132,7 @@ export default function CourseLearningPage() {
   return (
     <div className="app-layout">
       <Sidebar />
-      <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="page-content" style={{ background: 'linear-gradient(135deg, #eef2ff 0%, #f5f0ff 50%, #eff6ff 100%)', height: '100vh', overflowY: 'auto', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
         <DashboardHeader />
 
         <div style={{ padding: '0 20px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -381,7 +381,7 @@ export default function CourseLearningPage() {
             <div style={{
               flex: 1, background: '#fff', borderRadius: '20px', padding: '40px',
               boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0',
-              display: 'flex', flexDirection: 'column', overflowY: 'auto'
+              display: 'flex', flexDirection: 'column'
             }}>
 
               {!selectedTopic ? (
@@ -605,7 +605,7 @@ export default function CourseLearningPage() {
                   </div>
 
                   {/* Main Video/Content Player Area */}
-                  <div style={{ width: '100%', background: '#f9fafb', borderRadius: '16px', border: '1px dashed #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                  <div style={{ width: '100%', background: '#f9fafb', borderRadius: '16px', border: '1px dashed #cfd8dc', display: 'block', padding: '20px' }}>
 
                     {(() => {
                       const isTopicArray = Array.isArray(currentTopicData);
@@ -628,24 +628,46 @@ export default function CourseLearningPage() {
                           const partLabel = videoCount > 1 ? `Part ${selectedContentIdx + 1}` : '';
                           return (
                             <div style={{ width: '100%' }}>
-                              <VideoPlayer
-                                videoUrl={activeData.videoUrl}
-                                title={selectedTopic + (videoCount > 1 ? ` (Part ${selectedContentIdx + 1})` : '')}
-                                summary={activeData.summary}
-                                thumbnailUrl={activeData.thumbnail}
-                                isCompleted={completedItems.includes(completedId)}
-                                isLocked={locked}
-                                onComplete={() => {
-                                  if (!completedItems.includes(completedId)) {
-                                    setCompletedItems(prev => [...prev, completedId]);
-                                  }
-                                }}
-                              />
-                              {/* Integrated AI Chat Panel below Video */}
-                              {!locked && (
-                                <div style={{ marginTop: '16px' }}>
-                                  {!videoAskOpen ? (
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                              {activeData.summary && (
+                                <div style={{ 
+                                  marginBottom: '24px', padding: '20px', background: '#f8f9fa', 
+                                  borderRadius: '12px', borderLeft: locked ? '4px solid #94a3b8' : '4px solid #3a8aff',
+                                  opacity: locked ? 0.8 : 1
+                                }}>
+                                  <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: locked ? '#555' : '#333', marginBottom: '8px' }}>
+                                    {locked ? (
+                                      <>
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'text-bottom', marginRight: '6px' }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                        Locked: Complete previous video first
+                                      </>
+                                    ) : (
+                                      "What you'll learn"
+                                    )}
+                                  </h3>
+                                  <p style={{ fontSize: '14px', color: '#555', lineHeight: '1.6', margin: 0 }}>{activeData.summary}</p>
+                                </div>
+                              )}
+                              
+                              <div style={{ display: videoAskOpen ? 'grid' : 'block', gridTemplateColumns: videoAskOpen ? '1.2fr 1fr' : '1fr', gap: '20px', alignItems: 'start', width: '100%' }}>
+                                {/* Left Side: Video Player */}
+                                <div style={{ position: 'sticky', top: '20px', zIndex: 50, width: '100%', minWidth: 0 }}>
+                                  <VideoPlayer
+                                    videoUrl={activeData.videoUrl}
+                                    title={selectedTopic + (videoCount > 1 ? ` (Part ${selectedContentIdx + 1})` : '')}
+                                    summary={activeData.summary}
+                                    thumbnailUrl={activeData.thumbnail}
+                                    isCompleted={completedItems.includes(completedId)}
+                                    isLocked={locked}
+                                    onComplete={() => {
+                                      if (!completedItems.includes(completedId)) {
+                                        setCompletedItems(prev => [...prev, completedId]);
+                                      }
+                                    }}
+                                  />
+                                  
+                                  {/* Ask AI Button */}
+                                  {!locked && !videoAskOpen && (
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '16px' }}>
                                       <button
                                         onClick={() => {
                                           setVideoAskContext({
@@ -680,10 +702,15 @@ export default function CourseLearningPage() {
                                         Ask AI about this video
                                       </button>
                                     </div>
-                                  ) : (
+                                  )}
+                                </div>
+
+                                {/* Right Side: AI Chat Panel */}
+                                {!locked && videoAskOpen && (
+                                  <div style={{ width: '100%', minWidth: 0 }}>
                                     <div style={{ 
                                       width: '100%', 
-                                      height: '500px', 
+                                      height: '650px', 
                                       borderRadius: '20px', 
                                       overflow: 'hidden', 
                                       boxShadow: '0 10px 40px rgba(99,102,241,0.15)', 
@@ -700,9 +727,9 @@ export default function CourseLearningPage() {
                                         partLabel={videoAskContext.partLabel}
                                       />
                                     </div>
-                                  )}
-                                </div>
-                              )}
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           );
                         }

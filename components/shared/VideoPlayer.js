@@ -49,18 +49,7 @@ export default function VideoPlayer({
   if (isLocked) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-        {summary && (
-          <div style={{ 
-            marginBottom: '24px', padding: '20px', background: '#f8f9fa', 
-            borderRadius: '12px', borderLeft: '4px solid #94a3b8', opacity: 0.8
-          }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#555', marginBottom: '8px' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ verticalAlign: 'text-bottom', marginRight: '6px' }}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              Locked: Complete previous video first
-            </h3>
-            <p style={{ fontSize: '14px', color: '#555', lineHeight: '1.6', margin: 0 }}>{summary}</p>
-          </div>
-        )}
+        {/* Summary removed */}
         <div style={{ 
           position: 'relative', width: '100%', aspectRatio: '16/9', 
           background: '#1e293b', borderRadius: '16px', overflow: 'hidden',
@@ -77,19 +66,7 @@ export default function VideoPlayer({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-      {/* Topic Summary Section */}
-      {summary && (
-        <div style={{ 
-          marginBottom: '24px', 
-          padding: '20px', 
-          background: '#f8f9fa', 
-          borderRadius: '12px',
-          borderLeft: '4px solid #3a8aff'
-        }}>
-          <h3 style={{ fontSize: '18px', fontWeight: 'bold', color: '#333', marginBottom: '8px' }}>What you'll learn</h3>
-          <p style={{ fontSize: '14px', color: '#555', lineHeight: '1.6', margin: 0 }}>{summary}</p>
-        </div>
-      )}
+      {/* Topic Summary Section removed */}
 
       {/* Video Container */}
       <div style={{ 

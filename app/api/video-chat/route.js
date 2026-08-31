@@ -14,15 +14,12 @@
  */
 
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
+// Using fetch instead of openai package to avoid module resolution errors
 const { vectorSearchChunks, isVectorStoreReady } = require("@/lib/rag/vectorSearch");
 const { searchChunks } = require("@/lib/rag/contentIndex");
 
-const nvidia = new OpenAI({
-  apiKey: process.env.NVIDIA_API_KEY,
-  baseURL: "https://integrate.api.nvidia.com/v1",
-});
+const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY;
+const NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
 
 /**
  * Convert Google Drive share/view URL to a direct download URL.
@@ -141,27 +138,42 @@ ${historyText ? `PREVIOUS CONVERSATION:\n${historyText}` : ""}`;
     // ── LLM call — nvidia/nemotron-3-nano-omni ───────────────────────────────
     let answer;
     try {
-      const completion = await nvidia.chat.completions.create({
-        model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
-        messages,
-        temperature: 0.4,
-        max_tokens: 600,
-        modalities: ["text"],  // Request text output (video input, text output)
+      const response = await fetch(NVIDIA_BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${NVIDIA_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+          messages,
+          temperature: 0.4,
+          max_tokens: 600
+        })
       });
-      answer = completion.choices[0]?.message?.content?.trim();
+      const data = await response.json();
+      answer = data.choices?.[0]?.message?.content?.trim();
     } catch (videoErr) {
       console.warn("[VideoChat] Multimodal call failed, falling back to text-only:", videoErr.message);
       // Fallback: text-only call with the same system prompt + question
-      const fallback = await nvidia.chat.completions.create({
-        model: "meta/llama-3.1-8b-instruct",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: question.trim() },
-        ],
-        temperature: 0.6,
-        max_tokens: 500,
+      const fallbackResponse = await fetch(NVIDIA_BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${NVIDIA_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "meta/llama-3.1-8b-instruct",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: question.trim() },
+          ],
+          temperature: 0.6,
+          max_tokens: 500
+        })
       });
-      answer = fallback.choices[0]?.message?.content?.trim();
+      const fallbackData = await fallbackResponse.json();
+      answer = fallbackData.choices?.[0]?.message?.content?.trim();
     }
 
     return NextResponse.json({

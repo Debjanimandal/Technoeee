@@ -436,11 +436,11 @@ export default function VideoAskPanel({ isOpen, onClose, videoTopic, videoSummar
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }}
             placeholder="Ask about this video or request a quiz..."
-            rows={1}
+            rows={2}
             style={{
               flex: 1, border: "1.5px solid #e2e8f0", borderRadius: "10px",
               padding: "9px 12px", fontSize: "12.5px", resize: "none", outline: "none",
-              fontFamily: "inherit", lineHeight: "1.5", maxHeight: "90px", overflowY: "auto",
+              fontFamily: "inherit", lineHeight: "1.5", maxHeight: "90px",
               transition: "border-color 0.2s", color: "#1e293b", background: "#f8fafc",
             }}
             onFocus={e => e.target.style.borderColor = "#6366f1"}
