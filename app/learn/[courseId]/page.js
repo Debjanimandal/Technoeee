@@ -129,6 +129,39 @@ export default function CourseLearningPage() {
   };
   // ---------------------------------------------
 
+  // --- Dynamic Quiz Background Generation ---
+  const triggerBackgroundQuizGen = async (quizTitle, quizType, contextText) => {
+    try {
+      fetch('/api/generate-quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          courseName: course?.course_name,
+          topic: quizTitle,
+          contextText: contextText,
+          quizType: quizType
+        })
+      }).then(res => res.json()).then(data => {
+        if (data.questions && data.questions.length > 0) {
+          localStorage.setItem(`dynamic_quiz_${courseId}_${quizTitle.replace(/\s+/g, '_')}`, JSON.stringify(data.questions));
+        }
+      }).catch(err => console.warn("Background quiz gen failed", err));
+    } catch (e) {
+      console.warn("Background quiz gen failed", e);
+    }
+  };
+  
+  // Helper to load dynamic or fallback questions
+  const getQuizQuestions = (quizTitle, staticQuestions) => {
+    if (!quizTitle) return staticQuestions;
+    try {
+      const dynamic = localStorage.getItem(`dynamic_quiz_${courseId}_${quizTitle.replace(/\s+/g, '_')}`);
+      if (dynamic) return JSON.parse(dynamic);
+    } catch(e) {}
+    return staticQuestions;
+  };
+  // ---------------------------------------------
+
   return (
     <div className="app-layout">
       <Sidebar />
@@ -413,7 +446,8 @@ export default function CourseLearningPage() {
                 (() => {
                   const isModuleQuiz = selectedTopic.startsWith('MANDATORY_QUIZ_');
                   const quizTitle = isModuleQuiz ? 'Mandatory Module Quiz' : 'Grand Final Quiz';
-                  const questions = isModuleQuiz ? course?.module_quiz || [] : []; // We'd load grand quiz questions here
+                  const baseQuestions = isModuleQuiz ? course?.module_quiz || [] : [];
+                  const questions = getQuizQuestions(selectedTopic, baseQuestions);
 
                   // Unlock logic: For Module Quiz, check if last video of the module is done.
                   let isLocked = true;
@@ -470,7 +504,7 @@ export default function CourseLearningPage() {
                         Test your knowledge on this {isModuleQuiz ? 'module' : 'course'} with a timed quiz. Good luck!
                       </p>
                       <button
-                        onClick={() => setActiveQuiz({ title: quizTitle, questions })}
+                        onClick={() => setActiveQuiz({ title: quizTitle, questions, type: isModuleQuiz ? 'module' : 'grand', topicKey: selectedTopic })}
                         style={{
                           padding: '14px 40px', backgroundColor: '#ef4444', color: 'white',
                           border: 'none', borderRadius: '12px', cursor: 'pointer', fontSize: '18px',
@@ -790,7 +824,8 @@ export default function CourseLearningPage() {
 
                       // Topic Quiz Tab Logic
                       if (selectedContentIdx === videoCount + 1) {
-                        const questions = course?.topicQuizzes?.[selectedTopic] || [];
+                        const baseQuestions = course?.topicQuizzes?.[selectedTopic] || [];
+                        const questions = getQuizQuestions(selectedTopic, baseQuestions);
                         const lastVideoIdx = videoCount - 1;
                         const lastVideoId = lastVideoIdx <= 0 ? selectedTopic : `${selectedTopic}_${lastVideoIdx + 1}`;
                         // To unlock topic quiz, the last video in this topic must be completed
@@ -829,7 +864,7 @@ export default function CourseLearningPage() {
                               Test your understanding of this topic with a timed quiz. Your results will be saved.
                             </p>
                             <button
-                              onClick={() => setActiveQuiz({ title: selectedTopic, questions })}
+                              onClick={() => setActiveQuiz({ title: selectedTopic, questions, type: 'topic', topicKey: selectedTopic })}
                               style={{
                                 padding: '12px 32px', backgroundColor: '#ef4444', color: 'white',
                                 border: 'none', borderRadius: '12px', cursor: 'pointer', fontSize: '16px',
@@ -881,7 +916,13 @@ export default function CourseLearningPage() {
         <QuizViewer
           title={activeQuiz.title}
           questions={activeQuiz.questions}
-          onClose={() => setActiveQuiz(null)}
+          onClose={() => {
+            // Trigger background regeneration so next attempt is fresh!
+            if (activeQuiz.type) {
+              triggerBackgroundQuizGen(activeQuiz.topicKey || activeQuiz.title, activeQuiz.type, activeQuiz.title);
+            }
+            setActiveQuiz(null);
+          }}
           onSubmitQuiz={(score, total) => {
             console.log(`Quiz Submitted: ${score}/${total}`);
             logQuizResult(activeQuiz.title, score, total);

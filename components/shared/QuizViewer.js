@@ -400,7 +400,7 @@ export default function QuizViewer({ title, questions, onClose, onSubmitQuiz }) 
                               </div>
                               <div style={{ color: '#064e3b', lineHeight: '1.7', fontSize: '1.05rem', fontWeight: '500' }}>
                                 <span style={{ fontWeight: 'bold', color: '#065f46' }}>
-                                  {isCurrentQuestionCorrect ? 'Explanation: ' : 'Why the correct answer is correct: '}
+                                  {isCurrentQuestionCorrect ? 'Explanation: ' : "Why it's correct: "}
                                 </span>
                                 {expDict[ans]}
                               </div>
