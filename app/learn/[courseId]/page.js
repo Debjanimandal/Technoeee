@@ -381,7 +381,7 @@ export default function CourseLearningPage() {
             <div style={{
               flex: 1, background: '#fff', borderRadius: '20px', padding: '40px',
               boxShadow: '0 10px 30px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0',
-              display: 'flex', flexDirection: 'column'
+              display: 'flex', flexDirection: 'column', overflowY: 'auto'
             }}>
 
               {!selectedTopic ? (
@@ -605,7 +605,7 @@ export default function CourseLearningPage() {
                   </div>
 
                   {/* Main Video/Content Player Area */}
-                  <div style={{ flex: 1, background: '#f9fafb', borderRadius: '16px', border: '1px dashed #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                  <div style={{ width: '100%', background: '#f9fafb', borderRadius: '16px', border: '1px dashed #cfd8dc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
 
                     {(() => {
                       const isTopicArray = Array.isArray(currentTopicData);
@@ -641,42 +641,66 @@ export default function CourseLearningPage() {
                                   }
                                 }}
                               />
-                              {/* Ask AI Button */}
+                              {/* Integrated AI Chat Panel below Video */}
                               {!locked && (
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '12px' }}>
-                                  <button
-                                    onClick={() => {
-                                      setVideoAskContext({
-                                        topic: selectedTopic,
-                                        summary: activeData.summary || '',
-                                        videoUrl: activeData.videoUrl || '',
-                                        partLabel,
-                                      });
-                                      setVideoAskOpen(true);
-                                    }}
-                                    style={{
-                                      background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
-                                      color: '#fff',
-                                      border: 'none',
-                                      borderRadius: '10px',
-                                      padding: '9px 18px',
-                                      fontSize: '13px',
-                                      fontWeight: '600',
-                                      cursor: 'pointer',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      gap: '7px',
-                                      boxShadow: '0 4px 14px rgba(99,102,241,0.35)',
-                                      transition: 'all 0.2s',
-                                    }}
-                                    onMouseOver={e => e.currentTarget.style.transform = 'translateY(-1px)'}
-                                    onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
-                                  >
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
-                                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                                    </svg>
-                                    Ask AI about this video
-                                  </button>
+                                <div style={{ marginTop: '16px' }}>
+                                  {!videoAskOpen ? (
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                      <button
+                                        onClick={() => {
+                                          setVideoAskContext({
+                                            topic: selectedTopic,
+                                            summary: activeData.summary || '',
+                                            videoUrl: activeData.videoUrl || '',
+                                            partLabel,
+                                          });
+                                          setVideoAskOpen(true);
+                                        }}
+                                        style={{
+                                          background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
+                                          color: '#fff',
+                                          border: 'none',
+                                          borderRadius: '10px',
+                                          padding: '9px 18px',
+                                          fontSize: '13px',
+                                          fontWeight: '600',
+                                          cursor: 'pointer',
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          gap: '7px',
+                                          boxShadow: '0 4px 14px rgba(99,102,241,0.35)',
+                                          transition: 'all 0.2s',
+                                        }}
+                                        onMouseOver={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+                                        onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                      >
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+                                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                        </svg>
+                                        Ask AI about this video
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <div style={{ 
+                                      width: '100%', 
+                                      height: '500px', 
+                                      borderRadius: '20px', 
+                                      overflow: 'hidden', 
+                                      boxShadow: '0 10px 40px rgba(99,102,241,0.15)', 
+                                      border: '1px solid #e0e7ff',
+                                      animation: 'fadeIn 0.3s ease-out'
+                                    }}>
+                                      <VideoAskPanel
+                                        isOpen={videoAskOpen}
+                                        onClose={() => setVideoAskOpen(false)}
+                                        videoTopic={videoAskContext.topic}
+                                        videoSummary={videoAskContext.summary}
+                                        videoUrl={videoAskContext.videoUrl}
+                                        courseName={course?.course_name || ''}
+                                        partLabel={videoAskContext.partLabel}
+                                      />
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>
@@ -812,35 +836,6 @@ export default function CourseLearningPage() {
               )}
 
             </div>
-
-            {/* RIGHT AI CHAT COLUMN — inline, animated slide-in */}
-            <div style={{
-              width: videoAskOpen ? '360px' : '0px',
-              minWidth: videoAskOpen ? '360px' : '0px',
-              opacity: videoAskOpen ? 1 : 0,
-              overflow: 'hidden',
-              flexShrink: 0,
-              borderRadius: '20px',
-              transition: 'width 0.4s cubic-bezier(0.4,0,0.2,1), min-width 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease',
-              boxShadow: videoAskOpen ? '0 10px 40px rgba(99,102,241,0.18)' : 'none',
-            }}>
-              <div style={{
-                width: '360px', height: '100%',
-                transform: videoAskOpen ? 'translateX(0) scale(1)' : 'translateX(30px) scale(0.97)',
-                transition: 'transform 0.4s cubic-bezier(0.4,0,0.2,1)',
-              }}>
-                <VideoAskPanel
-                  isOpen={videoAskOpen}
-                  onClose={() => setVideoAskOpen(false)}
-                  videoTopic={videoAskContext.topic}
-                  videoSummary={videoAskContext.summary}
-                  videoUrl={videoAskContext.videoUrl}
-                  courseName={course?.course_name || ''}
-                  partLabel={videoAskContext.partLabel}
-                />
-              </div>
-            </div>
-
           </div>
 
 
