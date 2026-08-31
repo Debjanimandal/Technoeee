@@ -200,10 +200,9 @@ export default function DashboardPage() {
          && (statsData.today_minutes || 0) === 0
          && (statsData.weekly_hours || 0) === 0
          && (statsData.active_days || 0) === 0);
-      const realStreak = calcStreak(dates);
       setStats(noRealStats ? MOCK_STATS_DASHBOARD : statsData);
-      setStreak(noRealStats ? MOCK_STREAK : realStreak);
-      // Store active dates (use mock dates spanning last 30 days when no real data)
+      
+      // Store active dates and calculate true streak
       if (noRealStats) {
         let mockDates = [];
         try {
@@ -233,6 +232,7 @@ export default function DashboardPage() {
         }
         
         setActiveDates(mockDates);
+        setStreak(calcStreak(mockDates));
       } else {
         // If real stats exist, assume today should be active if they are on the site
         const now = new Date();
@@ -242,6 +242,7 @@ export default function DashboardPage() {
           updatedDates.push(localTodayStr);
         }
         setActiveDates(updatedDates);
+        setStreak(calcStreak(updatedDates));
       }
       setAnalyticsLoading(false);
     })();
