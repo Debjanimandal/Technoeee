@@ -222,9 +222,26 @@ export default function DashboardPage() {
           }
           try { localStorage.setItem('mockActiveDates', JSON.stringify(mockDates)); } catch (e) {}
         }
+        
+        // Ensure today is always marked present since user is currently active
+        const now = new Date();
+        const localTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        
+        if (!mockDates.includes(localTodayStr)) {
+          mockDates.push(localTodayStr);
+          try { localStorage.setItem('mockActiveDates', JSON.stringify(mockDates)); } catch (e) {}
+        }
+        
         setActiveDates(mockDates);
       } else {
-        setActiveDates(dates || []);
+        // If real stats exist, assume today should be active if they are on the site
+        const now = new Date();
+        const localTodayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const updatedDates = [...(dates || [])];
+        if (!updatedDates.includes(localTodayStr)) {
+          updatedDates.push(localTodayStr);
+        }
+        setActiveDates(updatedDates);
       }
       setAnalyticsLoading(false);
     })();
@@ -721,7 +738,7 @@ export default function DashboardPage() {
                   const daysInMonth = new Date(year, month + 1, 0).getDate();
                   const firstDay = new Date(year, month, 1).getDay(); // 0=Sun
                   const activeDateSet = new Set(activeDates);
-                  const todayStr = today.toISOString().split('T')[0];
+                  const todayStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
                   const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
